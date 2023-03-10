@@ -1,7 +1,7 @@
 # Hygieia
 
 ## About
-###Web app used for medical personal anamnesis of patient.
+Web app used for medical personal anamnesis of patient.
 ## Features
 - User Management
 - Medical History Review
