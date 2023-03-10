@@ -23,7 +23,7 @@ Web app used for medical personal anamnesis of patient.
   * information about the patient's follow-up care, including scheduled appointments with healthcare providers, recommended treatments
   
 - Reminders
-  * any user can set up a reminder for some date not to forget abut the appointment
+  * any user can set up a reminder for some date not to forget about the appointment
   
 ## Tools and frameworks
 - Blazor
