@@ -9,7 +9,9 @@ Web app used for medical personal anamnesis of patient.
   * patients can be able to change their doctors and view their medical data
   
 - Medical History Review
-  * information about the patient's past and current health conditions, including chronic conditions, illnesses, surgeries, and injuries.
+  * information about the patient's past health conditions, including chronic conditions, illnesses, surgeries, and injuries.
+  * list of current health conditions
+  * saved doctors visits
   
 - Test Results
   * information about any test results the patient has received, including blood tests, imaging studies, and other diagnostic tests.
