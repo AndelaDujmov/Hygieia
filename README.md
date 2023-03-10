@@ -20,10 +20,12 @@ Web app used for medical personal anamnesis of patient.
   * information about the medications the patient is currently taking, including the name of the medication, dosage, and frequency.
   
 - Follow-up Care
-  * information about the patient's follow-up care, including scheduled appointments with healthcare providers, recommended treatments, and any necessary referrals
+  * information about the patient's follow-up care, including scheduled appointments with healthcare providers, recommended treatments
   
 ## Tools and frameworks
 - Blazor
-- .NET
+- ASP.NET
+- Razor
+- React
 
 ## Database Model
