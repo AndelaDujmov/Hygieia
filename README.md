@@ -4,9 +4,9 @@
 Web app used for medical personal anamnesis of patient.
 ## Features
 - User Management
-* users can login, sign up as doctor/patient. 
-* doctors can be able to add new patients, remove old patients, edit their patients medical status.
-* patients can be able to change their doctors and view their medical data.
+*users can login, sign up as doctor/patient. 
+*doctors can be able to add new patients, remove old patients, edit their patients medical status.
+*patients can be able to change their doctors and view their medical data.
 - Medical History Review
 * information about the patient's past and current health conditions, including chronic conditions, illnesses, surgeries, and injuries.
 - Test Results
