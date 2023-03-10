@@ -22,6 +22,9 @@ Web app used for medical personal anamnesis of patient.
 - Follow-up Care
   * information about the patient's follow-up care, including scheduled appointments with healthcare providers, recommended treatments
   
+- Reminders
+  * any user can set up a reminder for some date not to forget abut the appointment
+  
 ## Tools and frameworks
 - Blazor
 - ASP.NET
