@@ -30,5 +30,6 @@ Web app used for medical personal anamnesis of patient.
 - ASP.NET
 - Razor
 - React
+- WPF
 
 ## Database Model
