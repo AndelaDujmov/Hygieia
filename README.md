@@ -15,6 +15,7 @@ Web app used for medical personal anamnesis of patient.
   
 - Test Results
   * information about any test results the patient has received, including blood tests, imaging studies, and other diagnostic tests.
+  * provided in .pdf format
   
 - Medications
   * information about the medications the patient is currently taking, including the name of the medication, dosage, and frequency.
