@@ -27,6 +27,7 @@ Web app used for medical personal anamnesis of patient.
 - Reminders
   * doctors can set up a reminder for some date not to forget about the appointment
   * edit and add events
+  * includes date of last and next appointment
   
 ## Tools and frameworks
 - Blazor
