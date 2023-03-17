@@ -35,3 +35,4 @@ Web app used for medical personal anamnesis of patient.
 - Bootstrap
 
 ## Database Model
+![](HygieiaDataModel.png)
