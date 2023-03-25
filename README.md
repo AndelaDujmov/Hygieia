@@ -19,12 +19,15 @@ Web app used for medical personal anamnesis of patient.
   
 - Medications
   * information about the medications the patient is currently taking, including the name of the medication, dosage, and frequency.
+  * checks if patient has any allergy history
   
 - Follow-up Care
   * information about the patient's follow-up care, including scheduled appointments with healthcare providers, recommended treatments
   
 - Reminders
-  * any user can set up a reminder for some date not to forget about the appointment
+  * doctors can set up a reminder for some date not to forget about the appointment
+  * edit and add events
+  * includes date of last and next appointment
   
 ## Tools and frameworks
 - Blazor
