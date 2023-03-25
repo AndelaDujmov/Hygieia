@@ -33,6 +33,7 @@ Web app used for medical personal anamnesis of patient.
 - React
 - WPF
 - Bootstrap
+- Swagger
 
 ## Database Model
 ![](HygieiaDataModel.png)
