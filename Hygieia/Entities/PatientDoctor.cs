@@ -1,6 +1,6 @@
 namespace Hygieia.Entities;
 
-public class PatientDoctor
+public class PatientDoctor 
 {
     public int Id { get; set; }
     public int DoctorId { get; set; }

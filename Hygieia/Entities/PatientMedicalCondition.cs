@@ -2,7 +2,7 @@
 
 namespace Hygieia.Entities
 {
-    public class PatientMedicalCondition
+    public class PatientMedicalCondition 
     {
         public int Id { get; set; }
         public int PatientId { get; set; }

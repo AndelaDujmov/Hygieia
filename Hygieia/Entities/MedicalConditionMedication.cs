@@ -1,4 +1,6 @@
-﻿namespace Hygieia.Entities
+﻿using System.Data.Entity;
+
+namespace Hygieia.Entities
 {
     public class MedicalConditionMedication
     {   
