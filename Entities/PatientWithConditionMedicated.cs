@@ -4,7 +4,9 @@
     {
         public int Id { get; set; }
         public int MedicalConditionMedicationId { get; set; }
+        public MedicalConditionMedication MedicalConditionMedication { get; set; }
         public int PatientMedicalConditionId { get; set; }
+        public PatientMedicalCondition PatientMedicalCondition { get; set; }
         public decimal Dosage { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

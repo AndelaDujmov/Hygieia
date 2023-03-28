@@ -1,4 +1,5 @@
-﻿using Hygieia.Utils.Enums;
+﻿using System.Data.Entity;
+using Hygieia.Utils.Enums;
 
 namespace Hygieia.Entities
 {
