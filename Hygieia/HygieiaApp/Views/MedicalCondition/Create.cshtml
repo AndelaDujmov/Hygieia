@@ -1,0 +1,28 @@
+@using HygieiaApp.Utils.Enums
+@model MedicalCondition
+
+<form method="post">
+    <div class="border p-3  mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Add New Medical Condition</h2>
+            <hr/>
+        </div>
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="Category"></label>
+            <select class="form-select" asp-items="@Html.GetEnumSelectList<ConditionCategory>()">
+                <option selected="selected" id="select" value="">Please select one of the above</option>
+            </select>
+            <label class="col-form-label" asp-for="Type"></label><br/>
+            <input type="text" class="text text-primary"/><br/>
+            <label class="col-form-label" asp-for="NameOfDiagnosis"></label><br/>
+            <input type="text" class="text text-primary"/><br/>
+            <label class="col-form-label" asp-for="Symptoms"></label><br/>
+            <input type="text" class="text text-primary"/><br/>
+            <label class="col-form-label" asp-for="Treatment"></label><br/>
+            <input type="text" class="text text-primary"/>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>
+        <a asp-controller="MedicalCondition" asp-action="Index">Back to listing</a>
+    </div>
+</form>

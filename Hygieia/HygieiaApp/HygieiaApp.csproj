@@ -24,4 +24,12 @@
       <PackageReference Include="MySql.EntityFrameworkCore" Version="7.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Views\MedicalCondition\Create.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Pages\" />
+    </ItemGroup>
+
 </Project>

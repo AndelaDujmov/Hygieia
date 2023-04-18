@@ -1,0 +1,14 @@
+{
+  "dieaseList" : [
+    "acquired disease",
+    "acute disease",
+    "chronic condition or chronic disease",
+    "congenital disease",
+    "genetic disease",
+    "hereditary or inherited disease",
+    "iatrogenic disease",
+    "idiopathic disease",
+    "illness",
+    "health condition"
+  ]
+}

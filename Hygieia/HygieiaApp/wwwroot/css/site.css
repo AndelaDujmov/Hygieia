@@ -16,3 +16,10 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+#calendarContainer,
+#organizerContainer {
+  float: left;
+  margin: 5px;
+}
