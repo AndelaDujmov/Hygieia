@@ -5,22 +5,34 @@ namespace HygieiaApp.Controllers;
 
 public class MedicalConditionController : Controller
 {
-    private readonly AppDbContext _appDb;
+    private readonly AppDbContext _appDb = new AppDbContext();
 
 
-    public MedicalConditionController(/*AppDbContext appDb*/)
+    public MedicalConditionController( )
     {
-        //_appDb = appDb;
+       
     }
     public IActionResult Index()
     {
-        //IEnumerable<MedicalCondition> medicalConditions = _appDb.MedicalConditions;
+        IEnumerable<MedicalCondition> medicalConditions = _appDb.MedicalConditions;
         
-        return View(/*medicalConditions*/);
+        return View(medicalConditions);
     }
     
+    //GET
     public IActionResult Create()
     {
         return View();
     }
+    
+    //POST
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(MedicalCondition condition)
+    {
+        _appDb.MedicalConditions.Add(condition);
+        _appDb.SaveChanges();
+        return RedirectToAction("Index");
+    }
+    
 }

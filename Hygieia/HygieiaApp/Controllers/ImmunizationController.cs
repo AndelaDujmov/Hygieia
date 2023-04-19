@@ -13,4 +13,9 @@ public class ImmunizationController : Controller
     {
         return View();
     }
+
+    public IActionResult Create()
+    {
+        return View();
+    }
 }

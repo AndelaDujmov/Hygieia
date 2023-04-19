@@ -1,0 +1,26 @@
+@model Scheduler
+
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+
+<form method="post">
+<div class="border p-3  mt-4">
+    <div class="row pb-2">
+        <h2 class="text-primary">Add New Event</h2>
+        <hr/>
+    </div>
+    <div class="mb-2">
+        <label class="col-form-label" asp-for="Reminder"></label>
+        <input type="text" class="text text-primary"/><br/><br/>
+        <label class="col-form-label" asp-for="DateOfAppointment"></label> &nbsp; &nbsp;
+        <input type="datetime-local" id="meeting-time"
+               name="meeting-time" value="2023-01-01T00:00"
+               min="2023-01-01T00:00">
+    </div>
+        
+    <button type="submit" class="btn btn-primary" style="width: 100px">Add</button>
+    
+</div>
+</form>

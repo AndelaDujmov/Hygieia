@@ -8,4 +8,9 @@ public class SchedulerController : Controller
     {
         return View();
     }
+    
+    public IActionResult Create()
+    {
+        return View();
+    }
 }

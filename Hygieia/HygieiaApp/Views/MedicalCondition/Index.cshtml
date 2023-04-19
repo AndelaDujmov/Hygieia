@@ -41,9 +41,16 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                
-            </tr>
+            @foreach (var mc in Model)
+            {
+                <tr>
+                    <td>@mc.Category.ToString().ToUpper()</td>
+                    <td>@mc.Type.ToUpper()</td>
+                    <td>@mc.Symptoms.ToUpper()</td>
+                    <td>@mc.NameOfDiagnosis.ToUpper()</td>
+                    <td>@mc.Treatment.ToUpperInvariant()</td>
+                </tr>
+            }
             </tbody>
         </table>
     </div>

@@ -13,13 +13,13 @@
                 <option selected="selected" id="select" value="">Please select one of the above</option>
             </select>
             <label class="col-form-label" asp-for="Type"></label><br/>
-            <input type="text" class="text text-primary"/><br/>
+            <input type="text" asp-for="Type" class="text text-primary"/><br/>
             <label class="col-form-label" asp-for="NameOfDiagnosis"></label><br/>
-            <input type="text" class="text text-primary"/><br/>
+            <input type="text" asp-for="NameOfDiagnosis" class="text text-primary"/><br/>
             <label class="col-form-label" asp-for="Symptoms"></label><br/>
-            <input type="text" class="text text-primary"/><br/>
+            <input type="text" asp-for="Symptoms" class="text text-primary"/><br/>
             <label class="col-form-label" asp-for="Treatment"></label><br/>
-            <input type="text" class="text text-primary"/>
+            <input type="text" asp-for="Treatment" class="text text-primary"/>
         </div>
         
         <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>
