@@ -1,0 +1,27 @@
+@model HygieiaApp.Utils.DTO.ImmunizationDto
+
+@{
+    ViewData["Title"] = "Create Immunization";
+}
+
+<form method="post">
+    <div asp-validation-summary="All"></div>
+    <div class="border p-3  mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Add New Vaccine</h2>
+            <hr/>
+        </div>
+        <div class="mb-2">
+            <label class="col-form-label" asp-for="Type"></label>
+            <input type="text" class="text text-primary"/><br/><br/>
+            <span asp-validation-for="Type" class="text-danger"></span><br/>
+            <label class="col-form-label" asp-for="UsedFor"></label>
+            <input type="text" class="text text-primary"/><br/><br/>
+            <span asp-validation-for="UsedFor" class="text-danger"></span><br/>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100px">Add</button>
+
+    </div>
+</form>
+

@@ -1,0 +1,50 @@
+@model dynamic
+
+@{
+    ViewData["Title"] = "Users";
+}
+<partial name="_Notification"/>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Users</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="User" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle-dotted"></i> &nbsp; Add new user
+            </a>
+        </div>
+        
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <table class="table-secondary">
+            <thead>
+            <tr>
+                <th>
+                    Username
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Password
+                </th>
+                <th>
+                    Role
+                </th>
+                <th>
+                    Delete
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

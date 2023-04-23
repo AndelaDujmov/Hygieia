@@ -1,0 +1,67 @@
+@model IEnumerable<Medication>
+<partial name="_Notification"/>
+
+@{
+    ViewData["Title"] = "Medications";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Medications</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Medication" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle-dotted"></i> &nbsp; Add new medication
+            </a>
+        </div>
+        
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <table class="table-primary">
+            <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Class
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Side Effects
+                </th>
+                <th>
+                    
+                </th>
+                
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var element in Model)
+            {
+                <tr>
+                    <td>@element.Name</td>
+                    <td>@element.Class<td>
+                    <td>@element.Type</td>
+                    <td>@element.SideEffects</td>
+                     <td>
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-controller="Medication" asp-action="Edit" asp-route-id="@element.Id" class="btn btn-primary mx-2">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a> &nbsp;
+                            <a asp-controller="Medication" asp-action="Delete" asp-route-id="@element.Id" class="btn btn-primary mx-2">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
