@@ -1,0 +1,36 @@
+@page
+@model HygieiaApp.Razor.Pages.Medications.Create
+
+<form method="post">
+    <div class="border p-3  mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Add New Medication</h2>
+            <hr/>
+        </div>
+        <div asp-validation-summary="All"></div>
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="Medication.Class"></label><br/>
+            <input type="text" asp-for="Medication.Class" class="form-control"/><br/>
+            <span asp-validation-for="Medication.Class" class="text-danger"></span><br/>
+            <label class="col-form-label" asp-for="Medication.Type"></label><br/>
+            <input type="text" asp-for="Medication.Type" class="form-control"/><br/>
+            <span asp-validation-for="Medication.Type" class="text-danger"></span><br/>
+            <label class="col-form-label" asp-for="Medication.Name"></label><br/>
+            <input type="text" asp-for="Medication.Name" class="form-control"/><br/>
+            <span asp-validation-for="Medication.SideEffects" class="text-danger"></span><br/>
+            <label class="col-form-label" asp-for="Medication.SideEffects"></label><br/>
+            <input type="text" asp-for="Medication.SideEffects" class="form-control"/><br/>
+            <span asp-validation-for="Medication.SideEffects" class="text-danger"></span><br/>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>
+        <a asp-page="/Medications/Index">Back to listing</a>
+    </div>
+</form>
+
+@section Scripts
+{
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+}

@@ -1,0 +1,71 @@
+@page
+@model HygieiaApp.Razor.Pages.MedicalConditions.Index
+
+@{
+    
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Medical Conditions</h2>
+        </div>
+        <div class="col-12 text-end">
+            <a asp-page="/MedicalConditions/Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle-dotted"></i> &nbsp; Add new medical condition
+            </a>
+        </div>
+        
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <table class="table-primary">
+            <thead>
+            <tr>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Symptoms
+                </th>
+                <th>
+                    Diagnosis Name
+                </th>
+                <th>
+                    Treatment
+                </th>
+                <th>
+                    
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var mc in @Model.MedicalConditionsList.OrderBy(condition => condition.Category))
+            {
+                <tr>
+                    <td>@mc.Category.ToString().ToUpper()</td>
+                    <td>@mc.Type.ToUpper()</td>
+                    <td>@mc.Symptoms.ToUpper()</td>
+                    <td>@mc.NameOfDiagnosis.ToUpper()</td>
+                    <td>@mc.Treatment.ToUpperInvariant()</td>
+                    <td>
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-page="/MedicalConditions/Edit" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a> &nbsp;
+                            <a asp-page="/MedicalConditions/Delete" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

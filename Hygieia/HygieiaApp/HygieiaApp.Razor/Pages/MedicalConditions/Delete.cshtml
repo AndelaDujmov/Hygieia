@@ -1,0 +1,39 @@
+@page
+@using HygieiaApp.Razor.Utils.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model HygieiaApp.Razor.Pages.MedicalConditions.Delete
+
+<form method="post">
+    <input asp-for="MedicalCondition.Id" hidden/>
+    <div class="border p-3  mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Delete Medical Condition</h2>
+            <hr/>
+        </div>
+
+        <div class="mb-3">
+            <label disabled class="col-form-label" asp-for="MedicalCondition.Category"></label>
+            <select class="form-select" asp-items="@Html.GetEnumSelectList<ConditionCategory>()">
+                <option selected="selected" id="select" value="">Please select one of the above</option>
+            </select>
+            <label class="col-form-label" asp-for="MedicalCondition.Type"></label><br/>
+            <input type="text" asp-for="MedicalCondition.Type" disabled class="form-control"/><br/>
+            <label class="col-form-label" asp-for="MedicalCondition.NameOfDiagnosis"></label><br/>
+            <input type="text" asp-for="MedicalCondition.NameOfDiagnosis" disabled class="form-control"/><br/>
+            <label class="col-form-label" asp-for="MedicalCondition.Symptoms"></label><br/>
+            <input type="text" asp-for="MedicalCondition.Symptoms" disabled class="form-control"/><br/>
+            <label class="col-form-label" asp-for="MedicalCondition.Treatment"></label><br/>
+            <input type="text" asp-for="MedicalCondition.Treatment" disabled class="form-control"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100px"> <i class="bi bi-trash2"></i>Delete</button>
+        <a asp-page="/MedicalConditions/Index">Back to listing</a>
+    </div>
+</form>
+
+@section Scripts
+{
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+}

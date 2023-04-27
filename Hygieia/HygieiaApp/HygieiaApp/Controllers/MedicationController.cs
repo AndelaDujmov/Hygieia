@@ -113,6 +113,6 @@ public class MedicationController : Controller
         }
 
         TempData["success"] = "Unable to delete medication with invalid parameter.";
-        return View(medication);
+        return RedirectToAction("Index");
     }
 }
