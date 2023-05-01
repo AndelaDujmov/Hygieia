@@ -1,15 +1,21 @@
-using HygieiaApp.Data;
-using HygieiaApp.Models;
+using HygieiaApp.DataAccess.Data;
+using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HygieiaApp.Controllers;
 
 public class SchedulerController : Controller
 {
-    private readonly AppDbContext _appDb = new AppDbContext();
+    private readonly IEventRepository _eventRepository;
+
+    public SchedulerController(IEventRepository eventRepository)
+    {
+        _eventRepository = eventRepository;
+    }
     public IActionResult Index()
     {
-        var scheduler = _appDb.Schedulers;
+        var scheduler = _eventRepository.GetAll();
         return View(scheduler);
     }
     
@@ -26,8 +32,7 @@ public class SchedulerController : Controller
         {
             try
             {
-                _appDb.Schedulers.Add(scheduler);
-                _appDb.SaveChanges();
+                _eventRepository.Add(scheduler);
                 TempData["success"] = "Event created succesfully.";
                 return RedirectToAction("Index");
             }

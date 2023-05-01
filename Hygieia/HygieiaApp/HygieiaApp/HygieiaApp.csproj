@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>HygieiaApp</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -31,6 +32,20 @@
 
     <ItemGroup>
       <Folder Include="Pages\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Utils\DataSource\diseaseTypes.json" />
+      <_ContentIncludedByDefault Remove="Utils\DataSource\disorderTypes.json" />
+      <_ContentIncludedByDefault Remove="Utils\DataSource\medicationClass.json" />
+      <_ContentIncludedByDefault Remove="Utils\DataSource\testResultTypes.json" />
+      <_ContentIncludedByDefault Remove="Utils\DataSource\vaccineTypes.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\HygieiaApp.DataAccess\HygieiaApp.DataAccess.csproj" />
+      <ProjectReference Include="..\HygieiaApp.Models\HygieiaApp.Models.csproj" />
+      <ProjectReference Include="..\HygieiaApp.Utility\HygieiaApp.Utility.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,15 +1,23 @@
-using HygieiaApp.Data;
-using HygieiaApp.Models;
+using HygieiaApp.DataAccess.Data;
+using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.DataAccess.Repositories.Impl;
+using HygieiaApp.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HygieiaApp.Controllers;
 
 public class MedicationController : Controller
 {
-    private readonly AppDbContext _appDb = new AppDbContext();
+    private readonly IMedicationRepository _medicationRepository;
+
+    public MedicationController(IMedicationRepository medicationRepository)
+    {
+        _medicationRepository = medicationRepository;
+    }
+    
     public IActionResult Index()
     {
-        var medication = _appDb.Medications;
+        var medication = _medicationRepository.GetAll();
         return View(medication);
     }
 
@@ -26,8 +34,8 @@ public class MedicationController : Controller
         {
             try
             {
-                _appDb.Add(medication);
-                _appDb.SaveChanges();
+                _medicationRepository.Add(medication);
+                _medicationRepository.Save();
                 TempData["success"] = "Medication created succesfully.";
                 return RedirectToAction("Index");
             }
@@ -38,13 +46,13 @@ public class MedicationController : Controller
             }
         }
 
-        TempData["success"] = "Unable to create medication with invalid parameter.";
+        TempData["error"] = "Unable to create medication with invalid parameter.";
         return View(medication);
     }
     
     public IActionResult Edit(Guid? id)
     {
-        var medication = _appDb.Medications.Find(id);
+        var medication = _medicationRepository.Get(x => x.Id == id);
 
         if (medication is null)
         {
@@ -63,8 +71,8 @@ public class MedicationController : Controller
         {
             try
             {
-                _appDb.Update(medication);
-                _appDb.SaveChanges();
+                _medicationRepository.Update(medication);
+                _medicationRepository.Save();
                 TempData["success"] = "Medication updated succesfully.";
                 return RedirectToAction("Index");
             }
@@ -75,15 +83,16 @@ public class MedicationController : Controller
             }
         }
 
-        TempData["success"] = "Unable to update medication with invalid parameter.";
+        TempData["error"] = "Unable to update medication with invalid parameter.";
         return View(medication);
     }
     
     
     public IActionResult Delete(Guid? id)
     {
-        var medication = _appDb.Medications.Find(id);
-
+        var medication = _medicationRepository.Get(x=> x.Id==id);
+        
+        
         if (medication is null)
         {
             TempData["error"] = "Unable to get medication with invalid parameter.";
@@ -100,8 +109,8 @@ public class MedicationController : Controller
         {
             try
             {
-                _appDb.Remove(medication);
-                _appDb.SaveChanges();
+                _medicationRepository.Delete(medication);
+                _medicationRepository.Save();
                 TempData["success"] = "Medication deleted succesfully.";
                 return RedirectToAction("Index");
             }

@@ -1,20 +1,24 @@
-using HygieiaApp.Data;
-using HygieiaApp.Models;
+using HygieiaApp.DataAccess.Data;
+using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.Models.Models;
 using Microsoft.AspNetCore.Mvc;
+using Exception = System.Exception;
+
 namespace HygieiaApp.Controllers;
 
 public class MedicalConditionController : Controller
 {
-    private readonly AppDbContext _appDb = new AppDbContext();
+    private readonly IMedicalConditionRepository _medicalConditionRepository;
 
 
-    public MedicalConditionController( )
+    public MedicalConditionController(IMedicalConditionRepository medicalConditionRepository)
     {
-       
+        _medicalConditionRepository = medicalConditionRepository;
     }
+    
     public IActionResult Index()
     {
-        IEnumerable<MedicalCondition> medicalConditions = _appDb.MedicalConditions;
+        IEnumerable<MedicalCondition> medicalConditions = _medicalConditionRepository.GetAll();
         
         return View(medicalConditions);
     }
@@ -44,8 +48,8 @@ public class MedicalConditionController : Controller
         {
             try
             {
-                _appDb.MedicalConditions.Add(condition);
-                _appDb.SaveChanges();
+                _medicalConditionRepository.Add(condition);
+                _medicalConditionRepository.Save();
                 TempData["success"] = "Medical condition created succesfully.";
                 return RedirectToAction("Index");
             }
@@ -67,7 +71,7 @@ public class MedicalConditionController : Controller
             return NotFound();
         }
 
-        var medicalcond = _appDb.MedicalConditions.FirstOrDefault(x=> x.Id == id);
+        var medicalcond = _medicalConditionRepository.Get(x=> x.Id == id);
 
         if (medicalcond is null)
         {
@@ -89,8 +93,8 @@ public class MedicalConditionController : Controller
         {
             try
             {
-                _appDb.MedicalConditions.Update(condition);
-                _appDb.SaveChanges();
+                _medicalConditionRepository.Update(condition);
+                _medicalConditionRepository.Save();
                 TempData["success"] = "Medical condition edited succesfully.";
                 return RedirectToAction("Index");
             }
@@ -109,7 +113,7 @@ public class MedicalConditionController : Controller
         if (id is null)
             return NotFound();
 
-        var medicalcond = _appDb.MedicalConditions.FirstOrDefault(x=> x.Id == id);
+        var medicalcond = _medicalConditionRepository.Get(x=> x.Id == id);
 
         if (medicalcond is null)
             return NotFound();
@@ -121,7 +125,7 @@ public class MedicalConditionController : Controller
     [HttpPost, ActionName("Delete")]
     public IActionResult DeletePost(Guid? id)
     {
-        var category = _appDb.MedicalConditions.FirstOrDefault(x => x.Id == id);
+        var category = _medicalConditionRepository.Get(x => x.Id == id);
 
         if (category == null)
         {
@@ -129,8 +133,8 @@ public class MedicalConditionController : Controller
             return NotFound();
         }
 
-        _appDb.MedicalConditions.Remove(category);
-        _appDb.SaveChanges();
+        _medicalConditionRepository.Delete(category);
+        _medicalConditionRepository.Save();
         TempData["success"] = "Medical condition deleted succesfully.";
         return RedirectToAction("Index");
     }

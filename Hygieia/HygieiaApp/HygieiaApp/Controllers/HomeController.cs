@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using HygieiaApp.Models;
+using HygieiaApp.Models.Models;
 
 namespace HygieiaApp.Controllers;
 

@@ -1,18 +1,18 @@
-using HygieiaApp.Data;
-using HygieiaApp.Models;
-using HygieiaApp.Utils.DTO;
+using HygieiaApp.DataAccess.Data;
+using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.Utility.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HygieiaApp.Controllers;
 
 public class ImmunizationController : Controller
 {
-    private readonly AppDbContext _appDb = new AppDbContext();
+    private readonly IVaccineRepository _vaccineRepository;
     public List<ImmunizationDto> _immunizationDtos = new List<ImmunizationDto>();
 
-    public ImmunizationController()
+    public ImmunizationController(IVaccineRepository vaccineRepository)
     {
-        
+        _vaccineRepository = vaccineRepository;
     }
     
     public IActionResult Index()

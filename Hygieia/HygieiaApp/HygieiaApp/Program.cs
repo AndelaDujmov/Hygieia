@@ -1,8 +1,20 @@
+using HygieiaApp.DataAccess.Data;
+using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.DataAccess.Repositories.Impl;
+using HygieiaApp.Models.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySQL("server=localhost;database=hygieia2;uid=root;pwd=andu404595;"));
+builder.Services.AddScoped<IMedicalConditionRepository, MedicalConditionRepository>();
+builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
+builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
+builder.Services.AddScoped<IResultsRepository, ResultsRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

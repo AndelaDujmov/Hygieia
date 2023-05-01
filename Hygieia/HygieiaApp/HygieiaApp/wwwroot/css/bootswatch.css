@@ -3677,7 +3677,7 @@ textarea.form-control-lg {
     }
 }
 .nav-link:hover, .nav-link:focus {
-    color: var(--bs-nav-link-hover-color);
+    color: white;
 }
 .nav-link.disabled {
     color: var(--bs-nav-link-disabled-color);
@@ -3704,7 +3704,7 @@ textarea.form-control-lg {
 }
 .nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
     isolation: isolate;
-    border-color: var(--bs-nav-tabs-link-hover-border-color);
+    border-color: white;
 }
 .nav-tabs .nav-link.disabled, .nav-tabs .nav-link:disabled {
     color: var(--bs-nav-link-disabled-color);
@@ -3773,7 +3773,7 @@ textarea.form-control-lg {
     --bs-navbar-padding-x: 0;
     --bs-navbar-padding-y: 1rem;
     --bs-navbar-color: rgba(0, 0, 0, 0.55);
-    --bs-navbar-hover-color: rgba(0, 0, 0, 0.7);
+    --bs-navbar-hover-color: white;
     --bs-navbar-disabled-color: rgba(0, 0, 0, 0.3);
     --bs-navbar-active-color: rgba(0, 0, 0, 0.9);
     --bs-navbar-brand-padding-y: 0.3125rem;
