@@ -10,11 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL("server=localhost;database=hygieia2;uid=root;pwd=andu404595;"));
-builder.Services.AddScoped<IMedicalConditionRepository, MedicalConditionRepository>();
-builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
-builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
-builder.Services.AddScoped<IResultsRepository, ResultsRepository>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,6 +31,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area=Patient}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

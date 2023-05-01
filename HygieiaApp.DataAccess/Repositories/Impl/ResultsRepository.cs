@@ -17,8 +17,5 @@ public class ResultsRepository : Repository<TestResult>, IResultsRepository
         _appDb.TestResults.Update(result);
     }
 
-    public void Save()
-    {
-        _appDb.SaveChanges();
-    }
+
 }

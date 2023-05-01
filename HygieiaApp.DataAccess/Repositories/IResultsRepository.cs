@@ -5,5 +5,5 @@ namespace HygieiaApp.DataAccess.Repositories;
 public interface IResultsRepository : IRepository<TestResult>
 {
     void Update(TestResult result);
-    void Save();
+   
 }

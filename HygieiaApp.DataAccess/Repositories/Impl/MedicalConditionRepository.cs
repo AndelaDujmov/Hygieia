@@ -15,9 +15,5 @@ public class MedicalConditionRepository : Repository<MedicalCondition>, IMedical
     {
         _appDb.MedicalConditions.Update(medicalCondition);
     }
-
-    public void Save()
-    {
-        _appDb.SaveChanges();
-    }
+    
 }

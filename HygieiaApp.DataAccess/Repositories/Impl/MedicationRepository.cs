@@ -17,8 +17,5 @@ public class MedicationRepository : Repository<Medication>, IMedicationRepositor
         _appDb.Medications.Update(medication);
     }
 
-    public void Save()
-    {
-        _appDb.SaveChanges();
-    }
+
 }

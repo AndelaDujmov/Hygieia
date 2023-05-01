@@ -25,21 +25,21 @@
                 <a class="nav-link " asp-area="" asp-controller="User" asp-action="Index">Users</a>
             </li> &nbsp;
             <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="MedicalCondition" asp-action="Index">Medical Info</a>
+                <a class="nav-link" asp-area="Admin" asp-controller="MedicalCondition" asp-action="Index">Medical Info</a>
             </li>&nbsp;&nbsp;
               <li class="nav-item">
-                  <a class="nav-link" asp-area="" asp-controller="Immunization" asp-action="Index">Immunizations</a>
+                  <a class="nav-link" asp-area="Doctor" asp-controller="Immunization" asp-action="Index">Immunizations</a>
               </li>&nbsp;&nbsp;
               <li class="nav-item">
-                  <a class="nav-link" asp-area="" asp-controller="Medication" asp-action="Index">Medications</a>
+                  <a class="nav-link" asp-area="Admin" asp-controller="Medication" asp-action="Index">Medications</a>
               </li>&nbsp;&nbsp;
-              <li class="nav-item">
-                  <a class="nav-link" asp-area="" asp-controller="Scheduler" asp-action="Index">Scheduler</a>
-              </li>&nbsp;&nbsp;
+              &nbsp;&nbsp;
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    WebTools
+                </a>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" asp-area="Doctor" asp-controller="Scheduler" asp-action="Index">Scheduler</a>
                 <a class="dropdown-item" href="#">Another action</a>
                 <a class="dropdown-item" href="#">Something else here</a>
                 <div class="dropdown-divider"></div>
