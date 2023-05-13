@@ -15,8 +15,8 @@
         <div asp-validation-summary="All"></div>
         <div class="form-floating py-4">
             <label class="col-form-label" asp-for="Category"></label>
-            <select class="form-select" asp-items="@Html.GetEnumSelectList<ConditionCategory>()">
-                <option selected="selected" id="select" value="">Please select one of the above</option>
+            <select class="form-select" asp-items="@Html.GetEnumSelectList<ConditionCategory>()" asp-for="Category">
+                <option id="select" value="">Please select one of the above</option>
             </select>
         </div>
         <div class="form-floating">
