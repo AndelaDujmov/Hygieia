@@ -5,8 +5,8 @@ namespace HygieiaApp.DataAccess.Repositories.Impl;
 
 public class ResultsRepository : Repository<TestResult>, IResultsRepository
 {
-    private readonly AppDbContext _appDb;
     
+    private readonly AppDbContext _appDb;
     public ResultsRepository(AppDbContext appDb) : base(appDb)
     {
         _appDb = appDb;

@@ -6,6 +6,7 @@ namespace HygieiaApp.DataAccess.Repositories.Impl;
 
 public class Repository<T> : IRepository<T> where T : class
 {
+    
     private readonly AppDbContext _appDb;
     internal DbSet<T> dbSet;
     public Repository(AppDbContext appDb)
@@ -37,7 +38,8 @@ public class Repository<T> : IRepository<T> where T : class
     {
         dbSet.Remove(entity);
     }
-
+    
+    
     public void DeleteRange(IEnumerable<T> entities)
     {
         dbSet.RemoveRange(entities);

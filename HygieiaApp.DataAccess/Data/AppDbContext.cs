@@ -1,3 +1,4 @@
+using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +13,30 @@ public class AppDbContext : DbContext
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySQL("server=localhost;database=hygieia2;uid=root;pwd=andu404595;");
+        optionsBuilder.UseMySQL("server=localhost;database=hygieia;uid=root;pwd=andu404595;");
     }
-    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Role>().HasData(
+            new Role()
+            {
+                Id = Guid.NewGuid(),
+                Name = RoleName.Administrator
+            },
+            new Role()
+            {
+                Id = Guid.NewGuid(),
+                Name = RoleName.Doctor
+            },
+            new Role()
+            {
+                Id = Guid.NewGuid(),
+                Name = RoleName.Patient
+            });
+
+    }
+
     public DbSet<Role> Roles { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Immunization> Immunizations{ get; set; }
@@ -24,6 +46,8 @@ public class AppDbContext : DbContext
     public DbSet<PatientDoctor> PatientDoctors { get; set; }
     public DbSet<Scheduler> Schedulers{ get; set; }
     public DbSet<PatientMedicalCondition> PatientMedicalConditions { get; set; }
-    public DbSet<MedicalConditionMedication> MedicalConditionMedications { get; set; }
+    public DbSet<ImmunizationPatient> ImmunizationPatients { get; set; }
+    public DbSet<TestResultsPatient> TestResultsPatients { get; set; }
+        public DbSet<MedicalConditionMedication> MedicalConditionMedications { get; set; }
     public DbSet<MedicalConditionMedicated> MedicalConditionMedicateds { get; set; }
 }

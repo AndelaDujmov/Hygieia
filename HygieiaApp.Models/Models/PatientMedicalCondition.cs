@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using HygieiaApp.Models.Enums;
 
 
@@ -8,10 +9,11 @@ public class PatientMedicalCondition
 {
     [Key]
     public Guid Id { get; set; }
-    public int PatientId { get; set; }
+    [ForeignKey("User")]
+    public Guid PatientId { get; set; }
     public User Patient { get; set; }
-    public int MedicalConditionId { get; set; }
     public List<MedicalCondition> MedicalCondition { get; set; }
     public DateTime DateOfDiagnosis { get; set; }
     public Stage Stage { get; set; }
+    public bool Deleted { get; set; } = false;
 }

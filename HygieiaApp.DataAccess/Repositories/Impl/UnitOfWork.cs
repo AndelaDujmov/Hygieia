@@ -13,8 +13,10 @@ public class UnitOfWork : IUnitOfWork
     public IResultsRepository ResultsRepository { get; private set;}
     public IUserRepository UserRepository { get; private set;}
     public IVaccineRepository VaccineRepository { get; private set;}
+    public IVaccinePatientRepository VaccinePatientRepository { get; private set; }
+    public ITestResultPatientRepository TestResultPatientRepository { get; private set; }
+    
     private readonly AppDbContext _appDb;
-
 
     public UnitOfWork(AppDbContext appDb)
     {
@@ -28,6 +30,8 @@ public class UnitOfWork : IUnitOfWork
         ResultsRepository = new ResultsRepository(_appDb);
         UserRepository = new UserRepository(_appDb);
         VaccineRepository = new VaccineRepository(_appDb);
+        VaccinePatientRepository = new VaccinePatientRepository(_appDb);
+        TestResultPatientRepository = new TestResultPatientRepository(_appDb);
     }
 
     public void Save()

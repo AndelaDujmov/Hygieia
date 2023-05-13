@@ -3,6 +3,7 @@ using System;
 using HygieiaApp.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HygieiaApp.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230513151730_ImmunizationPatients")]
+    partial class ImmunizationPatients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -271,17 +274,17 @@ namespace HygieiaApp.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ac1d57bd-e436-4961-942b-9a71063ec3fa"),
+                            Id = new Guid("af4cdeef-7f02-457f-be50-9bbe23efec16"),
                             Name = 2
                         },
                         new
                         {
-                            Id = new Guid("bf36a75f-51ab-4a6d-ba34-b757abba6a3a"),
+                            Id = new Guid("e178f2ae-23b5-4089-9f38-1c9f5805786b"),
                             Name = 1
                         },
                         new
                         {
-                            Id = new Guid("99ebc5c3-0fce-4f6d-93f6-94e372118aeb"),
+                            Id = new Guid("665e42d1-c34b-4809-93d1-bdd1df1006c1"),
                             Name = 0
                         });
                 });
@@ -330,32 +333,6 @@ namespace HygieiaApp.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TestResults");
-                });
-
-            modelBuilder.Entity("HygieiaApp.Models.Models.TestResultsPatient", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("DateOfTesting")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Results")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("TestResultsPatients");
                 });
 
             modelBuilder.Entity("HygieiaApp.Models.Models.User", b =>
@@ -522,17 +499,6 @@ namespace HygieiaApp.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("HygieiaApp.Models.Models.TestResultsPatient", b =>
-                {
-                    b.HasOne("HygieiaApp.Models.Models.User", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Patient");
                 });

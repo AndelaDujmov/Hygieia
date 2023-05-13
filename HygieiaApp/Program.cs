@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySQL("server=localhost;database=hygieia2;uid=root;pwd=andu404595;"));
+    options.UseMySQL("server=localhost;database=hygieia;uid=root;pwd=andu404595;"));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();

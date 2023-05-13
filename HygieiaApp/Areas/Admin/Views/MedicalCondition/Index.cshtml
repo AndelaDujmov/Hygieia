@@ -22,8 +22,8 @@
         <br/>
         <br/>
         <br/>
-        <table class="table-primary table table-bordered table-striped border-2 border-dark ">
-            <thead class="thead-dark">
+        <table class="table table table-bordered border-1.4 border-blue">
+            <thead class="thead-dark text-secondary" style="background-color: lightblue; text-overline-color: white; color: white">
             <tr class="text-primary">
                 <th>
                     Category
@@ -57,10 +57,10 @@
                     <td>@mc.Treatment.ToUpperInvariant()</td>
                     <td>
                           <div class="w-75 btn-group" role="group">
-                              <a asp-controller="MedicalCondition" asp-action="Edit"  class="btn btn-primary mx-2">
+                              <a asp-controller="MedicalCondition" asp-action="Edit" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
                                   <i class="bi bi-pencil-square"></i> Edit
                               </a> &nbsp;
-                              <a asp-controller="MedicalCondition" asp-action="Delete"  class="btn btn-primary mx-2">
+                              <a asp-controller="MedicalCondition" asp-action="Delete" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
                                   <i class="bi bi-trash"></i> Delete
                               </a>
                           </div>

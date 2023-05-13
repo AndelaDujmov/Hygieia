@@ -3,27 +3,22 @@ using HygieiaApp.Models.Models;
 
 namespace HygieiaApp.DataAccess.Repositories.Impl;
 
-public class MedicalConditionRepository : Repository<MedicalCondition>, IMedicalConditionRepository
+public class TestResultPatientRepository : Repository<TestResultsPatient>, ITestResultPatientRepository
 {
     
     private readonly AppDbContext _appDb;
-    public MedicalConditionRepository(AppDbContext appDb) : base(appDb)
+    public TestResultPatientRepository(AppDbContext appDb) : base(appDb)
     {
         _appDb = appDb;
     }
-
-    public void Update(MedicalCondition medicalCondition)
-    {
-        _appDb.MedicalConditions.Update(medicalCondition);
-    }
     
-    public IEnumerable<MedicalCondition> GetANonDeleted()
+    public IEnumerable<TestResultsPatient> GetANonDeleted()
     {
         return base.GetAll()
             .Where(x => x.Deleted == false);
     }
 
-    public IEnumerable<MedicalCondition> GetAllDeleted()
+    public IEnumerable<TestResultsPatient> GetAllDeleted()
     {
         return base.GetAll()
             .Where(x => x.Deleted == true);
@@ -31,7 +26,7 @@ public class MedicalConditionRepository : Repository<MedicalCondition>, IMedical
 
     public void SoftDelete(Guid id)
     {
-        var element = _appDb.MedicalConditions.Where(x =>
+        var element = _appDb.TestResultsPatients.Where(x =>
             x.Deleted.Equals(false) && x.Id.Equals(id));
 
         _appDb.Update(element);
@@ -40,11 +35,10 @@ public class MedicalConditionRepository : Repository<MedicalCondition>, IMedical
 
     public void RetrieveDeleted(Guid id)
     {
-        var element = _appDb.MedicalConditions.Where(x =>
+        var element = _appDb.TestResultsPatients.Where(x =>
             x.Deleted.Equals(false) && x.Id.Equals(id));
 
         _appDb.Update(element);
         _appDb.SaveChanges();
     }
-    
 }

@@ -1,5 +1,6 @@
 using HygieiaApp.DataAccess.Data;
 using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.Models.Models;
 using HygieiaApp.Utility.Utils;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,12 +9,14 @@ namespace HygieiaApp.Areas.Doctor;
 [Area(("Doctor"))]
 public class ImmunizationController : Controller
 {
-    private readonly IUnitOfWork _vaccineRepository;
+    private readonly IUnitOfWork _unitOfWork;
     public List<ImmunizationDto> _immunizationDtos = new List<ImmunizationDto>();
+    public List<string> TypeImmunization { get; set; } = new List<string>();
+    public List<string> UsedForImmunization { get; set; } = new List<string>();
 
     public ImmunizationController(IUnitOfWork vaccineRepository)
     {
-        _vaccineRepository = vaccineRepository;
+        _unitOfWork = vaccineRepository;
     }
     
     public IActionResult Index()

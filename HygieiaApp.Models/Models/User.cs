@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using HygieiaApp.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +29,8 @@ public class User
     public string Email { get; set; }
     public string? PhoneNumber { get; set; }
     public Gender Gender { get; set; }
-    public int RoleId { get; set; }
+    [ForeignKey("Role")]
+    public Guid RoleID { get; set; }
     public Role Role { get; set; }
     public bool Deleted { get; set; } = false;
 }
