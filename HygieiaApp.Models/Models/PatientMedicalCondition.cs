@@ -9,8 +9,8 @@ public class PatientMedicalCondition
 {
     [Key]
     public Guid Id { get; set; }
-    [ForeignKey("User")]
     public Guid PatientId { get; set; }
+    [ForeignKey("PatientId")]
     public User Patient { get; set; }
     public List<MedicalCondition> MedicalCondition { get; set; }
     public DateTime DateOfDiagnosis { get; set; }

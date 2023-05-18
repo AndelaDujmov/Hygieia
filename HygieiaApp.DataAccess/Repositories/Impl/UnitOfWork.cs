@@ -16,6 +16,8 @@ public class UnitOfWork : IUnitOfWork
     public IVaccinePatientRepository VaccinePatientRepository { get; private set; }
     public ITestResultPatientRepository TestResultPatientRepository { get; private set; }
     
+    public IMedicineForConditionRepository MedicineForConditionRepository { get; private set; }
+    
     private readonly AppDbContext _appDb;
 
     public UnitOfWork(AppDbContext appDb)

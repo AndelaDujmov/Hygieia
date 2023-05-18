@@ -15,5 +15,6 @@ public class VaccineRepository : Repository<Immunization>, IVaccineRepository
     public void Update(Immunization immunization)
     {
         _appDb.Immunizations.Update(immunization);
+        _appDb.SaveChanges();
     }
 }

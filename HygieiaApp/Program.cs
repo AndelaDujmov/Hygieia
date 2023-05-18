@@ -1,3 +1,4 @@
+using HygieiaApp;
 using HygieiaApp.DataAccess.Data;
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.DataAccess.Repositories.Impl;
@@ -11,6 +12,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL("server=localhost;database=hygieia;uid=root;pwd=andu404595;"));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IMedicineForConditionRepository, MedicineForConditionRepository>();
+builder.Services.AddTransient<AdminService>();
+builder.Services.AddTransient<PatientService>();
+builder.Services.AddTransient<DoctorService>();
 
 var app = builder.Build();
 

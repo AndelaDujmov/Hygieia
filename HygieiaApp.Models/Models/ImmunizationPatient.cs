@@ -7,12 +7,13 @@ public class ImmunizationPatient
 {
     [Key]
     public Guid Id { get; set; }
+
     public DateTime DateOfVaccination { get; set; }
-    [ForeignKey("Immunization")]
     public Guid ImmunizationId { get; set; }
+    [ForeignKey("ImmunizationId")]
     public Immunization Immunization { get; set; }
-    [ForeignKey("User")]
     public Guid UserId { get; set; }
+    [ForeignKey("UserId")]
     public User User { get; set; }
     public bool Deleted { get; set; } = false;
 }

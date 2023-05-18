@@ -41,4 +41,10 @@ public class MedicineForConditionRepository : Repository<MedicalConditionMedicat
         _appDb.Update(element);
         _appDb.SaveChanges();
     }
+
+    public void Update(MedicalConditionMedication medicalCondition)
+    {
+        _appDb.MedicalConditionMedications.Update(medicalCondition);
+        _appDb.SaveChanges();
+    }
 }

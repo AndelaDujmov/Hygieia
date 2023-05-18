@@ -1,0 +1,21 @@
+@model HygieiaApp.Models.Models.Immunization
+
+<form method="post">
+     <input asp-for="Id" hidden/>
+    <div class="border p-3  mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Delete Immunization</h2>
+            <hr/>
+        </div>
+
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="Type"></label><br/>
+            <input type="text" asp-for="Type" disabled class="form-control"/><br/>
+            <label class="col-form-label" asp-for="UsedFor"></label><br/>
+            <input type="text" asp-for="UsedFor" disabled class="form-control"/><br/>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100px">Delete</button>
+        <a asp-controller="Medication" asp-action="Index">Back to listing</a>
+    </div>
+</form>

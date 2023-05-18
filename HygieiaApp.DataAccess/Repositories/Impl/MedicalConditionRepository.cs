@@ -15,6 +15,7 @@ public class MedicalConditionRepository : Repository<MedicalCondition>, IMedical
     public void Update(MedicalCondition medicalCondition)
     {
         _appDb.MedicalConditions.Update(medicalCondition);
+        _appDb.SaveChanges();
     }
     
     public IEnumerable<MedicalCondition> GetANonDeleted()

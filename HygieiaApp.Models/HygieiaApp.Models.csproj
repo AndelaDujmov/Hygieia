@@ -7,6 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Mvc.Core">
+        <HintPath>..\..\..\..\..\usr\share\dotnet\shared\Microsoft.AspNetCore.App\6.0.16\Microsoft.AspNetCore.Mvc.Core.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.AspNetCore.Mvc.ViewFeatures">
+        <HintPath>..\..\..\..\..\usr\share\dotnet\shared\Microsoft.AspNetCore.App\6.0.16\Microsoft.AspNetCore.Mvc.ViewFeatures.dll</HintPath>
+      </Reference>
       <Reference Include="Microsoft.EntityFrameworkCore.Abstractions">
         <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore.abstractions\7.0.5\lib\net6.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
       </Reference>

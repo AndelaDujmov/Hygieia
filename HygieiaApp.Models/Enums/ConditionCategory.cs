@@ -2,7 +2,7 @@
 
 public enum ConditionCategory
 {
-    disease,
     disorder,
+    disease,
     pregnancy
 }

@@ -5,13 +5,12 @@ namespace HygieiaApp.Models.Models;
 
 public class MedicalConditionMedicated 
 {
-    [Key]
-    public Guid Id { get; set; }
-    [ForeignKey("PatientMedicalCondition")]
+    [Key] public Guid Id { get; set; }
     public Guid MedicalConditionPatientId { get; set; }
+    [ForeignKey("MedicalConditionPatientId")]
     public PatientMedicalCondition MedicalConditionPatient { get; set; }
-    [ForeignKey("MedicalConditionMedication")]
     public Guid MedicalConditionMedicationId { get; set; }
+    [ForeignKey("MedicalConditionMedicationId")]
     public MedicalConditionMedication MedicalConditionMedication { get; set; }
     [Range(0d, 1000d, ErrorMessage = "Dosage must be between 0 and 1000 mg")]
     public decimal Dosage { get; set; }

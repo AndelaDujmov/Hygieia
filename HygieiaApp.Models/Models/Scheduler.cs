@@ -9,11 +9,11 @@ public class Scheduler
     public Guid Id { get; set; }
     public string Reminder { get; set; }
     public DateTime DateOfAppointment { get; set; }
-    [ForeignKey("User")]
     public Guid DoctorId { get; set; }
+    [ForeignKey("DoctorId")]
     public User Doctor { get; set; }
-    [ForeignKey("User")]
     public Guid PatientId { get; set; }
+    [ForeignKey("PatientId")]
     public User Patient { get; set; }
     public bool Deleted { get; set; } = false;
 }

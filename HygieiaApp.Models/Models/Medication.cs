@@ -12,4 +12,5 @@ public class Medication
     public string Type { get; set; }
     public string SideEffects { get; set; }
     public bool Deleted { get; set; } = false;
+    
 }

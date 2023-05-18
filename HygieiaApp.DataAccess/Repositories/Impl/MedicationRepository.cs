@@ -15,6 +15,7 @@ public class MedicationRepository : Repository<Medication>, IMedicationRepositor
     public void Update(Medication medication)
     {
         _appDb.Medications.Update(medication);
+        _appDb.SaveChanges();
     }
 
     public IEnumerable<Medication> GetANonDeleted()

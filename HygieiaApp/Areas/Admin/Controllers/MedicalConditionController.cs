@@ -1,7 +1,9 @@
 using HygieiaApp.DataAccess.Data;
 using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Exception = System.Exception;
 
 namespace HygieiaApp.Areas.Admin;
@@ -9,48 +11,39 @@ namespace HygieiaApp.Areas.Admin;
 [Area(("Admin"))]
 public class MedicalConditionController : Controller
 {
-    private readonly IUnitOfWork _medicalConditionRepository;
+    private readonly AdminService _service;
 
-
-    public MedicalConditionController(IUnitOfWork medicalConditionRepository)
+    public MedicalConditionController(AdminService adminServiceImpl)
     {
-        _medicalConditionRepository = medicalConditionRepository;
+        _service = adminServiceImpl;
     }
     
     public IActionResult Index()
     {
-        IEnumerable<MedicalCondition> medicalConditions = _medicalConditionRepository.MedicalConditionRepository.GetAll();
+        IEnumerable<MedicalCondition> medicalConditions = _service.ReturnAllMedicalConditions();
         
         return View(medicalConditions);
     }
     
     public IActionResult Create()
     {
-        return View();
+        var conditionDto = new MedicationConditionDto();
+        conditionDto.SelectListItems = _service.MedicationNameSelectList();
+        conditionDto.MedicalCondition = new MedicalCondition();
+        conditionDto.MedicalConditionMedication = new MedicalConditionMedication();
+        return View(conditionDto);
     }
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(MedicalCondition condition)
+    public IActionResult Create(MedicationConditionDto condition)
     {
 
-        if (condition.NameOfDiagnosis == condition.Type)
-        {
-            ModelState.AddModelError("", "Name of diagnosis and type are not the same.");
-            return View(condition);
-        }
-
-
-        if (condition.NameOfDiagnosis.ToLower() == "test")
-            ModelState.AddModelError("", "Test value not allowed.");
-
-        
         if (ModelState.IsValid)
         {
+            _service.CreateCondition(condition.MedicalCondition);
             try
             {
-                _medicalConditionRepository.MedicalConditionRepository.Add(condition);
-                _medicalConditionRepository.Save();
                 TempData["success"] = "Medical condition created succesfully.";
                 return RedirectToAction("Index");
             }
@@ -61,7 +54,9 @@ public class MedicalConditionController : Controller
             }
         }
 
-        return View(condition);
+        TempData["error"] = "Unable to create medical condition due to invalid model.";
+     
+        return View();
     }
     
     public IActionResult Edit(Guid? id)
@@ -72,7 +67,7 @@ public class MedicalConditionController : Controller
             return NotFound();
         }
 
-        var medicalcond = _medicalConditionRepository.MedicalConditionRepository.Get(x=> x.Id == id);
+        var medicalcond = _service.GetConditionById(id);
 
         if (medicalcond is null)
         {
@@ -94,8 +89,7 @@ public class MedicalConditionController : Controller
         {
             try
             {
-                _medicalConditionRepository.MedicalConditionRepository.Update(condition);
-                _medicalConditionRepository.Save();
+                _service.UpdateCondition(condition);
                 TempData["success"] = "Medical condition edited succesfully.";
                 return RedirectToAction("Index");
             }
@@ -114,19 +108,17 @@ public class MedicalConditionController : Controller
         if (id is null)
             return NotFound();
 
-        var medicalcond = _medicalConditionRepository.MedicalConditionRepository.Get(x=> x.Id == id);
-
+        var medicalcond = _service.GetConditionById(id);
         if (medicalcond is null)
             return NotFound();
         
         return View(medicalcond);
     }
     
-    
     [HttpPost, ActionName("Delete")]
     public IActionResult DeletePost(Guid? id)
     {
-        var category = _medicalConditionRepository.MedicalConditionRepository.Get(x => x.Id == id);
+        var category = _service.GetConditionById(id);
 
         if (category == null)
         {
@@ -134,9 +126,9 @@ public class MedicalConditionController : Controller
             return NotFound();
         }
 
-        _medicalConditionRepository.MedicalConditionRepository.Delete(category);
-        _medicalConditionRepository.Save();
+        _service.DeleteCondition(category);
         TempData["success"] = "Medical condition deleted succesfully.";
         return RedirectToAction("Index");
     }
+   
 }

@@ -1,5 +1,5 @@
 @using HygieiaApp.Models.Enums;
-@model HygieiaApp.Models.Models.MedicalCondition
+@model HygieiaApp.Models.DTO.MedicationConditionDto;
 
 @{
     ViewData["Title"] = "Create Medical Condition";
@@ -14,30 +14,30 @@
         </div>
         <div asp-validation-summary="All"></div>
         <div class="form-floating py-4">
-            <label class="col-form-label" asp-for="Category"></label>
-            <select class="form-select" asp-items="@Html.GetEnumSelectList<ConditionCategory>()" asp-for="Category">
-                <option id="select" value="">Please select one of the above</option>
+            <label class="col-form-label" asp-for="MedicalCondition.Category"></label>
+            <select class="form-select" asp-items="@Html.GetEnumSelectList<ConditionCategory>()" asp-for="MedicalCondition.Category">
+                <option id="select" disabled selected value="">Please select one of the above</option>
             </select>
         </div>
         <div class="form-floating">
-            <label class="col-form-label" asp-for="Type"></label><br/>
-            <input type="text" asp-for="Type" class="form-control"/><br/>
-            <span asp-validation-for="Type" class="text-danger"></span><br/>
+            <label class="col-form-label" asp-for="MedicalCondition.Type"></label><br/>
+            <input type="text" asp-for="MedicalCondition.Type" class="form-control"/><br/>
+            <span asp-validation-for="MedicalCondition.Type" class="text-danger"></span><br/>
         </div>
         <div class="form-floating">
-            <label class="col-form-label" asp-for="NameOfDiagnosis"></label><br/>
-            <input type="text" asp-for="NameOfDiagnosis" class="form-control"/><br/>
-            <span asp-validation-for="NameOfDiagnosis" class="text-danger"></span><br/>
+            <label class="col-form-label" asp-for="MedicalCondition.NameOfDiagnosis"></label><br/>
+            <input type="text" asp-for="MedicalCondition.NameOfDiagnosis" class="form-control"/><br/>
+            <span asp-validation-for="MedicalCondition.NameOfDiagnosis" class="text-danger"></span><br/>
         </div>
         <div class="form-floating">
-            <label class="col-form-label" asp-for="Symptoms"></label><br/>
-            <input type="text" asp-for="Symptoms" class="form-control"/><br/>
-            <span asp-validation-for="Symptoms" class="text-danger"></span><br/>
+            <label class="col-form-label" asp-for="MedicalCondition.Symptoms"></label><br/>
+            <input type="text" asp-for="MedicalCondition.Symptoms" class="form-control"/><br/>
+            <span asp-validation-for="MedicalCondition.Symptoms" class="text-danger"></span><br/>
         </div>
         <div class="form-floating">
-            <label class="col-form-label" asp-for="Treatment"></label><br/>
-            <input type="text" asp-for="Treatment" class="form-control"/>
-            <span asp-validation-for="Symptoms" class="text-danger"></span><br/>
+            <label class="col-form-label" asp-for="MedicalCondition.Treatment"></label><br/>
+            <input type="text" asp-for="MedicalCondition.Treatment" class="form-control"/>
+            <span asp-validation-for="MedicalCondition.Symptoms" class="text-danger"></span><br/>
         </div>
     </div>
             
@@ -52,4 +52,3 @@
         <partial name="_ValidationScriptsPartial"/>
     }
 }
-

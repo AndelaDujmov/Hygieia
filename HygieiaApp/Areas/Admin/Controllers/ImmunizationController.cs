@@ -9,17 +9,16 @@ namespace HygieiaApp.Areas.Admin;
 [Area(("Admin"))]
 public class ImmunizationController : Controller
 {
-    private readonly IUnitOfWork _unitOfWork;
-    public List<string> ImmunizationType { get; set; } = new List<string>();
-    
-    public ImmunizationController(IUnitOfWork unitOfWork)
+    private readonly AdminService _service;
+
+    public ImmunizationController(AdminService service)
     {
-        _unitOfWork = unitOfWork;
+        _service = service;
     }
 
     public IActionResult Index()
     {
-        var immunizations = _unitOfWork.VaccineRepository.GetAll();
+        var immunizations = _service.ReturnAllVaccinations();
         return View(immunizations);
     }
     
@@ -36,9 +35,7 @@ public class ImmunizationController : Controller
         {
             try
             {
-                _unitOfWork.VaccineRepository.Add(immunization);
-                ImmunizationType.Add(immunization.Type);
-                _unitOfWork.Save();
+                _service.CreateVaccination(immunization);
                 TempData["success"] = "Successfully added!";
                 return RedirectToAction("");
             }
@@ -60,14 +57,13 @@ public class ImmunizationController : Controller
             return NotFound();
         }
 
-        var medicalcond = _unitOfWork.VaccineRepository.Get(x=> x.Id == id);
+        var medicalcond = _service.GetVaccineById(id);
 
         if (medicalcond is null)
         {
             TempData["error"] = "Unable to update empty data.";
             return NotFound();
         }
-            
         
         return View(medicalcond);
     }
@@ -82,8 +78,7 @@ public class ImmunizationController : Controller
         {
             try
             {
-                _unitOfWork.VaccineRepository.Update(immunization);
-                _unitOfWork.Save();
+                _service.UpdateVaccination(immunization);
                 TempData["success"] = "Immunization edited succesfully.";
                 return RedirectToAction("Index");
             }
@@ -95,5 +90,35 @@ public class ImmunizationController : Controller
         }
 
         return View(immunization);
+    }
+    
+    public IActionResult Delete(Guid? id)
+    {
+        if (id is null)
+            return NotFound();
+
+        var immunization = _service.GetVaccineById(id);
+        
+        
+        if (immunization is null)
+            return NotFound();
+
+        return View(immunization);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    public IActionResult DeletePost(Guid? id)
+    {
+        var immunization = _service.GetVaccineById(id);
+
+        if (immunization.Equals(null))
+        {
+            TempData["error"] = "Unable to get medication with invalid parameter.";
+            return NotFound();
+        }
+
+        _service.DeleteVaccination(immunization);
+        TempData["success"] = "Medication deleted succesfully.";
+        return RedirectToAction("Index");
     }
 }
