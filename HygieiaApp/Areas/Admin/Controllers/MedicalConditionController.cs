@@ -41,9 +41,11 @@ public class MedicalConditionController : Controller
 
         if (ModelState.IsValid)
         {
-            _service.CreateCondition(condition.MedicalCondition);
+            
             try
             {
+                _service.CreateCondition(condition.MedicalCondition);
+                _service.LinkConditionToMed(condition.MedicalCondition.Id, condition.MedicalConditionMedication);
                 TempData["success"] = "Medical condition created succesfully.";
                 return RedirectToAction("Index");
             }
@@ -74,22 +76,29 @@ public class MedicalConditionController : Controller
             TempData["error"] = "Unable to update empty data.";
             return NotFound();
         }
-            
+
+        var medicineForCondition = _service.GetLinkByIdConditionId(medicalcond.Id);
+        var conditionDto = new MedicationConditionDto();
+        conditionDto.MedicalCondition = medicalcond;
+        conditionDto.MedicalConditionMedication = medicineForCondition;
+        conditionDto.SelectListItems = _service.MedicationNameSelectList();
         
-        return View(medicalcond);
+        return View(conditionDto);
     }
     
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(MedicalCondition condition)
+    public IActionResult Edit(MedicationConditionDto condition)
     {
 
         if (ModelState.IsValid)
         {
             try
             {
-                _service.UpdateCondition(condition);
+                _service.UpdateCondition(condition.MedicalCondition);
+                _service.LinkConditionToMed(condition.MedicalCondition.Id, condition.MedicalConditionMedication);
+
                 TempData["success"] = "Medical condition edited succesfully.";
                 return RedirectToAction("Index");
             }

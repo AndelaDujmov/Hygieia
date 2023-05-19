@@ -36,9 +36,21 @@
         </div>
         <div class="form-floating">
             <label class="col-form-label" asp-for="MedicalCondition.Treatment"></label><br/>
-            <input type="text" asp-for="MedicalCondition.Treatment" class="form-control"/>
+            <input type="text" asp-for="MedicalCondition.Treatment" class="form-control" />
             <span asp-validation-for="MedicalCondition.Symptoms" class="text-danger"></span><br/>
         </div>
+        <div class="form-floating py-4">
+            <label class="col-form-label" asp-for="MedicalConditionMedication.MedicationId">Medication</label>
+            <select class="form-select" asp-items="@Model.SelectListItems" asp-for="MedicalConditionMedication.MedicationId">
+                <option id="select" disabled selected value="">Select medications</option>
+            </select>
+        </div>
+         <div class="form-floating py-2">
+             <label class="col-form-label" asp-for="MedicalConditionMedication.MaximumDosage">Maximum Dosage</label><br/>
+             <input type="text" asp-for="MedicalConditionMedication.MaximumDosage" style="width: 150px; height: 45px;"> &nbsp;mg/d</input>
+            <span asp-validation-for="MedicalConditionMedication.MaximumDosage" class="text-danger"></span><br/>
+        </div>
+         
     </div>
             
     <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>

@@ -6,11 +6,12 @@ namespace HygieiaApp;
 public class AdminService 
 {
     private readonly IUnitOfWork _medicalConditionRepository;
+    private readonly IMedicineForConditionRepository _medicineForCondition;
 
-
-    public AdminService(IUnitOfWork medicalConditionRepository)
+    public AdminService(IUnitOfWork medicalConditionRepository, IMedicineForConditionRepository medC)
     {
         _medicalConditionRepository = medicalConditionRepository;
+        _medicineForCondition = medC;
     }
 
     public IEnumerable<MedicalCondition> ReturnAllMedicalConditions()
@@ -65,6 +66,15 @@ public class AdminService
         return _medicalConditionRepository.ResultsRepository.Get(x=> x.Id == id);
     }
 
+    public MedicalConditionMedication GetLinkByIdConditionId(Guid id)
+    {
+        MedicalConditionMedication? conditionLink = _medicalConditionRepository.MedicineForConditionRepository
+                                          .GetAll()
+                                          .Where(x => 
+                                              x.MedicalConditionId.Equals(id)).FirstOrDefault();
+
+        return conditionLink ?? new MedicalConditionMedication();
+    }
     
     public void CreateCondition(MedicalCondition condition)
     {
@@ -152,6 +162,13 @@ public class AdminService
     public void DeleteTest(TestResult testResult)
     {
         _medicalConditionRepository.ResultsRepository.Delete(testResult);
+        _medicalConditionRepository.Save();
+    }
+
+    public void LinkConditionToMed(Guid id, MedicalConditionMedication conditionMedication)
+    {
+        conditionMedication.MedicalConditionId = id;
+        _medicalConditionRepository.MedicineForConditionRepository.Add(conditionMedication);
         _medicalConditionRepository.Save();
     }
 }

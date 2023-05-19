@@ -41,4 +41,4 @@ public class DoctorController : Controller
     {
         return View();
     }
-}
+}  
