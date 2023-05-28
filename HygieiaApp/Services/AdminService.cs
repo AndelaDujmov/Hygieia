@@ -30,6 +30,17 @@ public class AdminService
         });
     }
 
+    public IEnumerable<SelectListItem> TestNamesSelectList()
+    {
+        var testNames = ReturnAllTests();
+
+        return testNames.Select(x => new SelectListItem
+        {
+            Value = x.Id.ToString(),
+            Text = x.Type
+        });
+    }
+
     public IEnumerable<Medication> ReturnAllMedications()
     {
         return  _medicalConditionRepository.MedicationRepository

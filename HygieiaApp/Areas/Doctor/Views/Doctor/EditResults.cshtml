@@ -1,0 +1,49 @@
+@model HygieiaApp.Models.DTO.TestUserDto
+
+div class="card-body p-3">
+    <form method="post">
+        <input asp-for="ResultsPatient.Id" hidden/>
+        <div class="border p-3  mt-4">
+            <div class="row pb-2">
+                <h2 class="text-primary">Edit Medical Condition</h2>
+                <hr/>
+            </div>
+            <div asp-validation-summary="All"></div>
+            <div class="mb-3">
+                <label class="col-form-label" asp-for="MedicalCondition.Category"></label>
+                <select class="form-select" asp-for="MedicalCondition.Category" asp-items="@Html.GetEnumSelectList<ConditionCategory>()">
+                    <option selected="selected" id="select" value="@Model.MedicalCondition.Category">Please select one of the above</option>
+                </select>
+                <label class="col-form-label" asp-for="MedicalCondition.Type"></label><br/>
+                <input type="text" asp-for="MedicalCondition.Type" class="form-control"/><br/>
+                <span asp-validation-for="MedicalCondition.Type" class="text-danger"></span><br/>
+                <label class="col-form-label" asp-for="MedicalCondition.NameOfDiagnosis"></label><br/>
+                <input type="text" asp-for="MedicalCondition.NameOfDiagnosis" class="form-control"/><br/>
+                <span asp-validation-for="MedicalCondition.NameOfDiagnosis" class="text-danger"></span><br/>
+                <label class="col-form-label" asp-for="MedicalCondition.Symptoms"></label><br/>
+                <input type="text" asp-for="MedicalCondition.Symptoms" class="form-control"/><br/>
+                <span asp-validation-for="MedicalCondition.Symptoms" class="text-danger"></span><br/>
+                <label class="col-form-label" asp-for="MedicalCondition.Treatment"></label><br/>
+                <input type="text" asp-for="MedicalCondition.Treatment" class="form-control"/>
+                <span asp-validation-for="MedicalCondition.Symptoms" class="text-danger"></span><br/>
+                <label class="col-form-label" asp-for="MedicalConditionMedication.MedicationId">Medications</label>
+                <select class="form-select" asp-for="MedicalConditionMedication.MedicationId" asp-items="@Model.SelectListItems">
+                    <option selected="selected" id="select" value="@Model.MedicalConditionMedication.MedicationId">Please select one of the above</option>
+                </select>
+                <label class="col-form-label" asp-for="MedicalConditionMedication.MaximumDosage">Maximum Dosage</label><br/>
+                <input type="text" asp-for="MedicalConditionMedication.MaximumDosage" style="width: 150px; height: 45px;"> &nbsp;mg/d</input>
+                <span asp-validation-for="MedicalConditionMedication.MaximumDosage" class="text-danger"></span><br/>
+            </div>
+    
+            <button type="submit" class="btn btn-primary" style="width: 100px">Update</button>
+            <a asp-controller="MedicalCondition" asp-action="Index">Back to listing</a>
+        </div>
+    </form>
+
+</div>
+@section Scripts
+{
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+}

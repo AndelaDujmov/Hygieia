@@ -1,0 +1,39 @@
+@model HygieiaApp.Models.DTO.UserDoctorDto
+
+<div class="card-body p-3">
+
+    <form method="post">
+        <input asp-for="@Model.Patient.Id" hidden/>
+        <div class="border p-3  mt-4">
+            <div class="row pb-2">
+                <h2 class="text-primary">Patient Details</h2>
+                <hr/>
+            </div>
+    
+            <div class="mb-3">
+                <label disabled class="col-form-label" asp-for="@Model.Patient.OIB"></label>
+                <input type="number" asp-for="@Model.Patient.OIB" disabled class="form-control"/><br/>
+                <label disabled class="col-form-label" asp-for="@Model.Patient.MBO"></label>
+                <input type="number" asp-for="@Model.Patient.OIB" disabled class="form-control"/><br/>
+                <label class="col-form-label" asp-for="@Model.Patient.FirstName"></label><br/>
+                <input type="text" asp-for="@Model.Patient.FirstName" disabled class="form-control"/><br/>
+                <label class="col-form-label" asp-for="@Model.Patient.LastName"></label><br/>
+                <input type="text" asp-for="@Model.Patient.LastName" disabled class="form-control"/><br/>
+                <label class="col-form-label" asp-for="@Model.Patient.Username"></label><br/>
+                <input type="text" asp-for="@Model.Patient.Username" disabled class="form-control"/><br/>
+                <label class="col-form-label" asp-for="@Model.Patient.Email"></label><br/>
+                <input type="text" asp-for="@Model.Patient.Email" disabled class="form-control"/><br/>
+                <label class="col-form-label" asp-for="@Model.Patient.PhoneNumber"></label><br/>
+                <input type="text" asp-for="@Model.Patient.PhoneNumber" disabled class="form-control"/><br/>
+                <label class="col-form-label">Doctor</label><br/>
+                <input type="text" asp-for="@(Model.Doctor.FirstName)" disabled class="form-control"/><br/>
+               
+            </div>
+
+            <a asp-controller="Doctor" asp-action="UploadResults" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2">
+                <i class="bi bi-plus-square-fill"></i>
+            </a> &nbsp;Upload result
+            <a asp-controller="MedicalCondition" asp-action="Index">Back to listing</a>
+        </div>
+    </form>
+</div>

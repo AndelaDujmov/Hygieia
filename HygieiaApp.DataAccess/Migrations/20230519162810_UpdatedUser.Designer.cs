@@ -3,6 +3,7 @@ using System;
 using HygieiaApp.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HygieiaApp.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230519162810_UpdatedUser")]
+    partial class UpdatedUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -265,17 +268,17 @@ namespace HygieiaApp.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8203f3a3-ad8f-402b-80bc-a9be6ed40695"),
+                            Id = new Guid("8f7ca601-5129-4be5-bb47-ed3358e35d13"),
                             Name = 2
                         },
                         new
                         {
-                            Id = new Guid("19d7509f-d5ab-4f56-afb1-5b1e4b4bd810"),
+                            Id = new Guid("24a3c346-58b7-4015-a27c-1d9ffaa31f55"),
                             Name = 1
                         },
                         new
                         {
-                            Id = new Guid("a08e72cd-11d6-4d4a-8037-d8d2867d13da"),
+                            Id = new Guid("a10bbb6c-332c-4354-9b4f-b81e94efa667"),
                             Name = 0
                         });
                 });
@@ -387,13 +390,13 @@ namespace HygieiaApp.DataAccess.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
-                    b.Property<long>("MBO")
+                    b.Property<int>("MBO")
                         .HasMaxLength(9)
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    b.Property<long>("OIB")
+                    b.Property<int>("OIB")
                         .HasMaxLength(11)
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
                     b.Property<string>("Password")
                         .IsRequired()

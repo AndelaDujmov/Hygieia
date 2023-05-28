@@ -41,4 +41,10 @@ public class TestResultPatientRepository : Repository<TestResultsPatient>, ITest
         _appDb.Update(element);
         _appDb.SaveChanges();
     }
+
+    public void Update(TestResultsPatient testResultsPatient)
+    {
+        _appDb.Update(testResultsPatient);
+        _appDb.SaveChanges();
+    }
 }

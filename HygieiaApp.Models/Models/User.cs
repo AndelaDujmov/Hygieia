@@ -12,6 +12,12 @@ public class User
     [Key]
     public Guid Id { get; set; }
     [Required(ErrorMessage = "First name field is required!")]
+    [StringLength(maximumLength: 11)]
+    public long OIB { get; set; }
+    [Required(ErrorMessage = "First name field is required!")]
+    [StringLength(maximumLength: 9)]
+    public long MBO { get; set; }
+    [Required(ErrorMessage = "First name field is required!")]
     [StringLength(maximumLength: 30, MinimumLength = 3)]
     public string FirstName { get; set; }
     [Required(ErrorMessage = "Last name field is required")]

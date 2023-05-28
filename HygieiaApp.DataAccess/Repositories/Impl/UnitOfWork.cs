@@ -17,7 +17,7 @@ public class UnitOfWork : IUnitOfWork
     public ITestResultPatientRepository TestResultPatientRepository { get; private set; }
     
     public IMedicineForConditionRepository MedicineForConditionRepository { get; private set; }
-    
+
     private readonly AppDbContext _appDb;
 
     public UnitOfWork(AppDbContext appDb)
@@ -34,6 +34,7 @@ public class UnitOfWork : IUnitOfWork
         VaccineRepository = new VaccineRepository(_appDb);
         VaccinePatientRepository = new VaccinePatientRepository(_appDb);
         TestResultPatientRepository = new TestResultPatientRepository(_appDb);
+        MedicineForConditionRepository = new MedicineForConditionRepository(_appDb);
     }
 
     public void Save()
