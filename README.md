@@ -1,6 +1,6 @@
 # Hygieia
 
-![My Image](/home/andela/Desktop/ZavrsniRad/HygieiaApp/HygieiaApp/wwwroot/HygieiaLogo)
+![My Image](HygieiaApp/wwwroot/HygieiaLogo/facebook_cover_photo_1.png)
 
 ## About
 Web app used for medical personal anamnesis of patient.
