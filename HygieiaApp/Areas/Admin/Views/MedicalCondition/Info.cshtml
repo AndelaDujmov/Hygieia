@@ -1,0 +1,52 @@
+@using HygieiaApp.Models.Enums
+@using HygieiaApp.Models.Models
+@model MedicationConditionDto
+
+@{
+    ViewData["Title"] = "View Medical Condition";
+}
+
+<div class="card-body p-3">
+    <form method="post">
+        <input asp-for="MedicalCondition.Id" hidden/>
+        <div class="border p-3  mt-4">
+            <div class="row pb-2">
+                <h2 class="text-primary">Medical Condition Info</h2>
+                <hr/>
+            </div>
+            <div asp-validation-summary="All"></div>
+            <div class="mb-3">
+                <label class="col-form-label" asp-for="MedicalCondition.Category"></label>
+                <select class="form-select"  disabled asp-for="MedicalCondition.Category" asp-items="@Html.GetEnumSelectList<ConditionCategory>()">
+                    <option selected="selected" id="select" value="@Model.MedicalCondition.Category"></option>
+                </select>
+                <label class="col-form-label" asp-for="MedicalCondition.Type"></label><br/>
+                <input type="text" disabled asp-for="MedicalCondition.Type" class="form-control"/><br/>
+                <label class="col-form-label" asp-for="MedicalCondition.NameOfDiagnosis"></label><br/>
+                <input disabled type="text" asp-for="MedicalCondition.NameOfDiagnosis" class="form-control"/><br/>
+                <label class="col-form-label" asp-for="MedicalCondition.Symptoms"></label><br/>
+                <input type="text" disabled asp-for="MedicalCondition.Symptoms" class="form-control"/><br/>
+                <label class="col-form-label" asp-for="MedicalCondition.Treatment"></label><br/>
+                <input disabled type="text" asp-for="MedicalCondition.Treatment" class="form-control"/>
+                <label class="col-form-label" >Medications</label><br/>
+                <select  id="selection" hidden disabled class="form-select" asp-for="MedicalConditionMedication.MedicationId" asp-items="@Model.SelectListItems">
+                    <option selected="selected" id="select">Please select one of the above</option>
+                </select>
+                
+                <div id="write" class="form-control"></div><br/>
+                <label class="col-form-label" asp-for="MedicalConditionMedication.MaximumDosage">Maximum Dosage</label><br/>
+                <input disabled type="text" asp-for="MedicalConditionMedication.MaximumDosage" style="width: 150px; height: 45px;"> &nbsp;mg/d</input>
+            </div>
+            
+            <a asp-controller="MedicalCondition" asp-action="Index">Back to listing</a>
+        </div>
+    </form>
+
+</div>
+<script>
+    let selected = document.getElementById("selection");
+    let li = document.createElement("p");
+    li.innerHTML = selected.options[selected.selectedIndex].text;
+    document.getElementById("write").appendChild(li);
+
+</script>

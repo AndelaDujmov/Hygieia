@@ -1,0 +1,43 @@
+@using HygieiaApp.Models.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using HygieiaApp.Models.Enums
+@model User
+
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<form method="post">
+    <div class="border p-3  mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Add New User</h2>
+            <hr/>
+        </div>
+        <div class="mb-3">
+           
+            <label class="col-form-label" asp-for="FirstName"></label><br/>
+            <input type="text" class="text text-primary"/><br/>
+            <label class="col-form-label" asp-for="LastName"></label><br/>
+            <input type="text" class="text text-primary"/><br/>
+            <label class="col-form-label" asp-for="DateOfBirth"></label> <br/> &nbsp;
+            <input type="datetime-local" id="meeting-time"
+                   name="meeting-time" value="2023-01-01T00:00"
+                   min="1920-01-01T00:00"><br/>
+            <label class="col-form-label" asp-for="Gender"></label> <br/>
+            <select class="form-select" asp-items="@Html.GetEnumSelectList<Gender>()">
+                <option selected="selected" id="select" value="">Please select gender.</option>
+            </select>
+            <label class="col-form-label" asp-for="Username"></label><br/>
+            <input type="text" class="text-primary"/><br/>
+            <label class="col-form-label" asp-for="Email"></label><br/>
+            <input type="email" placeholder="jane.doe@mymail.com" class="text text-primary"/><br/>
+            <label class="col-form-label"  asp-for="Password"></label><br/>
+            <input type="password"  placeholder="From 7 to 16 characters.." class="text text-primary"/><br/>
+            <label class="col-form-label" asp-for="PhoneNumber">Optional</label><br/>
+            <input type="text" placeholder="000-0000-000" class="text text-primary"/><br/>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>
+        <a asp-controller="MedicalCondition" asp-action="Index">Back to listing</a>
+    </div>
+</form>

@@ -1,5 +1,7 @@
 # Hygieia
 
+![My Image](/home/andela/Desktop/ZavrsniRad/HygieiaApp/HygieiaApp/wwwroot/HygieiaLogo)
+
 ## About
 Web app used for medical personal anamnesis of patient.
 ## Features

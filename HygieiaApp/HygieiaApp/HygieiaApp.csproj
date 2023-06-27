@@ -1,0 +1,82 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>HygieiaApp</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+      <Content Remove="Views\Medication\DeletePost.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EntityFramework" Version="6.4.4" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.4">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
+      <PackageReference Include="MySql.Data" Version="8.0.32.1" />
+      <PackageReference Include="MySql.EntityFrameworkCore" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\Admin\Views\MedicalCondition\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\MedicalCondition\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\MedicalCondition\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Medication\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Medication\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Medication\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Medication\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Doctor\Views\Scheduler\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Doctor\Views\Scheduler\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Patient\Views\Home\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Patient\Views\Home\Privacy.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Pages\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Utils\DataSource\diseaseTypes.json" />
+      <_ContentIncludedByDefault Remove="Utils\DataSource\disorderTypes.json" />
+      <_ContentIncludedByDefault Remove="Utils\DataSource\medicationClass.json" />
+      <_ContentIncludedByDefault Remove="Utils\DataSource\testResultTypes.json" />
+      <_ContentIncludedByDefault Remove="Utils\DataSource\vaccineTypes.json" />
+      <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Immunization\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Immunization\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MedicalCondition\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MedicalCondition\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MedicalCondition\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MedicalCondition\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Medication\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Medication\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Medication\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Medication\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Scheduler\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Scheduler\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\TestResults\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\TestResults\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Doctor\Views\TestResults\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Doctor\Views\TestResults\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Doctor\Views\Immunization\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Doctor\Views\Immunization\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\HygieiaApp.DataAccess\HygieiaApp.DataAccess.csproj" />
+      <ProjectReference Include="..\HygieiaApp.Models\HygieiaApp.Models.csproj" />
+      <ProjectReference Include="..\HygieiaApp.Utility\HygieiaApp.Utility.csproj" />
+    </ItemGroup>
+
+</Project>

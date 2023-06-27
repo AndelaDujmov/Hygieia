@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HygieiaApp", "HygieiaApp\HygieiaApp.csproj", "{6DADA1EE-A553-483F-BFEA-003F422C0E96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HygieiaApp.DataAccess", "HygieiaApp.DataAccess\HygieiaApp.DataAccess.csproj", "{8FE5C2DD-626C-45B7-B751-AB02142700C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HygieiaApp.Models", "HygieiaApp.Models\HygieiaApp.Models.csproj", "{99762146-838A-4147-AC2F-D53A9C2F93C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HygieiaApp.Utility", "HygieiaApp.Utility\HygieiaApp.Utility.csproj", "{08CD270A-58A7-4C32-AAF6-EEC480683578}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6DADA1EE-A553-483F-BFEA-003F422C0E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DADA1EE-A553-483F-BFEA-003F422C0E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DADA1EE-A553-483F-BFEA-003F422C0E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DADA1EE-A553-483F-BFEA-003F422C0E96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FE5C2DD-626C-45B7-B751-AB02142700C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FE5C2DD-626C-45B7-B751-AB02142700C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FE5C2DD-626C-45B7-B751-AB02142700C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FE5C2DD-626C-45B7-B751-AB02142700C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99762146-838A-4147-AC2F-D53A9C2F93C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99762146-838A-4147-AC2F-D53A9C2F93C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99762146-838A-4147-AC2F-D53A9C2F93C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99762146-838A-4147-AC2F-D53A9C2F93C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08CD270A-58A7-4C32-AAF6-EEC480683578}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08CD270A-58A7-4C32-AAF6-EEC480683578}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08CD270A-58A7-4C32-AAF6-EEC480683578}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08CD270A-58A7-4C32-AAF6-EEC480683578}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
