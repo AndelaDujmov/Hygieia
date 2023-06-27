@@ -21,7 +21,6 @@ Web app used for medical personal anamnesis of patient.
   
 - Medications
   * information about the medications the patient is currently taking, including the name of the medication, dosage, and frequency.
-  * checks if patient has any allergy history
   
 - Follow-up Care
   * information about the patient's follow-up care, including scheduled appointments with healthcare providers, recommended treatments
@@ -34,7 +33,6 @@ Web app used for medical personal anamnesis of patient.
 ## Tools and frameworks
 - Blazor
 - ASP.NET
-- Razor
 - React
 - Bootstrap
 - Swagger
