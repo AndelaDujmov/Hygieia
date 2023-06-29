@@ -3,6 +3,7 @@ using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.DataAccess.Repositories.Impl;
 using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Exception = System.Exception;
@@ -25,6 +26,7 @@ public class MedicationController : Controller
         return View(medication);
     }
 
+    
     public IActionResult Create()
     {
         return View();

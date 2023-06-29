@@ -79,4 +79,10 @@
       <ProjectReference Include="..\HygieiaApp.Utility\HygieiaApp.Utility.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Identity.UI">
+        <HintPath>..\..\..\.nuget\packages\microsoft.aspnetcore.identity.ui\6.0.19\lib\net6.0\Microsoft.AspNetCore.Identity.UI.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

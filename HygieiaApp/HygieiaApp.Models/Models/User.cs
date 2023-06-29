@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using HygieiaApp.Models.Enums;
@@ -7,10 +7,13 @@ using Microsoft.EntityFrameworkCore;
 namespace HygieiaApp.Models.Models;
 
 [Index(nameof(Email), IsUnique = true)]
-public class User 
+public class User
 {
     [Key]
     public Guid Id { get; set; }
+
+    [Required] 
+    public int UserName { get; set; }
     [Required(ErrorMessage = "First name field is required!")]
     [StringLength(maximumLength: 11)]
     public long OIB { get; set; }

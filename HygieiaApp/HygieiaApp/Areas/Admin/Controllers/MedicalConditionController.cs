@@ -1,7 +1,9 @@
 using HygieiaApp.DataAccess.Data;
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.Models.DTO;
+using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Exception = System.Exception;
@@ -9,6 +11,7 @@ using Exception = System.Exception;
 namespace HygieiaApp.Areas.Admin;
 
 [Area(("Admin"))]
+[Authorize(Roles = "Administrator")]
 public class MedicalConditionController : Controller
 {
     private readonly AdminService _service;
