@@ -15,7 +15,7 @@ public class DoctorService
         _repository = repository;
     }
 
-
+/*
     public List<User> Patients()
     {
         return _repository.UserRepository
@@ -87,4 +87,4 @@ public class DoctorService
     {
         _repository.TestResultPatientRepository.Update(patientsResult);
     }
-}
+*/}

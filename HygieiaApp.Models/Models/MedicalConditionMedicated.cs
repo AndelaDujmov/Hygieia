@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace HygieiaApp.Models.Models;
 
@@ -11,6 +12,7 @@ public class MedicalConditionMedicated
     public PatientMedicalCondition MedicalConditionPatient { get; set; }
     public Guid MedicalConditionMedicationId { get; set; }
     [ForeignKey("MedicalConditionMedicationId")]
+    [ValidateNever]
     public MedicalConditionMedication MedicalConditionMedication { get; set; }
     [Range(0d, 1000d, ErrorMessage = "Dosage must be between 0 and 1000 mg")]
     public decimal Dosage { get; set; }

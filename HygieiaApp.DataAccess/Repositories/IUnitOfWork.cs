@@ -1,4 +1,6 @@
 using HygieiaApp.DataAccess.Repositories.Impl;
+using HygieiaApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace HygieiaApp.DataAccess.Repositories;
 
@@ -11,9 +13,9 @@ public interface IUnitOfWork
     IPatientDoctorRepository PatientDoctorRepository { get; }
     IPatientMedicatedRepository PatientMedicatedRepository { get; }
     IResultsRepository ResultsRepository { get; }
-    IUserRepository UserRepository { get; }
     IVaccineRepository VaccineRepository { get; } 
     IMedicineForConditionRepository MedicineForConditionRepository { get; }
     ITestResultPatientRepository TestResultPatientRepository { get; }
+    IApplicationUserRepository ApplicationUserRepository { get; }
     void Save();
 }

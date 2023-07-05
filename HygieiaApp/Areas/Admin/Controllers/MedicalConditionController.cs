@@ -1,7 +1,9 @@
 using HygieiaApp.DataAccess.Data;
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.Models.DTO;
+using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Exception = System.Exception;
@@ -9,6 +11,7 @@ using Exception = System.Exception;
 namespace HygieiaApp.Areas.Admin;
 
 [Area(("Admin"))]
+
 public class MedicalConditionController : Controller
 {
     private readonly AdminService _service;
@@ -18,6 +21,7 @@ public class MedicalConditionController : Controller
         _service = adminServiceImpl;
     }
     
+    [Authorize]
     public IActionResult Index()
     {
         IEnumerable<MedicalCondition> medicalConditions = _service.ReturnAllMedicalConditions();
@@ -25,6 +29,7 @@ public class MedicalConditionController : Controller
         return View(medicalConditions);
     }
     
+    [Authorize(Roles = "Administrator")]
     public IActionResult Create()
     {
         var conditionDto = new MedicationConditionDto();
@@ -35,6 +40,7 @@ public class MedicalConditionController : Controller
     }
     
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     [ValidateAntiForgeryToken]
     public IActionResult Create(MedicationConditionDto condition)
     {
@@ -61,7 +67,7 @@ public class MedicalConditionController : Controller
         return View();
     }
     
-    
+    [Authorize(Roles = "Administrator")]
     public IActionResult Edit(Guid? id)
     {
         if (id is null)
@@ -89,6 +95,7 @@ public class MedicalConditionController : Controller
     
     
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(MedicationConditionDto condition)
     {
@@ -113,6 +120,7 @@ public class MedicalConditionController : Controller
         return View(condition);
     }
     
+    [Authorize]
     public IActionResult Info(Guid? id)
     {
         if (id is null)
@@ -140,6 +148,7 @@ public class MedicalConditionController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize]
     public IActionResult Info(MedicationConditionDto condition)
     {
 

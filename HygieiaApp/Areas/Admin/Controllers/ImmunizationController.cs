@@ -1,6 +1,8 @@
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.DataAccess.Repositories.Impl;
+using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -16,18 +18,21 @@ public class ImmunizationController : Controller
         _service = service;
     }
 
+    [Authorize]
     public IActionResult Index()
     {
         var immunizations = _service.ReturnAllVaccinations();
         return View(immunizations);
     }
     
+    [Authorize(Roles = "Administrator")]
     public IActionResult Create()
     {
         return View();
     }
 
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     [IgnoreAntiforgeryToken]
     public IActionResult Create(Immunization immunization)
     {
@@ -49,6 +54,7 @@ public class ImmunizationController : Controller
         return View(immunization);
     }
     
+    [Authorize(Roles = "Administrator")]
     public IActionResult Edit(Guid? id)
     {
         if (id is null)
@@ -70,6 +76,7 @@ public class ImmunizationController : Controller
     
     
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(Immunization immunization)
     {
@@ -92,6 +99,7 @@ public class ImmunizationController : Controller
         return View(immunization);
     }
     
+    [Authorize(Roles = "Administrator")]
     public IActionResult Delete(Guid? id)
     {
         if (id is null)
@@ -107,6 +115,7 @@ public class ImmunizationController : Controller
     }
 
     [HttpPost, ActionName("Delete")]
+    [Authorize(Roles = "Administrator")]
     public IActionResult DeletePost(Guid? id)
     {
         var immunization = _service.GetVaccineById(id);

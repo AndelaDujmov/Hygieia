@@ -1,6 +1,7 @@
 using HygieiaApp.DataAccess.Data;
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HygieiaApp.Areas.Doctor;
@@ -14,18 +15,21 @@ public class SchedulerController : Controller
     {
         _eventRepository = eventRepository;
     }
+    [Authorize(Roles = "Doctor")]
     public IActionResult Index()
     {
         var scheduler = _eventRepository.EventRepository.GetAll();
         return View(scheduler);
     }
     
+    [Authorize(Roles = "Doctor")]
     public IActionResult Create()
     {
         return View();
     }
     
     [HttpPost]
+    [Authorize(Roles = "Doctor")]
     [ValidateAntiForgeryToken]
     public IActionResult Create(Scheduler scheduler)
     {

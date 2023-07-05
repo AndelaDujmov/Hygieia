@@ -3,6 +3,7 @@ using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.DataAccess.Repositories.Impl;
 using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Exception = System.Exception;
@@ -19,17 +20,20 @@ public class MedicationController : Controller
         _service = service;
     }
     
+    [Authorize]
     public IActionResult Index()
     {
         var medication = _service.ReturnAllMedications();
         return View(medication);
     }
 
+    [Authorize]
     public IActionResult Create()
     {
         return View();
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(Medication medication)
@@ -55,6 +59,7 @@ public class MedicationController : Controller
     }
     
    
+    [Authorize(Roles = "Administrator")]
     public IActionResult Edit(Guid? id)
     {
         var medication = _service.GetMedicationById(id);
@@ -69,6 +74,7 @@ public class MedicationController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(Medication medication)
     {
@@ -90,7 +96,7 @@ public class MedicationController : Controller
         TempData["error"] = "Unable to update medication with invalid parameter.";
         return View(medication);
     }
-    
+    [Authorize]
     public IActionResult Info(Guid? id)
     {
         var medication = _service.GetMedicationById(id);
@@ -105,6 +111,7 @@ public class MedicationController : Controller
     }
 
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public IActionResult Info(Medication medication)
     {
@@ -124,6 +131,7 @@ public class MedicationController : Controller
         return View(medication);
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpPost, ActionName("Delete")]
     public IActionResult DeletePost(Guid? id)
     {

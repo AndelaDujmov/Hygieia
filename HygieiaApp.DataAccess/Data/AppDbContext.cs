@@ -1,10 +1,14 @@
+using HygieiaApp.DataAccess.Migrations;
+using HygieiaApp.Models;
 using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HygieiaApp.DataAccess.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<IdentityUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -18,27 +22,11 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Role>().HasData(
-            new Role()
-            {
-                Id = Guid.NewGuid(),
-                Name = RoleName.Administrator
-            },
-            new Role()
-            {
-                Id = Guid.NewGuid(),
-                Name = RoleName.Doctor
-            },
-            new Role()
-            {
-                Id = Guid.NewGuid(),
-                Name = RoleName.Patient
-            });
-
+        
+        base.OnModelCreating(modelBuilder);
+        
     }
-
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<User> Users { get; set; }
+    
     public DbSet<Immunization> Immunizations{ get; set; }
     public DbSet<MedicalCondition> MedicalConditions { get; set; }
     public DbSet<Medication> Medications { get; set; }
@@ -46,6 +34,7 @@ public class AppDbContext : DbContext
     public DbSet<PatientDoctor> PatientDoctors { get; set; }
     public DbSet<Scheduler> Schedulers{ get; set; }
     public DbSet<PatientMedicalCondition> PatientMedicalConditions { get; set; }
+    public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<ImmunizationPatient> ImmunizationPatients { get; set; }
     public DbSet<TestResultsPatient> TestResultsPatients { get; set; }
         public DbSet<MedicalConditionMedication> MedicalConditionMedications { get; set; }

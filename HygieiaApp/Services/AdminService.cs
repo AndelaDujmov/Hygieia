@@ -1,22 +1,28 @@
 using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.Models;
 using HygieiaApp.Models.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 namespace HygieiaApp;
 
 public class AdminService 
 {
-    private readonly IUnitOfWork _medicalConditionRepository;
+    private readonly IUnitOfWork _repository;
     private readonly IMedicineForConditionRepository _medicineForCondition;
 
     public AdminService(IUnitOfWork medicalConditionRepository, IMedicineForConditionRepository medC)
     {
-        _medicalConditionRepository = medicalConditionRepository;
+        _repository = medicalConditionRepository;
         _medicineForCondition = medC;
     }
 
     public IEnumerable<MedicalCondition> ReturnAllMedicalConditions()
     {
-        return _medicalConditionRepository.MedicalConditionRepository.GetAll();
+        return _repository.MedicalConditionRepository.GetAll();
+    }
+
+    public IEnumerable<ApplicationUser> ReturnAllUsers()
+    {
+        return _repository.ApplicationUserRepository.GetAll();
     }
 
     public IEnumerable<SelectListItem> MedicationNameSelectList()
@@ -43,43 +49,47 @@ public class AdminService
 
     public IEnumerable<Medication> ReturnAllMedications()
     {
-        return  _medicalConditionRepository.MedicationRepository
+        return  _repository.MedicationRepository
                                            .GetAll();
     }
 
     public IEnumerable<Immunization> ReturnAllVaccinations()
     {
-        return _medicalConditionRepository.VaccineRepository.GetAll();
+        return _repository.VaccineRepository.GetAll();
     }
     
     public IEnumerable<TestResult> ReturnAllTests()
     {
-        return _medicalConditionRepository.ResultsRepository.GetAll();
+        return _repository.ResultsRepository.GetAll();
     }
     
     public MedicalCondition GetConditionById(Guid? id)
     {
-        return _medicalConditionRepository.MedicalConditionRepository.Get(x=> x.Id == id);
+        return _repository.MedicalConditionRepository.Get(x=> x.Id == id);
     }
 
     public Medication GetMedicationById(Guid? id)
     {
-        return _medicalConditionRepository.MedicationRepository.Get(x=> x.Id == id);
+        return _repository.MedicationRepository.Get(x=> x.Id == id);
     }
 
     public Immunization GetVaccineById(Guid? id)
     {
-        return _medicalConditionRepository.VaccineRepository.Get(x=> x.Id == id);
+        return _repository.VaccineRepository.Get(x=> x.Id == id);
     }
 
     public TestResult GetTestResultById(Guid? id)
     {
-        return _medicalConditionRepository.ResultsRepository.Get(x=> x.Id == id);
+        return _repository.ResultsRepository.Get(x=> x.Id == id);
     }
 
+    public ApplicationUser? GetUserById(string? id)
+    {
+        return _repository.ApplicationUserRepository.Get(user => user.Id.Equals(id));
+    }
     public MedicalConditionMedication GetLinkByIdConditionId(Guid id)
     {
-        MedicalConditionMedication? conditionLink = _medicalConditionRepository.MedicineForConditionRepository
+        MedicalConditionMedication? conditionLink = _repository.MedicineForConditionRepository
                                           .GetAll()
                                           .Where(x => 
                                               x.MedicalConditionId.Equals(id)).FirstOrDefault();
@@ -94,8 +104,8 @@ public class AdminService
         if(diagnosisList.Contains(condition.NameOfDiagnosis))
             return;
         
-        _medicalConditionRepository.MedicalConditionRepository.Add(condition);
-        _medicalConditionRepository.Save();
+        _repository.MedicalConditionRepository.Add(condition);
+        _repository.Save();
     }
     
     public void CreateMedication(Medication medication)
@@ -105,8 +115,8 @@ public class AdminService
         if(medications.Contains(medication.Name))
             return;
         
-        _medicalConditionRepository.MedicationRepository.Add(medication);
-        _medicalConditionRepository.Save();
+        _repository.MedicationRepository.Add(medication);
+        _repository.Save();
     }
     
     public void CreateVaccination(Immunization immunization)
@@ -116,8 +126,8 @@ public class AdminService
         if(immunizations.Contains(immunization.Type))
             return;
         
-        _medicalConditionRepository.VaccineRepository.Add(immunization);
-        _medicalConditionRepository.Save();
+        _repository.VaccineRepository.Add(immunization);
+        _repository.Save();
     }
     
     public void CreateTestResult(TestResult testResult)
@@ -127,59 +137,59 @@ public class AdminService
         if(immunizations.Contains(testResult.Type))
             return;
         
-        _medicalConditionRepository.ResultsRepository.Add(testResult);
-        _medicalConditionRepository.Save();
+        _repository.ResultsRepository.Add(testResult);
+        _repository.Save();
     }
 
     
     public void UpdateCondition(MedicalCondition condition)
     {
-        _medicalConditionRepository.MedicalConditionRepository.Update(condition);
+        _repository.MedicalConditionRepository.Update(condition);
     }
 
     public void UpdateMedication(Medication medication)
     {
-        _medicalConditionRepository.MedicationRepository.Update(medication);
+        _repository.MedicationRepository.Update(medication);
     }
 
     public void UpdateVaccination(Immunization immunization)
     {
-        _medicalConditionRepository.VaccineRepository.Update(immunization);
+        _repository.VaccineRepository.Update(immunization);
     }
     
     public void UpdateTestResult(TestResult testResult)
     {
-        _medicalConditionRepository.ResultsRepository.Update(testResult);
+        _repository.ResultsRepository.Update(testResult);
     }
-
+    
     public void DeleteCondition(MedicalCondition condition)
     {
-        _medicalConditionRepository.MedicalConditionRepository.Delete(condition);
-        _medicalConditionRepository.Save();
+        _repository.MedicalConditionRepository.Delete(condition);
+        _repository.Save();
     }
 
     public void DeleteMedication(Medication medication)
     {
-        _medicalConditionRepository.MedicationRepository.Delete(medication);
-        _medicalConditionRepository.Save();
+        _repository.MedicationRepository.Delete(medication);
+        _repository.Save();
     }
     
     public void DeleteVaccination(Immunization immunization)
     {
-        _medicalConditionRepository.VaccineRepository.Delete(immunization);
-        _medicalConditionRepository.Save();
+        _repository.VaccineRepository.Delete(immunization);
+        _repository.Save();
     }
     
     public void DeleteTest(TestResult testResult)
     {
-        _medicalConditionRepository.ResultsRepository.Delete(testResult);
-        _medicalConditionRepository.Save();
+        _repository.ResultsRepository.Delete(testResult);
+        _repository.Save();
     }
 
     public void LinkConditionToMed(Guid id, MedicalConditionMedication conditionMedication)
     {
         conditionMedication.MedicalConditionId = id;
-        _medicalConditionRepository.MedicineForConditionRepository.Add(conditionMedication);
-        _medicalConditionRepository.Save();
+        _repository.MedicineForConditionRepository.Add(conditionMedication);
+        _repository.Save();
     }
 }

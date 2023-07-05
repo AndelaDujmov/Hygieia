@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace HygieiaApp.Models.Models;
 
@@ -12,8 +13,9 @@ public class ImmunizationPatient
     public Guid ImmunizationId { get; set; }
     [ForeignKey("ImmunizationId")]
     public Immunization Immunization { get; set; }
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
     [ForeignKey("UserId")]
-    public User User { get; set; }
+    [ValidateNever]
+    public ApplicationUser User { get; set; }
     public bool Deleted { get; set; } = false;
 }

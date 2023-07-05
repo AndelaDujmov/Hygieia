@@ -1,6 +1,7 @@
 
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Exception = System.Exception;
 
@@ -15,18 +16,19 @@ public class TestResultsController : Controller
     {
         _service = service;
     }
-    
+    [Authorize]
     public IActionResult Index()
     {
         IEnumerable<TestResult> testResults = _service.ReturnAllTests();
         return View(testResults);
     }
-    
+    [Authorize]
     public IActionResult Create()
     {
         return View();
     }
     
+    [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(TestResult testResult)
@@ -49,6 +51,7 @@ public class TestResultsController : Controller
         return View(testResult);
     }
 
+    [Authorize(Roles = "Administrator")]
     public IActionResult Edit(Guid? id)
     {
         var testResult = _service.GetTestResultById(id);
@@ -62,6 +65,7 @@ public class TestResultsController : Controller
         return View(testResult);
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(TestResult testResult)
@@ -85,6 +89,7 @@ public class TestResultsController : Controller
         return View(testResult);
     }
 
+    [Authorize(Roles = "Administrator")]
     public IActionResult Delete(Guid? id)
     {
         var result = _service.GetTestResultById(id);
@@ -96,6 +101,7 @@ public class TestResultsController : Controller
             return View(result);
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpPost, ActionName("Delete")]
     public IActionResult DeletePost(Guid? id)
     {

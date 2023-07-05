@@ -1,6 +1,9 @@
 using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.Models;
 using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -11,11 +14,13 @@ public class DoctorController : Controller
 {
     private readonly DoctorService _service;
     private readonly AdminService _adminService;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public DoctorController(DoctorService service, AdminService adminService)
+    public DoctorController(DoctorService service, AdminService adminService, UserManager<IdentityUser> userManager)
     {
         _service = service;
         _adminService = adminService;
+        _userManager = userManager;
     }
 
     public IActionResult Index()
@@ -24,12 +29,24 @@ public class DoctorController : Controller
         return View();
     }
 
+    [Authorize]
+    
+    public IActionResult AssignPatientToDoctor(Guid? id)
+    {
+        var guid = _userManager.GetUserId(HttpContext.User);
+        var doctor = _adminService.GetUserById(guid);
+
+        return View(doctor);
+    }
+/*
+    [Authorize(Roles = "Doctor")]
     public IActionResult PatientsPage()
     {
         var patients = _service.Patients();
         return View(patients);
     }
 
+    [Authorize(Roles = "Administrator, Doctor")]
     public IActionResult PatientInfo(Guid id)
     {
         var patient = _service.GetPatientById(id);
@@ -44,6 +61,7 @@ public class DoctorController : Controller
         return View(patientDoctor);
     }
 
+    [Authorize(Roles = "Doctor")]
     public IActionResult UploadResults(Guid id)
     {
         var patient = _service.GetPatientById(id);
@@ -56,6 +74,7 @@ public class DoctorController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Doctor")]
     [ValidateAntiForgeryToken]
     public IActionResult UploadResults(TestUserDto testUserDto)
     {
@@ -71,6 +90,7 @@ public class DoctorController : Controller
         return View();
     }
 
+    [Authorize(Roles = "Doctor")]
     public IActionResult EditResults(Guid id)
     {
         var testDto = new TestUserDto();
@@ -82,6 +102,7 @@ public class DoctorController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Doctor")]
     public IActionResult EditResults(TestUserDto testUserDto)
     {
         if (ModelState.IsValid)
@@ -93,5 +114,5 @@ public class DoctorController : Controller
 
         TempData["error"] = "Unable to edit user due to error.";
         return View();
-    }  
+    }  */
 }  

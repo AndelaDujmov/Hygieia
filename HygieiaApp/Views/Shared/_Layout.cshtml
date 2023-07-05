@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using HygieiaApp.Models.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -16,45 +18,63 @@
     <nav style="position: fixed; width: 100%;" class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container-fluid">
           <a class="navbar-brand"  asp-area="Patient" asp-controller="Home" asp-action="Index">Hygieia</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarColor03">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-                <a class="nav-link " asp-area="Doctor" asp-controller="Doctor" asp-action="PatientsPage">Users</a>
-            </li> &nbsp;
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Admin" asp-controller="MedicalCondition" asp-action="Index">Medical Info</a>
-            </li>&nbsp;&nbsp;
-              <li class="nav-item">
-                  <a class="nav-link" asp-area="Admin" asp-controller="Immunization" asp-action="Index">Immunizations</a>
-              </li>&nbsp;&nbsp;
-              <li class="nav-item">
-                  <a class="nav-link" asp-area="Admin" asp-controller="Medication" asp-action="Index">Medications</a>
-              </li>&nbsp;&nbsp;
-               <li class="nav-item">
-                   <a class="nav-link" asp-area="Admin" asp-controller="TestResults" asp-action="Index">Test Results</a>
-               </li>&nbsp;&nbsp;
-              &nbsp;&nbsp;
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    WebTools
-                </a>
-              <div class="dropdown-menu">
-                  <a class="dropdown-item" asp-area="Doctor" asp-controller="Scheduler" asp-action="Index">Scheduler</a>
-                  <a class="dropdown-item" asp-area="Doctor" asp-controller="Doctor" asp-action="Index">Add record</a>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Separated link</a> 
-              </div>
-            </li>
-          </ul>
-          <form class="d-flex">
-            <input class="form-control me-sm-2" type="search" placeholder="Search">
-            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-          </form>
-        </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+            
+          <div class="collapse navbar-collapse" id="navbarColor03">
+              
+              <ul class="navbar-nav me-auto">
+                  @if (User.IsInRole(RoleName.Administrator.ToString()))
+                  {
+                      <li class="nav-item">
+                          <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Active users</a>
+                      </li>
+                      <li class="nav-item">
+                           <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register new user</a>
+                      </li>
+                  }
+                 
+                  @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Doctor.ToString()))
+                  {
+                      <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                              About
+                          </a>
+                          <div class="dropdown-menu">
+                              <a class="nav-link" asp-area="Admin" asp-controller="TestResults" asp-action="Index">Test Results</a>
+                              <a class="nav-link" asp-area="Admin" asp-controller="MedicalCondition" asp-action="Index">Medical Info</a>
+                              <a class="nav-link" asp-area="Admin" asp-controller="Immunization" asp-action="Index">Immunizations</a>
+                              <a class="nav-link" asp-area="Admin" asp-controller="Medication" asp-action="Index">Medications</a>
+                              <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">Users</a>
+                          </div>
+                      </li>
+                      <a class="nav-link" asp-area="Doctor" asp-controller="Doctor" asp-action="AssignPatientToDoctor">
+                          Assign Patient
+                      </a>
+                      <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                              Doctor Tools
+                          </a>
+                          <div class="dropdown-menu">
+                              <a class="dropdown-item" asp-area="Doctor" asp-controller="Scheduler" asp-action="Index">Scheduler</a>
+                              <a class="dropdown-item" asp-area="Doctor" asp-controller="Doctor" asp-action="Index">Add record</a>
+                              <a class="dropdown-item" href="#">Something else here</a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item" href="#">Separated link</a>
+                          </div>
+                      </li>
+                  }
+                  @if (User.IsInRole(RoleName.Patient.ToString()))
+                  {
+                      <li class="nav-item">
+                          <a class="nav-link" asp-area="Patient" asp-controller="TestResults" asp-action="Index">Personal Profile</a>
+                      </li> 
+                  }
+              </ul>
+              <partial name="_LoginPartial"/>
+          </div>
+            
       </div>
     </nav>
    

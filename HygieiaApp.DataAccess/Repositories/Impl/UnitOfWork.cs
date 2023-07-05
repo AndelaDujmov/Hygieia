@@ -1,4 +1,6 @@
 using HygieiaApp.DataAccess.Data;
+using HygieiaApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace HygieiaApp.DataAccess.Repositories.Impl;
 
@@ -11,11 +13,11 @@ public class UnitOfWork : IUnitOfWork
     public IPatientDoctorRepository PatientDoctorRepository { get; private set;}
     public IPatientMedicatedRepository PatientMedicatedRepository { get; private set;}
     public IResultsRepository ResultsRepository { get; private set;}
-    public IUserRepository UserRepository { get; private set;}
     public IVaccineRepository VaccineRepository { get; private set;}
     public IVaccinePatientRepository VaccinePatientRepository { get; private set; }
     public ITestResultPatientRepository TestResultPatientRepository { get; private set; }
-    
+    public IApplicationUserRepository ApplicationUserRepository { get; }
+
     public IMedicineForConditionRepository MedicineForConditionRepository { get; private set; }
 
     private readonly AppDbContext _appDb;
@@ -30,7 +32,7 @@ public class UnitOfWork : IUnitOfWork
         PatientDoctorRepository = new PatientDoctorRepository(_appDb);
         PatientMedicatedRepository = new PatientMedicatedRepository(_appDb);
         ResultsRepository = new ResultsRepository(_appDb);
-        UserRepository = new UserRepository(_appDb);
+        ApplicationUserRepository = new ApplicationUserRepository(_appDb);
         VaccineRepository = new VaccineRepository(_appDb);
         VaccinePatientRepository = new VaccinePatientRepository(_appDb);
         TestResultPatientRepository = new TestResultPatientRepository(_appDb);
