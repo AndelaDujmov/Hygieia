@@ -7,5 +7,5 @@ public class PatientDoctorDTO
 {
     public ApplicationUser User { get; set; }
     public PatientDoctor Connection { get; set; }
-    public SelectList ItemsForDoctor { get; set; }
+    public IEnumerable<SelectListItem> ItemsForDoctor { get; set; }
 }

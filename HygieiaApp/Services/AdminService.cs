@@ -1,18 +1,24 @@
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.Models;
+using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Azure.Cosmos.Linq;
+
 namespace HygieiaApp;
 
 public class AdminService 
 {
     private readonly IUnitOfWork _repository;
     private readonly IMedicineForConditionRepository _medicineForCondition;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public AdminService(IUnitOfWork medicalConditionRepository, IMedicineForConditionRepository medC)
+    public AdminService(IUnitOfWork medicalConditionRepository, IMedicineForConditionRepository medC, UserManager<IdentityUser> userManager)
     {
         _repository = medicalConditionRepository;
         _medicineForCondition = medC;
+        _userManager = userManager;
     }
 
     public IEnumerable<MedicalCondition> ReturnAllMedicalConditions()
@@ -22,8 +28,10 @@ public class AdminService
 
     public IEnumerable<ApplicationUser> ReturnAllUsers()
     {
-        return _repository.ApplicationUserRepository.GetAll();
+        return _repository.ApplicationUserRepository.GetUsers();
     }
+
+   
 
     public IEnumerable<SelectListItem> MedicationNameSelectList()
     {

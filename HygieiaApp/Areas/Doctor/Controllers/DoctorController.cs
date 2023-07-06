@@ -1,6 +1,7 @@
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.Models;
 using HygieiaApp.Models.DTO;
+using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,13 +15,11 @@ public class DoctorController : Controller
 {
     private readonly DoctorService _service;
     private readonly AdminService _adminService;
-    private readonly UserManager<IdentityUser> _userManager;
 
-    public DoctorController(DoctorService service, AdminService adminService, UserManager<IdentityUser> userManager)
+    public DoctorController(DoctorService service, AdminService adminService)
     {
         _service = service;
         _adminService = adminService;
-        _userManager = userManager;
     }
 
     public IActionResult Index()
@@ -29,14 +28,39 @@ public class DoctorController : Controller
         return View();
     }
 
-    [Authorize]
-    
+    [Authorize(Roles = "Doctor")]
+    [HttpGet]
     public IActionResult AssignPatientToDoctor(Guid? id)
     {
-        var guid = _userManager.GetUserId(HttpContext.User);
+        var guid = _service.GetCurrentUser(HttpContext.User);
         var doctor = _adminService.GetUserById(guid);
 
+        var patientDoctor = new PatientDoctorDTO();
+        patientDoctor.User = new ApplicationUser();
+        patientDoctor.ItemsForDoctor = _service.PatientsSelectList();
         return View(doctor);
+    }
+/*
+    [HttpPost]
+    [Authorize(Roles = "Doctor")] 
+    [ValidateAntiForgeryToken]
+    public IActionResult AssignPatientToDoctor(PatientDoctorDTO patientDoctorDto)
+    {
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _service.CreateCondition(condition.MedicalCondition);
+                _service.LinkConditionToMed(condition.MedicalCondition.Id, condition.MedicalConditionMedication);
+                TempData["success"] = "Medical condition created succesfully.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                TempData["error"] = "Unable to create medical condition due to error.";
+                return View(e.Message);
+            }
+        }
     }
 /*
     [Authorize(Roles = "Doctor")]

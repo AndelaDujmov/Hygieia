@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using HygieiaApp.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 
@@ -18,4 +19,6 @@ public class ApplicationUser : IdentityUser
     public DateTime DateOfBirth { get; set; }
     public Gender Gender { get; set; }
     public bool Deleted { get; set; } = false;
+    [NotMapped]
+    public string Role { get; set; }
 }

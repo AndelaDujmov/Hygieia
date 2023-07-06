@@ -1,3 +1,4 @@
+@using HygieiaApp.Models.Enums
 @model System.Collections.Generic.IEnumerable<ApplicationUser>
 
 <div class="container p-3">
@@ -19,7 +20,9 @@
                       <th>
                           Username
                       </th>
-                      <th></th>
+                      <th>
+                          
+                      </th>
 
                       <th>
                           
@@ -33,15 +36,27 @@
                       <tr>
                           <td>@mc.Email</td>
                           <td>@mc.UserName</td>
-                          <td>@mc.Id</td>
+                          <td>@mc.Role</td>
                           <td>
                               <div class="w-75 btn-group" role="group">
-                                  <a asp-controller="Immunization" asp-action="Edit" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
-                                      <i class="bi bi-pencil-square"></i>
-                                  </a> &nbsp;
+                                  @if (!mc.Role.Equals(RoleName.Administrator.ToString()))
+                                  {
+                                      <a asp-controller="Immunization" asp-action="Edit" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
+                                          <i class="bi bi-pencil-square"></i>
+                                      </a>
+                                      
+                                  }
+                                  else
+                                  {
+                                      <a asp-controller="Immunization" aria-disabled="True" asp-action="Edit" asp-route-id="@mc.Id" class="btn btn-danger mx-2">
+                                          <i class="bi bi-pencil-square"></i>
+                                      </a>
+                                  }
+                                  &nbsp;
                                   <a asp-controller="MedicalCondition" asp-action="Info" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
                                       <i class="bi bi-info-circle-fill"></i>
                                   </a> &nbsp;
+                                  &nbsp;
                                   <a asp-controller="Immunization" asp-action="Delete" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
                                       <i class="bi bi-trash"></i>
                                   </a>

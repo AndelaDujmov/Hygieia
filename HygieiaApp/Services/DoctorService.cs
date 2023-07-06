@@ -1,20 +1,53 @@
+using System.Security.Claims;
 using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.Models;
 using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Azure.Cosmos;
 
 namespace HygieiaApp;
 
 public class DoctorService
 {
     private readonly IUnitOfWork _repository;
+    private readonly UserManager<IdentityUser> _userManager;
+    
 
-    public DoctorService(IUnitOfWork repository)
+    public DoctorService(IUnitOfWork repository, UserManager<IdentityUser> userManager)
     {
         _repository = repository;
+        _userManager = userManager;
+    }
+    
+    public IEnumerable<ApplicationUser> ReturnAllPatients()
+    {
+        var users = _repository.ApplicationUserRepository.GetUsers();
+        
+        users.Where(x => x.Role.Equals(null))
+            .ToList()
+            .ForEach(x => x.Role = RoleName.Patient.ToString());
+
+        return users.Where(role => role.Role.Equals(RoleName.Patient.ToString()));
     }
 
+    public IEnumerable<SelectListItem> PatientsSelectList()
+    {
+        var items = ReturnAllPatients();
+
+        return items.Select(x => new SelectListItem
+        {
+            Value = x.Id,
+            Text = x.Oib + " " + x.FirstName + " " + x.LastName
+        });
+    }
+
+    public string? GetCurrentUser(ClaimsPrincipal httpContextUser)
+    {
+        return _userManager.GetUserId(httpContextUser);
+    }
 /*
     public List<User> Patients()
     {
@@ -87,4 +120,8 @@ public class DoctorService
     {
         _repository.TestResultPatientRepository.Update(patientsResult);
     }
-*/}
+*/
+
+
+
+}
