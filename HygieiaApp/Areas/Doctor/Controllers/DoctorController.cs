@@ -32,35 +32,40 @@ public class DoctorController : Controller
     [HttpGet]
     public IActionResult AssignPatientToDoctor(Guid? id)
     {
-        var guid = _service.GetCurrentUser(HttpContext.User);
-        var doctor = _adminService.GetUserById(guid);
 
         var patientDoctor = new PatientDoctorDTO();
-        patientDoctor.User = new ApplicationUser();
+        var guid = _service.GetCurrentUser(HttpContext.User);
+        var doctor = _adminService.GetUserById(guid);
+        patientDoctor.User = doctor;
+        patientDoctor.Selected = String.Empty;
+        patientDoctor.ItemsForDoctor = new List<SelectListItem>();
         patientDoctor.ItemsForDoctor = _service.PatientsSelectList();
-        return View(doctor);
+        return View(patientDoctor);
     }
-/*
+
     [HttpPost]
     [Authorize(Roles = "Doctor")] 
     [ValidateAntiForgeryToken]
     public IActionResult AssignPatientToDoctor(PatientDoctorDTO patientDoctorDto)
     {
-        if (ModelState.IsValid)
+        var guid = _service.GetCurrentUser(HttpContext.User);
+        var doctor = _adminService.GetUserById(guid);
+        patientDoctorDto.User = doctor;
+        try
         {
-            try
-            {
-                _service.CreateCondition(condition.MedicalCondition);
-                _service.LinkConditionToMed(condition.MedicalCondition.Id, condition.MedicalConditionMedication);
-                TempData["success"] = "Medical condition created succesfully.";
-                return RedirectToAction("Index");
-            }
-            catch (Exception e)
-            {
-                TempData["error"] = "Unable to create medical condition due to error.";
-                return View(e.Message);
-            }
+             
+            _service.LinkPatientToDoctor(patient: patientDoctorDto.Selected, doctor: patientDoctorDto.User.Id);
+            TempData["success"] = $"Sucessfully added patient to {patientDoctorDto.User.UserName}!";
+            return RedirectToAction("Index");
         }
+        catch (Exception e)
+        {
+            TempData["error"] = "Unable to create medical condition due to error.";
+            return View(e.Message);
+        }
+        
+        TempData["error"] = "Please fill the data again and come back later!.";
+        return View(patientDoctorDto);
     }
 /*
     [Authorize(Roles = "Doctor")]

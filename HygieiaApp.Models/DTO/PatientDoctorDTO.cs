@@ -1,4 +1,5 @@
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HygieiaApp.Models.DTO;
@@ -6,6 +7,7 @@ namespace HygieiaApp.Models.DTO;
 public class PatientDoctorDTO
 {
     public ApplicationUser User { get; set; }
-    public PatientDoctor Connection { get; set; }
-    public IEnumerable<SelectListItem> ItemsForDoctor { get; set; }
+    public string Selected { get; set; }
+    [ValidateNever]
+    public IEnumerable<SelectListItem>? ItemsForDoctor { get; set; }
 }

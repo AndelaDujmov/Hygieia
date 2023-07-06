@@ -49,6 +49,20 @@ public class DoctorService
         return _userManager.GetUserId(httpContextUser);
     }
 /*
+    public bool CheckIfPatientIsAlreadyAtTheDoctor(string patient, string doctor)
+    {
+        var 
+    }
+    */
+    public void LinkPatientToDoctor(string patient, string doctor)
+    {
+        var patientDoctor = new PatientDoctor();
+        patientDoctor.PatientsId = patient;
+        patientDoctor.DoctorsId = doctor;
+        _repository.PatientDoctorRepository.Add(patientDoctor);
+        _repository.Save();
+    }
+/*
     public List<User> Patients()
     {
         return _repository.UserRepository
@@ -121,7 +135,6 @@ public class DoctorService
         _repository.TestResultPatientRepository.Update(patientsResult);
     }
 */
-
 
 
 }
