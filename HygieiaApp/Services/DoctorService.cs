@@ -4,7 +4,9 @@ using HygieiaApp.Models;
 using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Azure.Cosmos;
 
@@ -40,20 +42,42 @@ public class DoctorService
         return items.Select(x => new SelectListItem
         {
             Value = x.Id,
-            Text = x.Oib + " " + x.FirstName + " " + x.LastName
+            Text = $"{x.Oib} {x.FirstName}  {x.LastName}"
         });
     }
 
+    public IEnumerable<ApplicationUser> ReturnAllDoctorsPatients(string id)
+    {
+        var doctors = _repository.PatientDoctorRepository.GetAll()
+            .Where(x => x.DoctorsId.Equals(id) && x.Deleted == false) ?? new List<PatientDoctor>();
+
+        var patientsIds = doctors.Select(x => x.PatientsId).ToList();
+
+       if (doctors.Equals(null))
+            return new List<ApplicationUser>();
+
+        var patients = ReturnAllPatients()
+            .Where(patient => patientsIds.Contains(patient.Id));
+
+        return patients;
+    }
     public string? GetCurrentUser(ClaimsPrincipal httpContextUser)
     {
         return _userManager.GetUserId(httpContextUser);
     }
-/*
+
     public bool CheckIfPatientIsAlreadyAtTheDoctor(string patient, string doctor)
     {
-        var 
+        var patients = _repository.PatientDoctorRepository.GetAll()
+                                                                    .Where(x => !x.Deleted)
+                                                                    .Select(x => x.PatientsId).ToList();
+
+        if (patients.Contains(patient))
+            return true;
+
+        return false;
     }
-    */
+    
     public void LinkPatientToDoctor(string patient, string doctor)
     {
         var patientDoctor = new PatientDoctor();
@@ -62,52 +86,33 @@ public class DoctorService
         _repository.PatientDoctorRepository.Add(patientDoctor);
         _repository.Save();
     }
-/*
-    public List<User> Patients()
+    
+    public void RemovePatient(string? patient)
     {
-        return _repository.UserRepository
-                          .GetAll()
-                          .Where(x => x.Deleted == false)
-                          .ToList();
-    }
+        var patientDoctor = _repository.PatientDoctorRepository.Get(x => x.PatientsId.Equals(patient));
 
-    public User GetPatientById(Guid? id)
-    {
-        return _repository.UserRepository.Get(x => x.Id.Equals(id)) ?? new User();
-    }
-
-    public User? GetDoctorById(Guid? id)
-    {
-        if (id.Equals(Guid.Empty))
-            return new User();
-        return _repository.UserRepository.Get(x => x.Id.Equals(id)) ?? new User();
+        patientDoctor.Deleted = true;
+        _repository.Save();
     }
     
-    public PatientDoctor? ReturnPatientDoctorById(Guid? id)
+    public void AddTestResult(TestResultsPatient resultsPatient)
     {
-        if (id.Equals(Guid.Empty))
-            return new PatientDoctor();
-        
-        var obj = _repository.PatientDoctorRepository
-                          .GetAll();
+        _repository.TestResultPatientRepository.Add(resultsPatient);
+        _repository.Save();
+    }
 
-        if (obj.Count() is 0)
-            return new PatientDoctor();
-        else
-            return  obj.Where(x => x.PatientsId.Equals(id)).FirstOrDefault();
-    
-    }
-    public TestResultsPatient? ReturnTestsPatientById(Guid? id)
+    public TestResultsPatient ReturnTestsPatientById(string id)
     {
-        if (id.Equals(Guid.Empty))
-            return new TestResultsPatient();
-        
-        var obj = _repository.TestResultPatientRepository
-                          .GetAll()
-                          .Where(x => x.PatientId.Equals(id));
-        return obj.Equals(null) ? null : obj.FirstOrDefault();
+        return _repository.TestResultPatientRepository.GetAll()
+                                                      .Where(x => x.PatientId.Equals(id))
+                                                      .FirstOrDefault() ?? new TestResultsPatient();
     }
     
+    public void UpdatePatientsResult(TestResultsPatient patientsResult)
+    {
+        _repository.TestResultPatientRepository.Update(patientsResult);
+    }
+/*  
     public IEnumerable<SelectListItem> ReturnConditionsSelectList()
     {
         var users = _repository.MedicalConditionRepository.GetAll();
@@ -119,22 +124,15 @@ public class DoctorService
         });
     }
 
-    public void AddTestResult(TestResultsPatient resultsPatient)
-    {
-        _repository.TestResultPatientRepository.Add(resultsPatient);
-        _repository.Save();
-    }
-
+   
     public TestResultsPatient FindPatientWithResultById(Guid id)
     {
         return _repository.TestResultPatientRepository.Get(x => x.Id.Equals(id));
     }
 
-    public void UpdatePatientsResult(TestResultsPatient patientsResult)
-    {
-        _repository.TestResultPatientRepository.Update(patientsResult);
-    }
+  
 */
+
 
 
 }

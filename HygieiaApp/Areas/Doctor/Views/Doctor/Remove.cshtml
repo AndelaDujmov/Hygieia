@@ -1,0 +1,26 @@
+@model HygieiaApp.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Delete Test Type";
+}
+
+
+<form method="post">
+    <input asp-for="Id" hidden/>
+    <div class="border p-3  mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Do you want to remove this patient?</h2>
+            <hr/>
+        </div>
+
+        <div class="mb-3">
+            <label class="col-form-label">First Name</label><br/>
+            <input type="text" asp-for="FirstName" disabled class="form-control"/><br/>
+            <label class="col-form-label">Last Name</label><br/>
+            <input type="text" asp-for="LastName" disabled class="form-control"/><br/>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100px">Yes</button>
+        <a asp-controller="Doctor" asp-action="Index">No, back to home</a>
+    </div>
+</form>

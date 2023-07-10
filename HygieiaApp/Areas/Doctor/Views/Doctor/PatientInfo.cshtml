@@ -1,4 +1,4 @@
-@model HygieiaApp.Models.DTO.UserDoctorDto
+@model HygieiaApp.Models.DTO.PatientDoctorDTO
 
 <div class="card-body p-3">
 
@@ -19,17 +19,18 @@
                 <input type="text" asp-for="@Model.Patient" disabled class="form-control"/><br/>
                 <label class="col-form-label" asp-for="@Model.Patient.Email"></label><br/>
                 <input type="text" asp-for="@Model.Patient.Email" disabled class="form-control"/><br/>
-                <label class="col-form-label" asp-for="@Model.Patient.PhoneNumber"></label><br/>
-                <input type="text" asp-for="@Model.Patient.PhoneNumber" disabled class="form-control"/><br/>
                 <label class="col-form-label">Doctor</label><br/>
-                <input type="text" asp-for="@(Model.Doctor.FirstName)" disabled class="form-control"/><br/>
+                <input type="text" asp-for="@(Model.User.Email)" disabled class="form-control"/><br/>
                
             </div>
 
-            <a asp-controller="Doctor" asp-action="" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2">
-                <i class="bi bi-plus-square-fill"></i>
-            </a> &nbsp;Upload result
-            <a asp-controller="MedicalCondition" asp-action="Index">Back to listing</a>
+            <a asp-controller="Doctor" asp-action="UploadResults" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2">
+                <i class="bi bi-plus-square-fill"></i>Upload results
+            </a> &nbsp;<br/>
+            <a asp-controller="Doctor" asp-action="EditResults" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2">
+                <i class="bi bi-plus-square-fill"></i>Edit results
+            </a> &nbsp;<br/>
+            <a asp-controller="Doctor" asp-action="Index">Back to listing</a>
         </div>
     </form>
 </div>

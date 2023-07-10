@@ -8,7 +8,7 @@ public class TestResultsPatient
 {
     [Key] public Guid Id { get; set; } = Guid.NewGuid();
     public DateTime DateOfTesting { get; set; }
-    public string Results { get; set; } 
+    public string? Results { get; set; } 
     public string PatientId { get; set; }
     [ForeignKey("PatientId")]
     [ValidateNever]

@@ -1,25 +1,59 @@
+@model System.Collections.Generic.IEnumerable<ApplicationUser>
 
 <div class="container p-3">
-<div class="row pt-4">
-    <div class="col-6">
-        <h2 class="text-primary">Test results page</h2>
-    </div>
-    <div id="mySidenav" class="sidenav">
-                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                <a asp-area="Doctor" asp-controller="Doctor" asp-action="">Patients</a>
-                <a href="#">Test Results</a>
-                <a href="#"></a>
-                <a href="#">Contact</a>
+    <div class="row pt-4">
+            <div class="col-6">
+                <h2 class="text-primary">Patients</h2>
             </div>
-    <span class="text-end" style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
-    <script>
-    function openNav() {
-      document.getElementById("mySidenav").style.width = "250px";
-    }
-    
-    function closeNav() {
-      document.getElementById("mySidenav").style.width = "0";
-    }
-    </script>
-</div>
+            <div class="col-6 text-end">
+                <a asp-controller="Doctor" asp-action="AssignPatientToDoctor" class="btn btn-primary">
+                    <i class="bi bi-plus-circle-dotted"></i> &nbsp; Add new patient
+                </a>
+            </div>
+        
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <table class="table table table-bordered border-1.4 border-blue">
+            <thead class="thead-dark text-secondary" style="background-color: lightblue; text-overline-color: white; color: white">
+            <tr class="text-primary">
+                <th>
+                    Full Name
+                </th>
+                <th>
+                    Diagnosis
+                </th>
+                <th>
+                    Visits
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var mc in Model)
+            {
+                <tr>
+                    <td>@mc.FirstName  @mc.LastName</td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                          <div class="w-75 btn-group" role="group">
+                              <a asp-controller="Doctor" asp-action="" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
+                                  <i class="bi bi-pencil-square"></i> 
+                              </a> &nbsp;
+                              <a asp-controller="Doctor" asp-action="PatientInfo" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
+                                  <i class="bi bi-info-circle-fill"></i> 
+                              </a> &nbsp;
+                              <a asp-controller="Doctor" asp-action="Remove" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
+                                  <i class="bi bi-trash"></i> 
+                              </a>
+                          </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 </div>
