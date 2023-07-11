@@ -137,7 +137,7 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
 
             Input = new()
             {
-                RoleList = _roleManager.Roles.Select(role => role.Name).Select(item => new SelectListItem
+                RoleList = _roleManager.Roles.Where(role => !role.Name.Equals(RoleName.Administrator.ToString())).Select(role => role.Name).Select(item => new SelectListItem
                 {
                     Value = item,
                     Text = item

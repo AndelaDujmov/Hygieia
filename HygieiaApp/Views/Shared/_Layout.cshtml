@@ -68,7 +68,10 @@
                   @if (User.IsInRole(RoleName.Patient.ToString()))
                   {
                       <li class="nav-item">
-                          <a class="nav-link" asp-area="Patient" asp-controller="TestResults" asp-action="Index">Personal Profile</a>
+                          <a class="nav-link" asp-area="Patient" asp-controller="Patient" asp-action="ReturnMyTests">Personal Profile</a>
+                      </li> 
+                      <li class="nav-item">
+                          <a class="nav-link" asp-area="Patient" asp-controller="Home" asp-action="ShowData">My Data</a>
                       </li> 
                   }
               </ul>

@@ -115,13 +115,14 @@ public class DoctorController : Controller
                                    .FirstOrDefault();
         
         var doctor = _adminService.GetUserById(_service.GetCurrentUser(HttpContext.User));
-        //var tests = _service.ReturnTestsPatientById(pd.PatientsId);
-        //var testType = _adminService.GetTestResultById(tests.TestResultId);
+        var tests = _service.ReturnAllTestsByUser(patient.Id);
+        _service.ReturnTestNames(tests);
 
         var patientDoctor = new PatientDoctorDTO();
 
-        patientDoctor.Patient = patient;
+        patientDoctor.Patient = patient;  
         patientDoctor.User = doctor;
+        patientDoctor.Tests = tests;
 
         return View(patientDoctor);
     }
@@ -161,6 +162,7 @@ public class DoctorController : Controller
         
             _service.AddTestResult(resultsPatient: testUserDto.ResultsPatient);
             TempData["success"] = "Succesfully uploaded!";
+            return RedirectToAction("Index");
         }
         TempData["error"] = "An error occured while creating data..";
         return View(testUserDto);

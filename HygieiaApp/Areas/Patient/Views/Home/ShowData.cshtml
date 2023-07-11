@@ -1,0 +1,41 @@
+@model ApplicationUser
+
+<div class="card-body p-3">
+
+    <form method="post">
+        <div class="border p-3  mt-4">
+            <div class="row pb-2">
+                <h2 class="text-primary">My Details</h2>
+                <hr/>
+            </div>
+    
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="@Model.FirstName"></label><br/>
+            <input type="text" asp-for="@Model.FirstName" disabled class="form-control"/><br/>
+            <label class="col-form-label" asp-for="@Model.LastName"></label><br/>
+            <input type="text" asp-for="@Model.LastName" disabled class="form-control"/><br/>
+            <label class="col-form-label" asp-for="@Model.Email"></label><br/>
+            <input type="text" asp-for="@Model.Email" disabled class="form-control"/><br/>
+            <label class="col-form-label">Doctor</label><br/>
+            @*
+                <label class="col-form-label">Test Results</label>
+                <table class="table-primary">
+                     <thead class="thead-dark text-secondary" style="background-color: lightblue; text-overline-color: white; color: white">
+                        @foreach (var element in @Model.Tests)
+                        {
+                            <tr>
+                                <td>@element.DateOfTesting</td>
+                                <td>@element.TestName</td>
+                            </tr>
+                        }
+                     </thead>
+                </table>
+            </div>
+*@
+         
+            <a asp-controller="Home" asp-action="Index">Back to listing</a>
+        </div>
+        </div>
+    </form>
+</div>
+

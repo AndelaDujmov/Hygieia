@@ -9,8 +9,4 @@ public class UserController : Controller
       return View();
    }
    
-   public IActionResult Create()
-   {
-      return View();
-   }
 }

@@ -78,6 +78,7 @@ public class DoctorService
         return false;
     }
     
+    
     public void LinkPatientToDoctor(string patient, string doctor)
     {
         var patientDoctor = new PatientDoctor();
@@ -112,6 +113,25 @@ public class DoctorService
     {
         _repository.TestResultPatientRepository.Update(patientsResult);
     }
+    
+    public IEnumerable<TestResultsPatient> ReturnAllTestsByUser(string patientId)
+    {
+        var tests = _repository.TestResultPatientRepository.GetAll()
+                                                      .Where(test => test.PatientId.Equals(patientId));
+        
+        tests.ToList().ForEach(test => test.TestName = MatchNames(test));
+        return tests;
+    }
+
+    public string MatchNames(TestResultsPatient result)
+    {
+        return _repository.ResultsRepository.GetAll().Where(x => x.Id.Equals(result.TestResultId)).Select(x => x.Type).FirstOrDefault() ?? string.Empty;
+    }
+    
+    public void ReturnTestNames(IEnumerable<TestResultsPatient> tests)
+    {
+        tests.ToList().ForEach(test => test.TestName = MatchNames(test));
+    }
 /*  
     public IEnumerable<SelectListItem> ReturnConditionsSelectList()
     {
@@ -132,7 +152,5 @@ public class DoctorService
 
   
 */
-
-
 
 }

@@ -17,5 +17,7 @@ public class TestResultsPatient
     [ForeignKey("TestResultId")]
     [ValidateNever]
     public TestResult? TestResult { get; set; }
+    [NotMapped]
+    public string? TestName { get; set; }
     public bool Deleted { get; set; } = false;
 }
