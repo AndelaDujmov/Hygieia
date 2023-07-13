@@ -221,4 +221,41 @@ public class DoctorController : Controller
         TempData["error"] = "Unable to edit user due to error.";
         return View(testUserDto);
     }
+
+    [Authorize]
+    public IActionResult CreateVaccinationForPatient()
+    {
+        var vaccine = new PatientVaccinationDto();
+        vaccine.Vaccines = _service.ReturnVaccinationNames();
+        vaccine.ImmunizationForPatient = new ImmunizationPatient();
+
+        return View(vaccine);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult CreateVaccinationForPatient(PatientVaccinationDto patientVaccinationDto)
+    {
+        if (ModelState.IsValid)
+        {
+            if (patientVaccinationDto.ImmunizationForPatient.DateOfVaccination < DateTime.Now)
+            {
+                TempData["error"] = "Unable to create vaccination in the past";
+                return View(patientVaccinationDto);
+            }
+            _service.Save(patientVaccinationDto.ImmunizationForPatient);
+            TempData["success"] = "Vaccination appointment successfully created!";
+            return RedirectToAction("Index");
+        }
+
+        TempData["error"] = "Unable to add the data due to error";
+        return View(patientVaccinationDto);
+    }
+
+    public IActionResult ReturnAllVaccines()
+    {
+        var vaccines = _service.ReturnAllVaccinesWithPatients();
+
+        return View(vaccines);
+    }
 }  

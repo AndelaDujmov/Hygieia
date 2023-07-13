@@ -19,6 +19,7 @@ public class UnitOfWork : IUnitOfWork
     public IApplicationUserRepository ApplicationUserRepository { get; }
 
     public IMedicineForConditionRepository MedicineForConditionRepository { get; private set; }
+    
 
     private readonly AppDbContext _appDb;
 

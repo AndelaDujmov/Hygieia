@@ -17,5 +17,6 @@ public interface IUnitOfWork
     IMedicineForConditionRepository MedicineForConditionRepository { get; }
     ITestResultPatientRepository TestResultPatientRepository { get; }
     IApplicationUserRepository ApplicationUserRepository { get; }
+    IVaccinePatientRepository VaccinePatientRepository { get; }
     void Save();
 }

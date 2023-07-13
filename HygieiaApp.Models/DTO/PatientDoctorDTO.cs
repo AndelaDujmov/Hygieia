@@ -14,4 +14,5 @@ public class PatientDoctorDTO
     public IEnumerable<TestResultsPatient>? Tests { get; set; }
     public TestResult? TestType { get; set; }
     public ApplicationUser? Patient { get; set; }
+    
 }

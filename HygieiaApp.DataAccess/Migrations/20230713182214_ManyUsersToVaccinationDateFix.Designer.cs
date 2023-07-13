@@ -3,6 +3,7 @@ using System;
 using HygieiaApp.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HygieiaApp.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230713182214_ManyUsersToVaccinationDateFix")]
+    partial class ManyUsersToVaccinationDateFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,14 +56,9 @@ namespace HygieiaApp.DataAccess.Migrations
                     b.Property<Guid?>("ImmunizationId")
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ImmunizationId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("ImmunizationPatients");
                 });
@@ -549,6 +547,9 @@ namespace HygieiaApp.DataAccess.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("ImmunizationPatientId")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -560,6 +561,8 @@ namespace HygieiaApp.DataAccess.Migrations
                     b.Property<long>("Oib")
                         .HasColumnType("bigint");
 
+                    b.HasIndex("ImmunizationPatientId");
+
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
@@ -569,13 +572,7 @@ namespace HygieiaApp.DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("ImmunizationId");
 
-                    b.HasOne("HygieiaApp.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Immunization");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HygieiaApp.Models.Models.MedicalCondition", b =>
@@ -740,6 +737,20 @@ namespace HygieiaApp.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HygieiaApp.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("HygieiaApp.Models.Models.ImmunizationPatient", null)
+                        .WithMany("User")
+                        .HasForeignKey("ImmunizationPatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("HygieiaApp.Models.Models.ImmunizationPatient", b =>
+                {
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HygieiaApp.Models.Models.PatientMedicalCondition", b =>

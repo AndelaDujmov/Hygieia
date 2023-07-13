@@ -49,9 +49,15 @@
                               <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">Users</a>
                           </div>
                       </li>
-                          <a class="nav-link" asp-area="Doctor" asp-controller="Doctor" asp-action="Index">
-                              My Patients
-                          </a>
+                      <a class="nav-link" asp-area="Doctor" asp-controller="Doctor" asp-action="Index">
+                          My Patients
+                      </a>
+                      <a class="nav-link" asp-area="Doctor" asp-controller="Doctor" asp-action="ReturnAllVaccines">
+                          Check All Vaccines
+                      </a>
+                      <a class="nav-link" asp-area="Doctor" asp-controller="Doctor" asp-action="CreateVaccinationForPatient">
+                          Create New Vaccination Date
+                      </a>
                       <li class="nav-item dropdown">
                           <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                               Doctor Tools
@@ -72,6 +78,9 @@
                       </li> 
                       <li class="nav-item">
                           <a class="nav-link" asp-area="Patient" asp-controller="Home" asp-action="ShowData">My Data</a>
+                      </li> 
+                      <li class="nav-item">
+                          <a class="nav-link" asp-area="Patient" asp-controller="Patient" asp-action="ShowUpcommingVaccinations">My Vaccinations</a>
                       </li> 
                   }
               </ul>

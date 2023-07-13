@@ -23,21 +23,12 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
             _logger = logger;
         }
 
-        public async Task<IActionResult> OnPost(string returnUrl = null)
+        public async Task<IActionResult> OnPost(string area)
         {
             await _signInManager.SignOutAsync();
             HttpContext.Session.Clear();
             _logger.LogInformation("User logged out.");
-            if (returnUrl != null)
-            {
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                // This needs to be a redirect so that the browser performs a new
-                // request and the identity for the user gets updated.
-                return RedirectToRoute("/");
-            }
+            return RedirectToAction("index", "home", new { area = area });
         }
     }
 }

@@ -45,6 +45,17 @@ public class DoctorService
             Text = $"{x.Oib} {x.FirstName}  {x.LastName}"
         });
     }
+    
+    public IEnumerable<SelectListItem> ReturnVaccinationNames()
+    {
+        var tests = _repository.VaccineRepository.GetAll();
+
+        return tests.Select(x => new SelectListItem
+        {
+            Value = x.Id.ToString(),
+            Text = x.Type
+        });
+    }
 
     public IEnumerable<ApplicationUser> ReturnAllDoctorsPatients(string id)
     {
@@ -61,7 +72,7 @@ public class DoctorService
 
         return patients;
     }
-    public string? GetCurrentUser(ClaimsPrincipal httpContextUser)
+    public  string? GetCurrentUser(ClaimsPrincipal httpContextUser)
     {
         return _userManager.GetUserId(httpContextUser);
     }
@@ -131,6 +142,55 @@ public class DoctorService
     public void ReturnTestNames(IEnumerable<TestResultsPatient> tests)
     {
         tests.ToList().ForEach(test => test.TestName = MatchNames(test));
+    }
+
+    public void Save(ImmunizationPatient immunizationPatient)
+    {
+        _repository.VaccinePatientRepository.Add(immunizationPatient);
+        _repository.Save();
+    }
+    
+    public string ReturnTheTypeForVaccination(ImmunizationPatient patient)
+    {
+        var immunization = _repository.VaccineRepository.Get(x => x.Id.Equals(patient.ImmunizationId)) ?? null;
+
+        if (immunization != null)
+        {
+            return immunization.Type;
+        }
+
+        return string.Empty;
+    }
+
+    private string? GetFullUserName(ImmunizationPatient immunizationPatient)
+    {
+        var user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(immunizationPatient.UserId));
+
+        return user.FirstName + " " + user.LastName;
+    }
+
+    private List<PatientVaccinationDto> ReturnVaccinationDto(IEnumerable<ImmunizationPatient> immunizationPatients)
+    {
+        var vaccinationDtoList = new List<PatientVaccinationDto>();
+        
+        immunizationPatients.ToList().ForEach(x =>
+        {
+            var dto = new PatientVaccinationDto();
+            dto.ImmunizationForPatient = x;
+            if (!x.UserId.Equals(null))
+                dto.FullNamePatient = GetFullUserName(x);
+        });
+
+        return vaccinationDtoList;
+    }
+
+    public IEnumerable<PatientVaccinationDto> ReturnAllVaccinesWithPatients()
+    {
+        var vaccines = _repository.VaccinePatientRepository.GetAll();
+        
+        vaccines.ToList().ForEach(v => v.Selected = ReturnTheTypeForVaccination(v));
+
+        return ReturnVaccinationDto(vaccines);
     }
 /*  
     public IEnumerable<SelectListItem> ReturnConditionsSelectList()

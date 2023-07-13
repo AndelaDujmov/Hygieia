@@ -125,7 +125,7 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
             public Gender Gender { get; set; }
         }
 
-
+        
         public async Task OnGetAsync(string returnUrl = null)
         {
             if (!_roleManager.RoleExistsAsync(RoleName.Administrator.ToString()).GetAwaiter().GetResult()) 
@@ -146,10 +146,9 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
             
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            
-            
         }
 
+        
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");

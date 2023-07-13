@@ -37,6 +37,6 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<ImmunizationPatient> ImmunizationPatients { get; set; }
     public DbSet<TestResultsPatient> TestResultsPatients { get; set; }
-        public DbSet<MedicalConditionMedication> MedicalConditionMedications { get; set; }
+    public DbSet<MedicalConditionMedication> MedicalConditionMedications { get; set; }
     public DbSet<MedicalConditionMedicated> MedicalConditionMedicateds { get; set; }
 }
