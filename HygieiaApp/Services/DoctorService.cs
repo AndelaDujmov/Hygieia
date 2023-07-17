@@ -1,14 +1,18 @@
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.Models;
 using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
-using Microsoft.AspNetCore.Authorization;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Azure.Cosmos;
+using MimeKit;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
+
 
 namespace HygieiaApp;
 
@@ -22,6 +26,25 @@ public class DoctorService
     {
         _repository = repository;
         _userManager = userManager;
+    }
+
+    private IEnumerable<ImmunizationPatient> ReturnVaccinationsOnDate(DateTime date)
+    {
+        var all = _repository.VaccinePatientRepository.GetAll().Where(x => x.DateOfVaccination.Equals(date));
+        
+        all.ToList().ForEach(x => x.Selected = ReturnTheTypeForVaccination(x));
+
+        return all;
+    }
+
+    public ImmunizationPatient ReturnPatientWithVaccination(Guid id)
+    {
+        var results =  _repository.VaccinePatientRepository.Get(x => x.Id.Equals(id)) ?? new ImmunizationPatient();
+
+        if (results != null)
+            results.Selected = ReturnTheTypeForVaccination(results);
+
+        return results;
     }
     
     public IEnumerable<ApplicationUser> ReturnAllPatients()
@@ -173,17 +196,27 @@ public class DoctorService
     {
         var vaccinationDtoList = new List<PatientVaccinationDto>();
         
-        immunizationPatients.ToList().ForEach(x =>
+       /* immunizationPatients.ToList().ForEach(x =>
         {
             var dto = new PatientVaccinationDto();
             dto.ImmunizationForPatient = x;
             if (!x.UserId.Equals(null))
                 dto.FullNamePatient = GetFullUserName(x);
-        });
+        });*/
+
+        foreach (var patient in immunizationPatients)
+        {
+            var dto = new PatientVaccinationDto();
+            dto.ImmunizationForPatient = patient;
+            if (patient.UserId != null)
+                dto.FullNamePatient = GetFullUserName(patient);
+            vaccinationDtoList.Add(dto);
+        }
 
         return vaccinationDtoList;
     }
 
+    
     public IEnumerable<PatientVaccinationDto> ReturnAllVaccinesWithPatients()
     {
         var vaccines = _repository.VaccinePatientRepository.GetAll();
@@ -191,6 +224,47 @@ public class DoctorService
         vaccines.ToList().ForEach(v => v.Selected = ReturnTheTypeForVaccination(v));
 
         return ReturnVaccinationDto(vaccines);
+    }
+    
+    public void ChangeTimeOfImmunization(Guid id, DateTime dateTime)
+    {
+        var immunization = ReturnVaccinationsOnDate(ReturnPatientWithVaccination(id).DateOfVaccination);
+        
+        immunization.ToList().ForEach(x =>
+        {
+            x.DateOfVaccination = dateTime;
+            FindUserAndSendEmail(x.UserId, x.DateOfVaccination);
+        });
+        _repository.Save();
+        
+    }
+
+    private void FindUserAndSendEmail(string id, DateTime dateTime)
+    {
+        var user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(id));
+        
+        SendEmail(user.Email, "Change of vaccination date", $"Dear {user.FirstName} {user.LastName} your appointment has been changed to the new date {dateTime}\nBest regards,\nHygieia team");
+    }
+    
+    private void SendEmail(string email, string subject, string body)
+    {
+        var mailMessage = new MimeMessage();
+        mailMessage.From.Add(new MailboxAddress("Hygieia", "hygieiaapp874@gmail.com"));
+        mailMessage.To.Add(MailboxAddress.Parse(email));
+        mailMessage.Subject = subject;
+        mailMessage.Body = new TextPart("plain")
+        {
+            Text = body
+        };
+
+        using (var smtpClient = new SmtpClient())
+        {
+            smtpClient.Connect("smtp.gmail.com", 465, true);
+            smtpClient.Authenticate("hygieiaapp874@gmail.com", "ygdrsoaimcdiwpny");
+            smtpClient.Send(mailMessage);
+            smtpClient.Disconnect(true);
+            smtpClient.Dispose();
+        }
     }
 /*  
     public IEnumerable<SelectListItem> ReturnConditionsSelectList()
@@ -204,11 +278,7 @@ public class DoctorService
         });
     }
 
-   
-    public TestResultsPatient FindPatientWithResultById(Guid id)
-    {
-        return _repository.TestResultPatientRepository.Get(x => x.Id.Equals(id));
-    }
+
 
   
 */

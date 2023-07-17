@@ -25,10 +25,16 @@ public class DoctorController : Controller
         _webHostEnvironment = webHostEnvironment;
     }
 
+    public IActionResult NoRecords()
+    {
+        return View();
+    }
+
     public IActionResult NoResults()
     {
         return View();
     }
+
     public IActionResult Index()
     {
         var guid = _service.GetCurrentUser(HttpContext.User);
@@ -52,7 +58,7 @@ public class DoctorController : Controller
     }
 
     [HttpPost]
-    [Authorize(Roles = "Doctor")] 
+    [Authorize(Roles = "Doctor")]
     [ValidateAntiForgeryToken]
     public IActionResult AssignPatientToDoctor(PatientDoctorDTO patientDoctorDto)
     {
@@ -76,24 +82,24 @@ public class DoctorController : Controller
             TempData["error"] = "Unable to create medical condition due to error.";
             return View(e.Message);
         }
-        
+
         TempData["error"] = "Please fill the data again and come back later!.";
         return View(patientDoctorDto);
     }
-    
+
     public IActionResult Remove(string id)
     {
 
         var user = _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
             .Where(user => user.Id.Equals(id))
             .FirstOrDefault();
-        
+
         if (user is null)
             return BadRequest();
 
         return View(user);
     }
-    
+
     [HttpPost, ActionName("Remove")]
     public IActionResult RemovePost(string id)
     {
@@ -106,21 +112,21 @@ public class DoctorController : Controller
         TempData["success"] = "Patient removed succesfully.";
         return RedirectToAction("AssignPatientToDoctor");
     }
-   
+
     [Authorize]
     public IActionResult PatientInfo(string id)
     {
-        var patient= _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
-                                   .Where(user => user.Id.Equals(id))
-                                   .FirstOrDefault();
-        
+        var patient = _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
+            .Where(user => user.Id.Equals(id))
+            .FirstOrDefault();
+
         var doctor = _adminService.GetUserById(_service.GetCurrentUser(HttpContext.User));
         var tests = _service.ReturnAllTestsByUser(patient.Id);
         _service.ReturnTestNames(tests);
 
         var patientDoctor = new PatientDoctorDTO();
 
-        patientDoctor.Patient = patient;  
+        patientDoctor.Patient = patient;
         patientDoctor.User = doctor;
         patientDoctor.Tests = tests;
 
@@ -130,7 +136,7 @@ public class DoctorController : Controller
     [Authorize]
     public IActionResult UploadResults(string id)
     {
-        var patient =  _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
+        var patient = _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
             .Where(user => user.Id.Equals(id))
             .FirstOrDefault();
         var testDto = new TestUserDto();
@@ -159,11 +165,12 @@ public class DoctorController : Controller
             }
 
             testUserDto.ResultsPatient.Results = "/scans/" + fileName;
-        
+
             _service.AddTestResult(resultsPatient: testUserDto.ResultsPatient);
             TempData["success"] = "Succesfully uploaded!";
             return RedirectToAction("Index");
         }
+
         TempData["error"] = "An error occured while creating data..";
         return View(testUserDto);
     }
@@ -174,10 +181,10 @@ public class DoctorController : Controller
         var testDto = new TestUserDto();
         testDto.ResultsPatient = new TestResultsPatient();
         testDto.ResultsPatient.PatientId = _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
-                                                   .Where(user => user.Id.Equals(id))
-                                                   .Select(user => user.Id)
-                                                   .FirstOrDefault();
-        
+            .Where(user => user.Id.Equals(id))
+            .Select(user => user.Id)
+            .FirstOrDefault();
+
         testDto.TypeOfTest = _adminService.TestNamesSelectList();
         testDto.ResultsPatient = _service.ReturnTestsPatientById(id);
 
@@ -203,9 +210,10 @@ public class DoctorController : Controller
                 if (!string.IsNullOrEmpty(testUserDto.ResultsPatient.Results))
                 {
                     var oldImgPath = Path.Combine(wwwrootPath, testUserDto.ResultsPatient.Results.TrimStart('\\'));
-                    
-                    if(System.IO.File.Exists(oldImgPath)) System.IO.File.Delete(oldImgPath);
+
+                    if (System.IO.File.Exists(oldImgPath)) System.IO.File.Delete(oldImgPath);
                 }
+
                 using (var filestream = new FileStream(Path.Combine(scans, fileName), FileMode.Create))
                 {
                     file.CopyTo(filestream);
@@ -213,6 +221,7 @@ public class DoctorController : Controller
 
                 testUserDto.ResultsPatient.Results = "/scans/" + fileName;
             }
+
             _service.UpdatePatientsResult(patientsResult: testUserDto.ResultsPatient);
             TempData["success"] = "Succesfully updated!";
             return RedirectToAction("Index");
@@ -243,9 +252,10 @@ public class DoctorController : Controller
                 TempData["error"] = "Unable to create vaccination in the past";
                 return View(patientVaccinationDto);
             }
+
             _service.Save(patientVaccinationDto.ImmunizationForPatient);
             TempData["success"] = "Vaccination appointment successfully created!";
-            return RedirectToAction("Index");
+            return RedirectToAction("ReturnAllVaccines");
         }
 
         TempData["error"] = "Unable to add the data due to error";
@@ -256,6 +266,37 @@ public class DoctorController : Controller
     {
         var vaccines = _service.ReturnAllVaccinesWithPatients();
 
+        if (vaccines.Equals(null))
+            RedirectToAction("NoRecords");
+
         return View(vaccines);
     }
+
+    public IActionResult UpdateTheTimeOfVaccination(Guid id)
+    {
+        var vaccination = _service.ReturnPatientWithVaccination(id);
+
+        return View(vaccination);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult UpdateTheTimeOfVaccination(ImmunizationPatient vaccination)
+    {
+        if (ModelState.IsValid)
+        {
+            _service.ChangeTimeOfImmunization(vaccination.Id, vaccination.DateOfVaccination);
+            TempData["success"] = "Succesfuly updated";
+            return RedirectToAction("");
+        }
+        
+        TempData["error"] = "There is an error while updating data.";
+        return View(vaccination);
+    }
+/*
+    public IActionResult SendEmailToPatients()
+    {
+        
+    }
+*/
 }  

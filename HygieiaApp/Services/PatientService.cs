@@ -22,6 +22,8 @@ public class PatientService
     {
         return _repository.ApplicationUserRepository.Get(x => x.Id.Equals(id)) ?? new ApplicationUser();
     }
+
+  
     
     public PatientDoctorDTO ReturnTestsByPatient(ClaimsPrincipal claimsPrincipal)
     {
@@ -71,6 +73,15 @@ public class PatientService
     {
         var immunization = _repository.VaccinePatientRepository.Get(x => x.Id.Equals(id));
 
+        if (immunization.UserId == null)
+        {
+            var immunizationNew = new ImmunizationPatient();
+            immunizationNew.ImmunizationId = immunization.ImmunizationId;
+            immunizationNew.DateOfVaccination = immunization.DateOfVaccination;
+            immunizationNew.UserId = applicationUser.Id;
+            _repository.VaccinePatientRepository.Add(immunizationNew);
+        }
+
         immunization.UserId = applicationUser.Id;
         _repository.Save();
     }
@@ -100,4 +111,6 @@ public class PatientService
 
         return userList;
     }
+
+
 }
