@@ -27,15 +27,7 @@ public class DoctorService
         _repository = repository;
         _userManager = userManager;
     }
-
-    private IEnumerable<ImmunizationPatient> ReturnVaccinationsOnDate(DateTime date)
-    {
-        var all = _repository.VaccinePatientRepository.GetAll().Where(x => x.DateOfVaccination.Equals(date));
-        
-        all.ToList().ForEach(x => x.Selected = ReturnTheTypeForVaccination(x));
-
-        return all;
-    }
+    
 
     public ImmunizationPatient ReturnPatientWithVaccination(Guid id)
     {
@@ -185,38 +177,6 @@ public class DoctorService
         return string.Empty;
     }
 
-    private string? GetFullUserName(ImmunizationPatient immunizationPatient)
-    {
-        var user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(immunizationPatient.UserId));
-
-        return user.FirstName + " " + user.LastName;
-    }
-
-    private List<PatientVaccinationDto> ReturnVaccinationDto(IEnumerable<ImmunizationPatient> immunizationPatients)
-    {
-        var vaccinationDtoList = new List<PatientVaccinationDto>();
-        
-       /* immunizationPatients.ToList().ForEach(x =>
-        {
-            var dto = new PatientVaccinationDto();
-            dto.ImmunizationForPatient = x;
-            if (!x.UserId.Equals(null))
-                dto.FullNamePatient = GetFullUserName(x);
-        });*/
-
-        foreach (var patient in immunizationPatients)
-        {
-            var dto = new PatientVaccinationDto();
-            dto.ImmunizationForPatient = patient;
-            if (patient.UserId != null)
-                dto.FullNamePatient = GetFullUserName(patient);
-            vaccinationDtoList.Add(dto);
-        }
-
-        return vaccinationDtoList;
-    }
-
-    
     public IEnumerable<PatientVaccinationDto> ReturnAllVaccinesWithPatients()
     {
         var vaccines = _repository.VaccinePatientRepository.GetAll();
@@ -225,31 +185,110 @@ public class DoctorService
 
         return ReturnVaccinationDto(vaccines);
     }
-    
+
     public void ChangeTimeOfImmunization(Guid id, DateTime dateTime)
     {
         var immunization = ReturnVaccinationsOnDate(ReturnPatientWithVaccination(id).DateOfVaccination);
+
+         immunization.ToList().ForEach(x =>
+            {
+                x.DateOfVaccination = dateTime;
+                FindUserAndSendEmail(x.UserId, x.DateOfVaccination);
+            });
+         
         
-        immunization.ToList().ForEach(x =>
-        {
-            x.DateOfVaccination = dateTime;
-            FindUserAndSendEmail(x.UserId, x.DateOfVaccination);
-        });
         _repository.Save();
-        
     }
 
+    public IEnumerable<SelectListItem> MedicalConditionsSelectList()
+    {
+        var users = _repository.MedicalConditionRepository.GetAll();
+
+        return users.Select(x => new SelectListItem
+        {
+            Value = x.Id.ToString(),
+            Text = x.NameOfDiagnosis
+        });
+    }
+
+    public IEnumerable<SelectListItem> MedicalConditionsSelectListTypes()
+    {
+        var users = _repository.MedicalConditionRepository.GetAll();
+
+        return users.Select(x => new SelectListItem
+        {
+            Value = x.Id.ToString(),
+            Text = x.Type + " " + x.NameOfDiagnosis
+        });
+    }
+
+    public void DiagnosePatient(PatientMedicalCondition condition)
+    {
+        _repository.PatientConditionRepository.Add(condition);
+        _repository.Save();
+    }
+
+    public MedicalConditionMedication ReturnMcByConditionAndMedication(Guid medicationId, Guid conditionId)
+    {
+        return _repository.MedicineForConditionRepository.Get(x =>
+            x.MedicalConditionId.Equals(conditionId) && x.MedicationId.Equals(medicationId));
+    }
+    
+    public void MedicatePatient(MedicalConditionMedicated conditionMedicated)
+    {
+        _repository.PatientMedicatedRepository.Add(conditionMedicated);
+        _repository.Save();
+    }
+    
+    private ApplicationUser GetAdmin()
+    {
+        var admin = _repository.ApplicationUserRepository.GetUserByRole(RoleName.Administrator.ToString());
+        return admin;
+    }
+
+    private ApplicationUser GetPatientsDoctor(string id)
+    {
+        var user = new ApplicationUser();
+        var docPat = _repository.PatientDoctorRepository.Get(x => x.PatientsId.Equals(id)) ?? null;
+        try
+        {
+
+
+            if (docPat != null)
+                user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(docPat.DoctorsId));
+            else
+                user = GetAdmin();
+        }
+        catch (NullReferenceException e)
+        {
+        }
+       
+        return user;
+    }
+    
     private void FindUserAndSendEmail(string id, DateTime dateTime)
     {
         var user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(id));
+
+        var userInCharge = new ApplicationUser();
+        //userInCharge = CheckIfUserInRole(user.Id, RoleName.Patient.ToString()) ? GetPatientsDoctor(user.Id) : GetAdmin();
+
+        if (CheckIfUserInRole(user.Id, RoleName.Patient.ToString()))
+            userInCharge = GetPatientsDoctor(user.Id);
+        else
+            userInCharge = GetAdmin();
         
-        SendEmail(user.Email, "Change of vaccination date", $"Dear {user.FirstName} {user.LastName} your appointment has been changed to the new date {dateTime}\nBest regards,\nHygieia team");
+        var fullName = userInCharge.FirstName + " " + userInCharge.LastName;
+        
+        SendEmail(fullName, userInCharge.Email,user.Email, 
+            "Change of vaccination date", 
+            $"Dear {user.FirstName} {user.LastName},\n your appointment has been changed to the new date {dateTime}\nBest regards,\n{userInCharge.FirstName} {userInCharge.LastName}");
     }
     
-    private void SendEmail(string email, string subject, string body)
+    private void SendEmail(string userInChargeName, string userInChargeEmail, string email, string subject, string body)
     {
         var mailMessage = new MimeMessage();
-        mailMessage.From.Add(new MailboxAddress("Hygieia", "hygieiaapp874@gmail.com"));
+        mailMessage.From.Add(new MailboxAddress(userInChargeName, userInChargeEmail));
         mailMessage.To.Add(MailboxAddress.Parse(email));
         mailMessage.Subject = subject;
         mailMessage.Body = new TextPart("plain")
@@ -266,21 +305,54 @@ public class DoctorService
             smtpClient.Dispose();
         }
     }
-/*  
-    public IEnumerable<SelectListItem> ReturnConditionsSelectList()
+    
+    private bool CheckIfUserInRole(string userId, string rolename)
     {
-        var users = _repository.MedicalConditionRepository.GetAll();
+        var role = _repository.ApplicationUserRepository.GetRoleByUser(userId);
 
-        return users.Select(x => new SelectListItem
-        {
-            Value = x.Id.ToString(),
-            Text = x.NameOfDiagnosis
-        });
+        if (role.Equals(rolename))
+            return true;
+        return false;
+    }
+    
+    private string? GetFullUserName(ImmunizationPatient immunizationPatient)
+    {
+        var user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(immunizationPatient.UserId));
+
+        return user.FirstName + " " + user.LastName;
     }
 
+    private List<PatientVaccinationDto> ReturnVaccinationDto(IEnumerable<ImmunizationPatient> immunizationPatients)
+    {
+        var vaccinationDtoList = new List<PatientVaccinationDto>();
+        
+        /* immunizationPatients.ToList().ForEach(x =>
+         {
+             var dto = new PatientVaccinationDto();
+             dto.ImmunizationForPatient = x;
+             if (!x.UserId.Equals(null))
+                 dto.FullNamePatient = GetFullUserName(x);
+         });*/
 
+        foreach (var patient in immunizationPatients)
+        {
+            var dto = new PatientVaccinationDto();
+            dto.ImmunizationForPatient = patient;
+            if (patient.UserId != null)
+                dto.FullNamePatient = GetFullUserName(patient);
+            vaccinationDtoList.Add(dto);
+        }
 
-  
-*/
+        return vaccinationDtoList;
+    }
+    
+    private IEnumerable<ImmunizationPatient> ReturnVaccinationsOnDate(DateTime date)
+    {
+        var all = _repository.VaccinePatientRepository.GetAll().Where(x => x.DateOfVaccination.Equals(date));
+        
+        all.ToList().ForEach(x => x.Selected = ReturnTheTypeForVaccination(x));
 
+        return all;
+    }
+    
 }

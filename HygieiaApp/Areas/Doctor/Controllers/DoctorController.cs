@@ -70,7 +70,7 @@ public class DoctorController : Controller
             if (_service.CheckIfPatientIsAlreadyAtTheDoctor(patient: patientDoctorDto.Selected, doctor: guid))
             {
                 TempData["error"] = $"Patient already assigned to another doctor!";
-                return View(patientDoctorDto);
+                return RedirectToAction("AssignPatientToDoctor");
             }
 
             _service.LinkPatientToDoctor(patient: patientDoctorDto.Selected, doctor: patientDoctorDto.User.Id);
@@ -287,16 +287,51 @@ public class DoctorController : Controller
         {
             _service.ChangeTimeOfImmunization(vaccination.Id, vaccination.DateOfVaccination);
             TempData["success"] = "Succesfuly updated";
-            return RedirectToAction("");
+            return RedirectToAction("ReturnAllVaccines");
         }
         
         TempData["error"] = "There is an error while updating data.";
         return View(vaccination);
     }
-/*
-    public IActionResult SendEmailToPatients()
+
+    [Authorize]
+    public IActionResult DiagnosePatient(string id)
     {
+        var patientMedicalC = new PatientConditionsDto();
+        patientMedicalC.MedicalCondition = new MedicalCondition();
+        patientMedicalC.MedicalConditions = _service.MedicalConditionsSelectList();
+        patientMedicalC.PatientMedicalCondition = new PatientMedicalCondition();
+        patientMedicalC.PatientMedicalCondition.UserId = id;
+        patientMedicalC.MedicationSelectList = _adminService.MedicationNameSelectList();
+        return View(patientMedicalC);
+    }
+    
+    [Authorize]
+    [HttpPost]
+    public IActionResult DiagnosePatient(PatientConditionsDto patientc, DateTime? start, string? reason, decimal? maxdose, int? frequency)
+    {
+        _service.DiagnosePatient(patientc.PatientMedicalCondition);
+
+        if (patientc.SelectedMedication != null)
+        {
+            var medication = _adminService.GetMedicationById(patientc.SelectedMedication);
+
+            var conditionMedication = _service.ReturnMcByConditionAndMedication(medicationId: medication.Id,
+                conditionId: patientc.PatientMedicalCondition.MedicalConditionId);
+
+            var conditionMedicated = new MedicalConditionMedicated();
+            conditionMedicated.MedicalConditionPatientId = patientc.PatientMedicalCondition.Id;
+            conditionMedicated.MedicalConditionMedicationId = conditionMedicated.Id;
+            conditionMedicated.StartDate = (DateTime)start;
+            conditionMedicated.Frequency = (int)frequency;
+            conditionMedicated.Reason = reason;
+            conditionMedicated.Dosage = (decimal)maxdose;
+
+            _service.MedicatePatient(conditionMedicated);
+        }
+        
+        return RedirectToAction("Index");
         
     }
-*/
+  
 }  

@@ -25,4 +25,33 @@ public class ApplicationUserRepository : Repository<ApplicationUser>, IApplicati
 
         return users;
     }
+
+    public string GetRoleByUser(string userId)
+    {
+        var userrole = (from roleuser in _dbContext.UserRoles
+                              where roleuser.UserId.Equals(userId) 
+                              select roleuser.RoleId).FirstOrDefault();
+
+        var role = (from r in _dbContext.Roles
+                          where r.Id.Equals(userrole) 
+                          select r.Name).FirstOrDefault();
+
+        return role;
+    }
+
+    public ApplicationUser GetUserByRole(string rolename)
+    {
+        var role = (from rn in _dbContext.Roles
+                          where rn.Name.Equals(rolename)
+                          select rn.Id).First();
+
+        var userrole = (from ur in _dbContext.UserRoles
+                              where ur.RoleId.Equals(role) 
+                              select ur.UserId).First();
+        
+        var user = (from u in _dbContext.ApplicationUsers
+                                         where u.Id.Equals(userrole) 
+                                         select u).First();
+        return user;
+    }
 }

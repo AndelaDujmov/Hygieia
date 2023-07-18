@@ -20,7 +20,7 @@
                             <p class="card-text">@date.DateOfVaccination</p>
                             <p class="card-text">@date.Selected</p>
 
-                            <a class="btn btn-danger">Ignore</a>
+                            <a class="btn btn-danger" asp-action="CancelVaccination" asp-route-id="@date.Id">Cancel</a>
 
                         </div>
                     </div>

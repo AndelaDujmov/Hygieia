@@ -113,4 +113,12 @@ public class PatientService
     }
 
 
+    public void CancelVaccination(Guid id)
+    {
+        var vaccination = _repository.VaccinePatientRepository.Get(x => x.Id.Equals(id));
+
+        vaccination.UserId = null;
+        
+        _repository.Save();
+    }
 }

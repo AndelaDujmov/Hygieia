@@ -19,7 +19,6 @@ public class HomeController : Controller
         _drService = drService;
     }
 
-   
     public IActionResult Index()
     {
       

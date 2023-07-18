@@ -17,8 +17,7 @@
                             <p class="card-text">@date.ImmunizationForPatient.Selected</p>
                             @if (date.ImmunizationForPatient.UserId != null)
                             {
-                                <p class="card-text">@date.FullNamePatient</p>
-                                <button class="btn btn-primary">Confirm</button>
+                                <p class="card-text">@date.FullNamePatient</p><br/>
                             }
                             <a asp-area="Doctor" asp-action="UpdateTheTimeOfVaccination" asp-route-id="@date.ImmunizationForPatient.Id" class="btn btn-danger">Change</a>
 
@@ -33,7 +32,7 @@
                     <p class="text-danger">No records of immunization reported.</p>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100px"> Submit</button>
-                <a asp-area="Doctor" asp-controller="Doctor" asp-action="Index">Back to listing</a>
+                <a asp-area="Doctor" asp-controller="Doctor" asp-action="ReturnAllVaccines">Back to listing</a>
             }
 
 

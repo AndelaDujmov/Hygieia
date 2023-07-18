@@ -9,6 +9,7 @@ public class MedicationConditionDto
 {
     public MedicalCondition MedicalCondition { get; set; }
     public MedicalConditionMedication? MedicalConditionMedication { get; set; }
+    public PatientMedicalCondition? PatientMedicalCondition { get; set; }
     [ValidateNever]
     public IEnumerable<SelectListItem>? SelectListItems { get; set; }
 

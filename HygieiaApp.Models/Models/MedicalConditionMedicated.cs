@@ -9,6 +9,7 @@ public class MedicalConditionMedicated
     [Key] public Guid Id { get; set; }
     public Guid MedicalConditionPatientId { get; set; }
     [ForeignKey("MedicalConditionPatientId")]
+    [ValidateNever]
     public PatientMedicalCondition MedicalConditionPatient { get; set; }
     public Guid MedicalConditionMedicationId { get; set; }
     [ForeignKey("MedicalConditionMedicationId")]

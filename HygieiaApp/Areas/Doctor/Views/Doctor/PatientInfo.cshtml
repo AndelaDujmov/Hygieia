@@ -41,6 +41,8 @@
             <a asp-controller="Doctor" asp-action="EditResults" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2">
                 <i class="bi bi-plus-square-fill"></i>Edit results
             </a> &nbsp;<br/>
+            <a asp-controller="Doctor" asp-action="DiagnosePatient" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2"><i class="bi bi-heart-pulse-fill"></i> 
+                Diagnose Patient</a><br/>
             <a asp-controller="Doctor" asp-action="Index">Back to listing</a>
         </div>
     </form>

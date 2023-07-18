@@ -78,6 +78,13 @@ public class PatientController : Controller
         
         return View(all);
     }
-    
+
+    [Authorize]
+    public IActionResult CancelVaccination(Guid id)
+    {
+        _service.CancelVaccination(id);
+        TempData["success"] = "You succesfully cancelled vaccination!";
+        return RedirectToAction("ShowUpcommingVaccinations");
+    }
 }
 

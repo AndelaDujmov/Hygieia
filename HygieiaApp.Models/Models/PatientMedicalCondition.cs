@@ -14,7 +14,10 @@ public class PatientMedicalCondition
     [ForeignKey("UserId")]
     [ValidateNever]
     public ApplicationUser User { get; set; }
-    public List<MedicalCondition> MedicalCondition { get; set; }
+    public Guid MedicalConditionId { get; set; }
+    [ForeignKey("MedicalConditionId")]
+    [ValidateNever]
+    public MedicalCondition MedicalCondition { get; set; }
     public DateTime DateOfDiagnosis { get; set; }
     public Stage Stage { get; set; }
     public bool Deleted { get; set; } = false;
