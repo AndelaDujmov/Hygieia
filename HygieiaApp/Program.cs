@@ -4,7 +4,6 @@ using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.DataAccess.Repositories.Impl;
 using HygieiaApp.Models;
 using HygieiaApp.Models.Models;
-using HygieiaApp.Utility.Utils.Email;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -39,7 +38,6 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IMedicineForConditionRepository, MedicineForConditionRepository>();
-builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddTransient<AdminService>();
 builder.Services.AddTransient<PatientService>();
 builder.Services.AddTransient<DoctorService>();

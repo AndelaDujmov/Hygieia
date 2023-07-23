@@ -18,7 +18,7 @@ public class PatientMedicalCondition
     [ForeignKey("MedicalConditionId")]
     [ValidateNever]
     public MedicalCondition MedicalCondition { get; set; }
-    public DateTime DateOfDiagnosis { get; set; }
+    public DateOnly DateOfDiagnosis { get; set; }
     public Stage Stage { get; set; }
     public bool Deleted { get; set; } = false;
 }

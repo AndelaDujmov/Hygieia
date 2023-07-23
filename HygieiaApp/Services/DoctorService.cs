@@ -210,18 +210,48 @@ public class DoctorService
             Text = x.NameOfDiagnosis
         });
     }
-
-    public IEnumerable<SelectListItem> MedicalConditionsSelectListTypes()
+    
+    public void SendEmail(string userInChargeName, string userInChargeEmail, string email, string subject, string body)
     {
-        var users = _repository.MedicalConditionRepository.GetAll();
-
-        return users.Select(x => new SelectListItem
+        var mailMessage = new MimeMessage();
+        mailMessage.From.Add(new MailboxAddress(userInChargeName, userInChargeEmail));
+        mailMessage.To.Add(MailboxAddress.Parse(email));
+        mailMessage.Subject = subject;
+        mailMessage.Body = new TextPart("plain")
         {
-            Value = x.Id.ToString(),
-            Text = x.Type + " " + x.NameOfDiagnosis
-        });
+            Text = body
+        };
+
+        using (var smtpClient = new SmtpClient())
+        {
+            smtpClient.Connect("smtp.gmail.com", 465, true);
+            smtpClient.Authenticate("hygieiaapp874@gmail.com", "ygdrsoaimcdiwpny");
+            smtpClient.Send(mailMessage);
+            smtpClient.Disconnect(true);
+            smtpClient.Dispose();
+        }
     }
 
+    public bool CheckIfEmailExists(string email)
+    {
+        var userEmail = _repository.ApplicationUserRepository.GetAll().Select(x => x.Email);
+
+        if (userEmail.Contains(email))
+            return true;
+        
+        return false;
+    }
+
+    public bool CheckIfUsernameExists(string username)
+    {
+        var userName = _repository.ApplicationUserRepository.GetAll().Select(x => x.UserName);
+
+        if (userName.Contains(username))
+            return true;
+
+        return false;
+    }
+    
     public void DiagnosePatient(PatientMedicalCondition condition)
     {
         _repository.PatientConditionRepository.Add(condition);
@@ -239,7 +269,7 @@ public class DoctorService
         _repository.PatientMedicatedRepository.Add(conditionMedicated);
         _repository.Save();
     }
-    
+
     private ApplicationUser GetAdmin()
     {
         var admin = _repository.ApplicationUserRepository.GetUserByRole(RoleName.Administrator.ToString());
@@ -285,27 +315,7 @@ public class DoctorService
             $"Dear {user.FirstName} {user.LastName},\n your appointment has been changed to the new date {dateTime}\nBest regards,\n{userInCharge.FirstName} {userInCharge.LastName}");
     }
     
-    private void SendEmail(string userInChargeName, string userInChargeEmail, string email, string subject, string body)
-    {
-        var mailMessage = new MimeMessage();
-        mailMessage.From.Add(new MailboxAddress(userInChargeName, userInChargeEmail));
-        mailMessage.To.Add(MailboxAddress.Parse(email));
-        mailMessage.Subject = subject;
-        mailMessage.Body = new TextPart("plain")
-        {
-            Text = body
-        };
-
-        using (var smtpClient = new SmtpClient())
-        {
-            smtpClient.Connect("smtp.gmail.com", 465, true);
-            smtpClient.Authenticate("hygieiaapp874@gmail.com", "ygdrsoaimcdiwpny");
-            smtpClient.Send(mailMessage);
-            smtpClient.Disconnect(true);
-            smtpClient.Dispose();
-        }
-    }
-    
+  
     private bool CheckIfUserInRole(string userId, string rolename)
     {
         var role = _repository.ApplicationUserRepository.GetRoleByUser(userId);
@@ -354,5 +364,4 @@ public class DoctorService
 
         return all;
     }
-    
 }

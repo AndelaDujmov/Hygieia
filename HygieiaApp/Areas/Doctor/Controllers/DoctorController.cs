@@ -297,10 +297,13 @@ public class DoctorController : Controller
     [Authorize]
     public IActionResult DiagnosePatient(string id)
     {
-        var patientMedicalC = new PatientConditionsDto();
+        var patientMedicalC = new PatientConditionsDto(); 
+        var user = _adminService.GetUserById(id);
+        patientMedicalC.patientName = user.FirstName + " " + user.LastName;
         patientMedicalC.MedicalCondition = new MedicalCondition();
         patientMedicalC.MedicalConditions = _service.MedicalConditionsSelectList();
         patientMedicalC.PatientMedicalCondition = new PatientMedicalCondition();
+        patientMedicalC.SelectedMedication = Guid.Empty;
         patientMedicalC.PatientMedicalCondition.UserId = id;
         patientMedicalC.MedicationSelectList = _adminService.MedicationNameSelectList();
         return View(patientMedicalC);
@@ -312,7 +315,7 @@ public class DoctorController : Controller
     {
         _service.DiagnosePatient(patientc.PatientMedicalCondition);
 
-        if (patientc.SelectedMedication != null)
+        if (patientc.SelectedMedication != Guid.Empty)
         {
             var medication = _adminService.GetMedicationById(patientc.SelectedMedication);
 
@@ -321,8 +324,8 @@ public class DoctorController : Controller
 
             var conditionMedicated = new MedicalConditionMedicated();
             conditionMedicated.MedicalConditionPatientId = patientc.PatientMedicalCondition.Id;
-            conditionMedicated.MedicalConditionMedicationId = conditionMedicated.Id;
-            conditionMedicated.StartDate = (DateTime)start;
+            conditionMedicated.MedicalConditionMedicationId = conditionMedication.Id;
+            conditionMedicated.StartDate = DateOnly.FromDateTime((DateTime)start);
             conditionMedicated.Frequency = (int)frequency;
             conditionMedicated.Reason = reason;
             conditionMedicated.Dosage = (decimal)maxdose;

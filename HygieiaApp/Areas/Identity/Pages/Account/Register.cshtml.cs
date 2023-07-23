@@ -34,7 +34,7 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly DoctorService _doctorService;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -42,7 +42,7 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
         IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+           DoctorService doctorService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -50,7 +50,7 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _doctorService = doctorService;
         }
 
         /// <summary>
@@ -153,6 +153,13 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            if (Input.Mbo.ToString().Length != 9 || Input.Oib.ToString().Length != 11)
+            {
+                TempData["error"] = "Please check length of OIB and MBO";
+                return Page();
+            }
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
@@ -175,8 +182,21 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
                     var text = String.IsNullOrEmpty(Input.Role) ? RoleName.Patient.ToString() : Input.Role;
 
                     await _userManager.AddToRoleAsync(user: user, role: text);
-                    
+
                     var userId = await _userManager.GetUserIdAsync(user);
+
+                    if (_doctorService.CheckIfEmailExists(Input.Email))
+                    {
+                        TempData["error"] = "Email already exists!";
+                        return RedirectToPage("Register");
+                    }
+
+                    if (_doctorService.CheckIfUsernameExists(Input.Username))
+                    {
+                        TempData["error"] = "Username already exists!";
+                        return RedirectToPage("Register");
+                    }
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
@@ -185,17 +205,30 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    if (!User.IsInRole(RoleName.Administrator.ToString()))
+                    {
+                        _doctorService.SendEmail("HygieiaApp", user.Email, Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a><br>.");
+
+                    }
+                    else
+                    {
+                       
+                       _doctorService.SendEmail("HygieiaApp", user.Email, Input.Email,
+                           "Login credentials", $"Username: {Input.Username}<br>Password: {Input.Password}");
+                    }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                       return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
                     {
                         if (User.IsInRole(RoleName.Administrator.ToString()))
+                        {
+                          
                             TempData["success"] = "Succesfully created user!";
+                        }
                         else
                             await _signInManager.SignInAsync(user, isPersistent: false);
                         
