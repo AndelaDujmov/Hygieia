@@ -43,10 +43,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Pages\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <_ContentIncludedByDefault Remove="Utils\DataSource\diseaseTypes.json" />
       <_ContentIncludedByDefault Remove="Utils\DataSource\disorderTypes.json" />
       <_ContentIncludedByDefault Remove="Utils\DataSource\medicationClass.json" />

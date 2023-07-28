@@ -44,10 +44,8 @@ public class MedicalConditionController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(MedicationConditionDto condition)
     {
-
         if (ModelState.IsValid)
         {
-            
             try
             {
                 _service.CreateCondition(condition.MedicalCondition);
@@ -89,7 +87,7 @@ public class MedicalConditionController : Controller
         conditionDto.MedicalCondition = medicalcond;
         conditionDto.MedicalConditionMedication = medicineForCondition;
         conditionDto.SelectListItems = _service.MedicationNameSelectList();
-        
+        conditionDto.MedicalConditionMedications = _service.ReturnMedicationsByCondition(medicalcond.Id); 
         return View(conditionDto);
     }
     
@@ -99,7 +97,6 @@ public class MedicalConditionController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(MedicationConditionDto condition)
     {
-
         if (ModelState.IsValid)
         {
             try
@@ -151,8 +148,36 @@ public class MedicalConditionController : Controller
     [Authorize]
     public IActionResult Info(MedicationConditionDto condition)
     {
-
         return View(condition);
+    }
+
+    public IActionResult AddNewMedicationToCondition(Guid id)
+    {
+
+        var medicineForCondition = new MedicalConditionMedication();
+        medicineForCondition.MedicalConditionId = id;
+        var conditionDto = new MedicationConditionDto();
+        conditionDto.MedicalCondition = _service.GetConditionById(id);
+        conditionDto.MedicalConditionMedication = medicineForCondition;
+        conditionDto.SelectListItems = _service.MedicationNameSelectList();
+        
+        return View(conditionDto);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize]
+    public IActionResult AddNewMedicationToCondition(MedicationConditionDto medicationConditionDto)
+    {
+        medicationConditionDto.MedicalCondition = _service.GetConditionById(medicationConditionDto.MedicalConditionMedication.MedicalConditionId);
+        
+        _service.LinkConditionToMed(medicationConditionDto.MedicalCondition.Id, medicationConditionDto.MedicalConditionMedication);
+
+        TempData["success"] = "Medical condition edited succesfully.";
+        return RedirectToAction("Index");
+        
+
+        return View(medicationConditionDto);
     }
     
     public IActionResult Delete(Guid? id)

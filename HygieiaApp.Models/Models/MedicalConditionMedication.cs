@@ -18,6 +18,8 @@ public class MedicalConditionMedication
     public Medication? Medication { get; set; } 
     public decimal MaximumDosage { get; set; }
     public bool Deleted { get; set; } = false;
+    [NotMapped]
+    public string? NameOfMedication { get; set; }
 
  
 }

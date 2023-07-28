@@ -26,13 +26,24 @@ public class AdminService
         return _repository.MedicalConditionRepository.GetAll();
     }
 
+    public IEnumerable<MedicalConditionMedication>? ReturnMedicationsByCondition(Guid id)
+    {
+        var list =  _repository.MedicineForConditionRepository.GetAll();
+
+        if (list != null)
+        {
+            list = list.Where(x => x.MedicalConditionId.Equals(id));
+            list.Where(x => !x.MedicalConditionId.Equals(Guid.Empty)).ToList().ForEach(e => e.NameOfMedication = ReturnNameOfMedication(e.MedicationId));
+        }
+
+        return list;
+    }
+
     public IEnumerable<ApplicationUser> ReturnAllUsers()
     {
         return _repository.ApplicationUserRepository.GetUsers();
     }
-
-   
-
+    
     public IEnumerable<SelectListItem> MedicationNameSelectList()
     {
         var items = ReturnAllMedications();
@@ -199,5 +210,12 @@ public class AdminService
         conditionMedication.MedicalConditionId = id;
         _repository.MedicineForConditionRepository.Add(conditionMedication);
         _repository.Save();
+    }
+
+    private string? ReturnNameOfMedication(Guid id)
+    {
+        var medication = _repository.MedicationRepository.Get(x => x.Id.Equals(id));
+
+        return medication.Name ?? string.Empty;
     }
 }

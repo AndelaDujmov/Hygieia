@@ -1,0 +1,31 @@
+@using HygieiaApp.Models.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MedicationConditionDto
+
+ <div class="card-body p-3">
+    <form method="post">
+        <input asp-for="MedicalConditionMedication.Id" hidden/>
+        <div class="border p-3  mt-4">
+            <div class="row pb-2">
+                <h2 class="text-primary">Add new medication to @Model.MedicalCondition.NameOfDiagnosis</h2>
+                <hr/>
+            </div>
+            <div asp-validation-summary="All"></div>
+            <div class="mb-3">
+                <label class="col-form-label" asp-for="MedicalConditionMedication.MedicationId">Medications</label>
+                <select class="form-select" asp-for="MedicalConditionMedication.MedicationId" asp-items="@Model.SelectListItems">
+                    <option selected="selected" id="select" value="@Model.MedicalConditionMedication.MedicationId">Please select one of the above</option>
+                </select>
+                <label class="col-form-label" asp-for="MedicalConditionMedication.MaximumDosage">Maximum Dosage</label><br/>
+                <input type="text" asp-for="MedicalConditionMedication.MaximumDosage" style="width: 150px; height: 45px;"> &nbsp;mg/d</input>
+                <span asp-validation-for="MedicalConditionMedication.MaximumDosage"  class="text-danger"></span><br/>
+                
+            </div>
+            
+             
+            <button type="submit" class="btn btn-primary" style="width: 100px">Update</button>
+            <a asp-controller="MedicalCondition" asp-action="Index">Back to listing</a>
+        </div>
+    </form>
+
+</div>
