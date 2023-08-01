@@ -138,6 +138,7 @@ public class MedicalConditionController : Controller
         var conditionDto = new MedicationConditionDto();
         conditionDto.MedicalCondition = medicalcond;
         conditionDto.MedicalConditionMedication = medicineForCondition;
+        conditionDto.MedicalConditionMedications = _service.ReturnMedicationsByCondition(medicalcond.Id); 
         conditionDto.SelectListItems = _service.MedicationNameSelectList();
         
         return View(conditionDto);
@@ -145,7 +146,7 @@ public class MedicalConditionController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     public IActionResult Info(MedicationConditionDto condition)
     {
         return View(condition);
@@ -179,19 +180,53 @@ public class MedicalConditionController : Controller
 
         return View(medicationConditionDto);
     }
-    
+    public IActionResult UpdateMedicationToCondition(Guid id)
+    {
+        var meicationConditionView = new MedicationConditionDto();
+        meicationConditionView.MedicalConditionMedication = new MedicalConditionMedication();
+        meicationConditionView.MedicalConditionMedication = _service.GetMedicationForCondition(id);
+        meicationConditionView.SelectListItems = _service.MedicationNameSelectList();
+        meicationConditionView.MedicalCondition =
+            _service.GetConditionById(meicationConditionView.MedicalConditionMedication.MedicalConditionId);
+
+        return View(meicationConditionView);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize]
+    public IActionResult UpdateMedicationToCondition(MedicationConditionDto medicationConditionDto)
+    {
+        medicationConditionDto.MedicalConditionMedication.MedicalConditionId =
+            _service.GetConditionById(medicationConditionDto.MedicalConditionMedication.MedicalConditionId).Id;
+        _service.UpdateMedicationForCondition(medicationConditionDto.MedicalConditionMedication);
+        TempData["success"] = "Successfully updated!";
+        return RedirectToAction("AddNewMedicationToCondition");
+    }
+
+    [Authorize]
+    public IActionResult RemoveMedicationFromCondition(Guid id)
+    {
+        var medicalConditionMedication = _service.GetMedicationForCondition(id);
+
+        medicalConditionMedication.Deleted = true;
+        _service.UpdateMedicationForCondition(medicalConditionMedication);
+        
+        return RedirectToAction("Edit");
+    }
+
     public IActionResult Delete(Guid? id)
     {
         if (id is null)
             return NotFound();
-
+ 
         var medicalcond = _service.GetConditionById(id);
         if (medicalcond is null)
             return NotFound();
         
         return View(medicalcond);
     }
-    
+
     [HttpPost, ActionName("Delete")]
     public IActionResult DeletePost(Guid? id)
     {
@@ -207,5 +242,4 @@ public class MedicalConditionController : Controller
         TempData["success"] = "Medical condition deleted succesfully.";
         return RedirectToAction("Index");
     }
-   
 }

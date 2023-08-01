@@ -28,14 +28,22 @@
                 <input type="text" disabled asp-for="MedicalCondition.Symptoms" class="form-control"/><br/>
                 <label class="col-form-label" asp-for="MedicalCondition.Treatment"></label><br/>
                 <input disabled type="text" asp-for="MedicalCondition.Treatment" class="form-control"/>
-                <label class="col-form-label" >Medications</label><br/>
-                <select  id="selection" hidden disabled class="form-select" asp-for="MedicalConditionMedication.MedicationId" asp-items="@Model.SelectListItems">
-                    <option selected="selected" id="select">Please select one of the above</option>
-                </select>
                 
-                <div id="write" class="form-control"></div><br/>
-                <label class="col-form-label" asp-for="MedicalConditionMedication.MaximumDosage">Maximum Dosage</label><br/>
-                <input disabled type="text" asp-for="MedicalConditionMedication.MaximumDosage" style="width: 150px; height: 45px;"> &nbsp;mg/d</input>
+                @if (@Model.MedicalConditionMedications is not null)
+                {
+                    <div class="row">
+                    @foreach (var element in @Model.MedicalConditionMedications)
+                    {
+                        
+                        <div class="card w-25" style="margin-bottom: 15px">
+                            <div class="card-body">
+                                <p class="card-text">@element.NameOfMedication</p>
+                                <p class="card-text">@element.MaximumDosage</p>
+                            </div>
+                        </div>
+                    }
+                    </div>
+                }
             </div>
             
             <a asp-controller="MedicalCondition" asp-action="Index">Back to listing</a>

@@ -23,16 +23,11 @@ public class UserController : Controller
         var users = _service.ReturnAllUsers();
         return View(users);
     }
-    /*
+    
     [Authorize(Roles = "Administrator")]
-    public IActionResult Edit(string? id)
+    public IActionResult Edit(string id)
     {
-        if (id is null)
-        {
-            TempData["error"] = "Unable to edit medical condition due to unknown id.";
-            return NotFound();
-        }
-
+        
         var user = _service.GetUserById(id);
 
         if (user is null)
@@ -44,8 +39,7 @@ public class UserController : Controller
         
         return View(user);
     }
-    
-    *//*
+   
     [HttpPost]
     [Authorize(Roles = "Administrator")]
     [ValidateAntiForgeryToken]
@@ -67,9 +61,9 @@ public class UserController : Controller
             }
         }
 
-        return View(condition);
+        return View(user);
     }
-    
+    /*
     [Authorize]
     public IActionResult Info(Guid? id)
     {

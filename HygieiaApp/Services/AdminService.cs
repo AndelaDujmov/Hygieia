@@ -1,5 +1,6 @@
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.Models;
+using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +33,7 @@ public class AdminService
 
         if (list != null)
         {
-            list = list.Where(x => x.MedicalConditionId.Equals(id));
+            list = list.Where(x => x.MedicalConditionId.Equals(id) && x.Deleted.Equals(false));
             list.Where(x => !x.MedicalConditionId.Equals(Guid.Empty)).ToList().ForEach(e => e.NameOfMedication = ReturnNameOfMedication(e.MedicationId));
         }
 
@@ -106,6 +107,12 @@ public class AdminService
     {
         return _repository.ApplicationUserRepository.Get(user => user.Id.Equals(id));
     }
+
+    public MedicalConditionMedication GetMedicationForCondition(Guid id)
+    {
+        return _repository.MedicineForConditionRepository.Get(x => x.Id.Equals(id));
+    }
+    
     public MedicalConditionMedication GetLinkByIdConditionId(Guid id)
     {
         MedicalConditionMedication? conditionLink = _repository.MedicineForConditionRepository
@@ -179,6 +186,14 @@ public class AdminService
     public void UpdateTestResult(TestResult testResult)
     {
         _repository.ResultsRepository.Update(testResult);
+    }
+
+    public void UpdateMedicationForCondition(MedicalConditionMedication medicalConditionMedication)
+    {
+        if(ReturnMedicationsByCondition(medicalConditionMedication.MedicalConditionId) is null)
+            _repository.MedicineForConditionRepository.Add(medicalConditionMedication);
+        else 
+            _repository.MedicineForConditionRepository.Update(medicalConditionMedication);
     }
     
     public void DeleteCondition(MedicalCondition condition)

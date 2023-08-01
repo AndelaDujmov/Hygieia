@@ -34,18 +34,22 @@
                 
                 @if (@Model.MedicalConditionMedications is not null)
                 {
+                    <div class="row">
                     @foreach (var element in @Model.MedicalConditionMedications)
                     {
+                        
                         <div class="card w-50" style="margin-bottom: 15px">
                             <div class="card-body">
                                 <p class="card-text">@element.NameOfMedication</p>
                                 <p class="card-text">@element.MaximumDosage</p>
                                 
-                                <a asp-area="Doctor" asp-action="" asp-route-id="@element.Id" class="btn btn-danger">Update</a>
+                                <a asp-action="UpdateMedicationToCondition" asp-route-id="@element.Id" class="btn btn-primary">Edit</a>
+                                <a asp-action="RemoveMedicationFromCondition" asp-route-id="@element.Id" class="btn btn-danger">Delete</a>
 
                             </div>
                         </div>
                     }
+                    </div>
                 }
                 
                 <a asp-controller="MedicalCondition" asp-action="AddNewMedicationToCondition" asp-route-id="@Model.MedicalCondition.Id" class="btn btn-primary mx-2">
