@@ -54,4 +54,16 @@ public class ApplicationUserRepository : Repository<ApplicationUser>, IApplicati
                                          select u).First();
         return user;
     }
+
+    public void UpdateUser(ApplicationUser applicationUser)
+    {
+        var user = _dbContext.ApplicationUsers.ToList().Where(x => x.Id.Equals(applicationUser.Id)).First();
+
+        user.Email = applicationUser.Email;
+        user.Gender = applicationUser.Gender;
+        user.DateOfBirth = applicationUser.DateOfBirth;
+
+        _dbContext.ApplicationUsers.Update(user);
+        _dbContext.SaveChanges();
+    }
 }

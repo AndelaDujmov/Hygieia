@@ -7,4 +7,5 @@ public interface IApplicationUserRepository : IRepository<ApplicationUser>
     public IEnumerable<ApplicationUser> GetUsers();
     public string GetRoleByUser(string userId);
     public ApplicationUser GetUserByRole(string rolename);
+    public void UpdateUser(ApplicationUser applicationUser);
 }

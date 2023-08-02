@@ -38,13 +38,23 @@
                              <option selected="selected" id="select" value="@Model.Gender">Please select one of the above</option>
                          </select>
 
+                         <input asp-for="PasswordHash" value="@Model.PasswordHash" hidden/>
+                         
+                         <div class="form-floating">
+                             <select asp-for="Role" asp-items="@Html.GetEnumSelectList<RoleName>()" class="form-select">
+                                 <option id="select" selected value="@Model.Role">--Select user function--</option>
+                             </select>
+                         </div>
+                         
                          <label class="col-form-label" asp-for="DateOfBirth">Date Of Birth</label><br/>
                          <input class="form-control border-0 shadow" asp-for="DateOfBirth"/><br/>
+                         
+                         <button type="submit" asp-action="" asp-route-id="" class="btn btn-primary">Change password?</button>
                          
                      </div>
                     
                             <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>
-                            <a asp-controller="Doctor" asp-action="">Back to listing</a>
+                            <a asp-action="Index">Back to listing</a>
                         </div>
             </div>
             

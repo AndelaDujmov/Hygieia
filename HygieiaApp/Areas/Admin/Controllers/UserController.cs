@@ -45,21 +45,19 @@ public class UserController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(ApplicationUser user)
     {
-        if (ModelState.IsValid)
+   
+        try
         {
-            try
-            {
-               
-
-                TempData["success"] = "User edited succesfully.";
-                return RedirectToAction("Index");
-            }
-            catch (Exception e)
-            {
-                TempData["error"] = "Unable to edit medical condition due to error.";
-                return View(e.Message);
-            }
+            _service.UpdateUser(user);
+            TempData["success"] = "User edited succesfully.";
+            return RedirectToAction("Index");
         }
+        catch (Exception e)
+        {
+            TempData["error"] = "Unable to edit medical condition due to error.";
+            return View(e.Message);
+        }
+        
 
         return View(user);
     }
@@ -98,34 +96,29 @@ public class UserController : Controller
 
         return View(condition);
     }
+   */
     
-    public IActionResult Delete(Guid? id)
+    [Authorize(Roles = "Administrator")]
+    public IActionResult Delete(string id)
     {
-        if (id is null)
-            return NotFound();
-
-        var medicalcond = _service.GetConditionById(id);
-        if (medicalcond is null)
-            return NotFound();
-        
-        return View(medicalcond);
-    }
-    
-    [HttpPost, ActionName("Delete")]
-    public IActionResult DeletePost(Guid? id)
-    {
-        var category = _service.GetConditionById(id);
-
-        if (category == null)
-        {
-            TempData["error"] = "Unable to delete medical condition due to error.";
-            return NotFound();
-        }
-
-        _service.DeleteCondition(category);
-        TempData["success"] = "Medical condition deleted succesfully.";
+        _service.DeleteUser(id);
+        TempData["success"] = "User deleted succesfully.";
         return RedirectToAction("Index");
     }
-   
-    */
+
+    [Authorize(Roles = "Administrator")]
+    public IActionResult SeeDeletedUsers()
+    {
+        var users = _service.DeletedUsers();
+
+        return View(users);
+    }
+
+    [Authorize(Roles = "Administrator")]
+    public IActionResult UndoUser(string id)
+    {
+        _service.Undo(id);
+        TempData["success"] = "User successfully readded!";
+        return RedirectToAction("SeeDeletedUsers");
+    }
 }

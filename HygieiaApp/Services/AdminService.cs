@@ -42,7 +42,7 @@ public class AdminService
 
     public IEnumerable<ApplicationUser> ReturnAllUsers()
     {
-        return _repository.ApplicationUserRepository.GetUsers();
+        return _repository.ApplicationUserRepository.GetUsers().Where(x => !x.Deleted);
     }
     
     public IEnumerable<SelectListItem> MedicationNameSelectList()
@@ -105,7 +105,8 @@ public class AdminService
 
     public ApplicationUser? GetUserById(string? id)
     {
-        return _repository.ApplicationUserRepository.Get(user => user.Id.Equals(id));
+        return _repository.ApplicationUserRepository.GetUsers().Where(x => x.Id.Equals(id) && !x.Deleted)
+                                                    .First();
     }
 
     public MedicalConditionMedication GetMedicationForCondition(Guid id)
@@ -213,12 +214,6 @@ public class AdminService
         _repository.VaccineRepository.Delete(immunization);
         _repository.Save();
     }
-    
-    public void DeleteTest(TestResult testResult)
-    {
-        _repository.ResultsRepository.Delete(testResult);
-        _repository.Save();
-    }
 
     public void LinkConditionToMed(Guid id, MedicalConditionMedication conditionMedication)
     {
@@ -227,10 +222,46 @@ public class AdminService
         _repository.Save();
     }
 
-    private string? ReturnNameOfMedication(Guid id)
+    public void UpdateUser(ApplicationUser user)
+    {
+        _repository.ApplicationUserRepository.UpdateUser(user);
+    }
+
+    public void DeleteUser(string id)
+    {
+        var user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(id));
+
+        user.Deleted = true;
+        _repository.Save();
+    }
+
+    public IEnumerable<ApplicationUser> DeletedUsers()
+    {
+        return _repository.ApplicationUserRepository.GetUsers().Where(x => x.Deleted);
+    }
+
+    public void Undo(string id)
+    {
+        var user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(id));
+
+        user.Deleted = false;
+        _repository.Save();
+    }
+
+    public string ReturnPasswordForUser(string id)
+    {
+        return _repository.ApplicationUserRepository.GetUsers()
+                                                    .Where(x => x.Id.Equals(id))
+                                                    .Select(x => x.PasswordHash)
+                                                    .First();
+    }
+    
+    private string? ReturnNameOfMedication(Guid id) 
     {
         var medication = _repository.MedicationRepository.Get(x => x.Id.Equals(id));
 
-        return medication.Name ?? string.Empty;
+        return medication.Name ?? string.Empty; 
     }
+      
+      
 }
