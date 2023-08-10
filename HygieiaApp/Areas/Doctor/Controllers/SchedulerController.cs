@@ -1,53 +1,104 @@
 using HygieiaApp.DataAccess.Data;
 using HygieiaApp.DataAccess.Repositories;
+using HygieiaApp.Models.DTO;
+using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using HygieiaApp.Utility.Utils.CalendarHelper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HygieiaApp.Areas.Doctor;
 
 [Area(("Doctor"))]
 public class SchedulerController : Controller
 {
-    private readonly IUnitOfWork _eventRepository;
+    private readonly DoctorService _service;
+    private readonly AdminService _adminService;
 
-    public SchedulerController(IUnitOfWork eventRepository)
+    public SchedulerController(DoctorService doctorService, AdminService adminService)
     {
-        _eventRepository = eventRepository;
+        _service = doctorService;
+        _adminService = adminService;
     }
     [Authorize(Roles = "Doctor")]
     public IActionResult Index()
     {
-        var scheduler = _eventRepository.EventRepository.GetAll();
+
+        ViewData["Resources"] =
+            JsonHelper.GetResouceListJson(_service.ReturnUsers(_service.GetCurrentUser(HttpContext.User)));
+        
+        var currentUser = _adminService.GetUserById(_service.GetCurrentUser(HttpContext.User));
+        
+        
+        var scheduler = _service.GetAllEvents(_service.GetCurrentUser(HttpContext.User));
+        ViewData["Events"] = JsonHelper
+            .GetEventListJson(_service.GetAllEvents(_service.GetCurrentUser(HttpContext.User)).ToList());
+        
+        
         return View(scheduler);
     }
-    
+
+    public IActionResult Details(Guid id)
+    {
+        var scheduledEvent = _service.GetEventById(id);
+
+        return View(scheduledEvent);
+    }
+
     [Authorize(Roles = "Doctor")]
     public IActionResult Create()
     {
-        return View();
+        var model = new EventUserDto(_service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
+            .ToList());
+        model.Scheduler = new Scheduler();
+        return View(model);
     }
-    
+
     [HttpPost]
     [Authorize(Roles = "Doctor")]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(Scheduler scheduler)
+    public IActionResult Create(EventUserDto model)
     {
-        if (ModelState.IsValid)
+        model.Scheduler.DoctorId = _service.GetCurrentUser(HttpContext.User);   
+        if (model is not null)
         {
-            try
+            if (model.Scheduler.DateOfAppointment.Date<DateTime.Now)
             {
-                _eventRepository.EventRepository.Add(scheduler);
-                TempData["success"] = "Event created succesfully.";
-                return RedirectToAction("Index");
+                TempData["error"] = "Unable to book an appointment in the past!";
+                return RedirectToAction("Create");
             }
-            catch (Exception e)
-            {
-                TempData["error"] = "Unable to create event due to error.";
-                return View(e.Message);
-            }
-        }
 
-        return View(scheduler);
+            if (_service.CheckIfDateIsBooked(model.Scheduler.DateOfAppointment, model.Scheduler.DoctorId))
+            {
+                TempData["error"] = "Term already booked!";
+                return RedirectToAction("Create");
+            }
+                
+            _service.AddEvent(model.Scheduler);
+            var currentUser = _adminService.GetUserById(_service.GetCurrentUser(HttpContext.User));
+            var fullname = currentUser.FirstName + " " + currentUser.LastName;
+            _service.SendEmail(fullname, currentUser.Email, _adminService.GetUserById(model.Scheduler.PatientId).Email, 
+                "Appointment term", $"Dear {_adminService.GetUserById(model.Scheduler.PatientId).FirstName},\n Your doctor's appointment has been scheduled to {model.Scheduler.DateOfAppointment.ToLongDateString()}.\nYours truly,\nHygieia team");
+            TempData["success"] = "Successfully created event!";
+        }
+        else
+            TempData["error"] = "Data input error.";
+        return RedirectToAction("Index");
     }
+
+    [Authorize]
+    public IActionResult Edit(Guid id)
+    {
+        var model = new EventUserDto(_service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
+            .ToList());
+        model.Scheduler = _service.ReturnEventById(id);
+        return View(model);
+    }
+
+   /*[Authorize]
+    public IActionResult Edit(EventUserDto model)
+    {
+        
+    }*/
 }

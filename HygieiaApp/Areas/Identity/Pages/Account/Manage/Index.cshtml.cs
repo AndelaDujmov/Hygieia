@@ -16,23 +16,26 @@ namespace HygieiaApp.Areas.Identity.Pages.Account.Manage
     public class IndexModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly AdminService _adminService;
         private readonly SignInManager<IdentityUser> _signInManager;
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            AdminService adminService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _adminService = adminService;
         }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public string Username { get; set; }
+      
 
-        public string FirstName { get; set; }
+        
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -60,6 +63,13 @@ namespace HygieiaApp.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            public string FirstName { get; set; }
+            public string Username { get; set; }
+            public string LastName { get; set; }
+            [Display(Name = "Date of birth")]
+            public DateTime DateOfBirth { get; set; }
+            [EmailAddress]
+            public string Email { get; set; }
         }
 
         private async Task LoadAsync(IdentityUser user)
@@ -68,12 +78,18 @@ namespace HygieiaApp.Areas.Identity.Pages.Account.Manage
             {
                 var userName = await _userManager.GetUserNameAsync(user);
                 var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            
-                Username = userName;
+                var appUser = _adminService.GetUserById(user.Id);
+
+                
 
                 Input = new InputModel
                 {
-                    PhoneNumber = phoneNumber
+                    PhoneNumber = phoneNumber,
+                    Username = appUser.UserName,
+                    FirstName = appUser.FirstName,
+                    LastName = appUser.LastName,
+                    DateOfBirth = appUser.DateOfBirth,
+                    Email = appUser.Email
                 };
             }
         }
@@ -115,6 +131,14 @@ namespace HygieiaApp.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            var appUser = _adminService.GetUserById(user.Id);
+            appUser.FirstName = Input.FirstName;
+            appUser.LastName = Input.LastName;
+            appUser.DateOfBirth = Input.DateOfBirth;
+            appUser.Email = Input.Email;
+            appUser.UserName = Input.Username;
+            appUser.NormalizedUserName = appUser.UserName.ToUpper();
+            _adminService.UpdateUser(appUser);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();

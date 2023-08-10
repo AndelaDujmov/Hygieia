@@ -173,10 +173,18 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
                 user.DateOfBirth = Input.DateOfBirth;
                 user.Gender = Input.Gender;
                 user.Deleted = false;
+                
+                if (_doctorService.CheckIfEmailExists(Input.Email))
+                {
+                    TempData["error"] = "Email already exists!";
+                    return RedirectToPage("Register");
+                }
+                
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
+                    
                     _logger.LogInformation("User created a new account with password.");
 
                     var text = String.IsNullOrEmpty(Input.Role) ? RoleName.Patient.ToString() : Input.Role;
@@ -185,11 +193,7 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
 
                     var userId = await _userManager.GetUserIdAsync(user);
 
-                    if (_doctorService.CheckIfEmailExists(Input.Email))
-                    {
-                        TempData["error"] = "Email already exists!";
-                        return RedirectToPage("Register");
-                    }
+                  
 
                     if (_doctorService.CheckIfUsernameExists(Input.Username))
                     {

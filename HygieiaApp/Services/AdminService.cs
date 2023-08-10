@@ -44,7 +44,8 @@ public class AdminService
     {
         return _repository.ApplicationUserRepository.GetUsers().Where(x => !x.Deleted);
     }
-    
+
+
     public IEnumerable<SelectListItem> MedicationNameSelectList()
     {
         var items = ReturnAllMedications();

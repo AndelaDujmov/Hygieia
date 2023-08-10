@@ -9,8 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Exception = System.Exception;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
+
 
 namespace HygieiaApp.Areas.Admin;
 
@@ -153,42 +152,5 @@ public class MedicationController : Controller
         return RedirectToAction("Index");
     }
 
-    [Authorize]
-    public IActionResult ChangePassword(string id)
-    {
-        var passwordChange = new ChangePasswordDto();
-        passwordChange.CurrentPassword = _service.ReturnPasswordForUser(id);
-
-        return View(passwordChange);
+   
     }
-
-    [Authorize]
-    [HttpPost]
-    public IActionResult ChangePassword(ChangePasswordDto model)
-    {
-        if (ModelState.IsValid)
-        {
-            ApplicationUserManager UserManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            ApplicationUser user = UserManager.FindById(model.UserId);
-
-            if (user != null)
-            {
-                IdentityResult result = UserManager.ResetPassword(model.UserId, model.Token, model.NewPassword);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-
-                foreach (string error in result.Errors)
-                    ModelState.AddModelError("", error);
-
-                return View(model);
-            }
-
-
-            return HttpNotFound();
-        }
-
-        return View(model);
-    }
-}

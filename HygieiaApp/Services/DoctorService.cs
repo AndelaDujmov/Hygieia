@@ -87,6 +87,25 @@ public class DoctorService
 
         return patients;
     }
+
+    public IEnumerable<Scheduler> GetAllEvents(string roleId)
+    {
+        if (CheckIfUserInRole(roleId, RoleName.Administrator.ToString()))
+            return _repository.EventRepository.GetAll().Where(x => x.Deleted.Equals(false));
+        else
+            return GetEventsByDoctor(roleId);
+
+    }
+    public IEnumerable<Scheduler> GetAllEvents()
+    {
+        return _repository.EventRepository.GetAll().Where(x => x.Deleted.Equals(false));
+    }
+
+    public Scheduler GetEventById(Guid id)
+    {
+        return GetAllEvents().Where(x => x.Id.Equals(id)).First();
+    }
+
     public  string? GetCurrentUser(ClaimsPrincipal httpContextUser)
     {
         return _userManager.GetUserId(httpContextUser);
@@ -128,11 +147,23 @@ public class DoctorService
         _repository.Save();
     }
 
+    public void AddEvent(Scheduler scheduler)
+    {
+        
+        _repository.EventRepository.Add(scheduler);
+        _repository.Save();
+    }
+    
     public TestResultsPatient ReturnTestsPatientById(string id)
     {
         return _repository.TestResultPatientRepository.GetAll()
                                                       .Where(x => x.PatientId.Equals(id))
                                                       .FirstOrDefault() ?? new TestResultsPatient();
+    }
+
+    public Scheduler ReturnEventById(Guid id)
+    {
+        return _repository.EventRepository.Get(x => x.Id.Equals(id));
     }
     
     public void UpdatePatientsResult(TestResultsPatient patientsResult)
@@ -236,8 +267,11 @@ public class DoctorService
     {
         var userEmail = _repository.ApplicationUserRepository.GetAll().Select(x => x.Email);
 
-        if (userEmail.Contains(email))
-            return true;
+        foreach (var x in userEmail)
+       {
+           if (x.Equals(email))
+               return true;
+       }
         
         return false;
     }
@@ -269,7 +303,31 @@ public class DoctorService
         _repository.PatientMedicatedRepository.Add(conditionMedicated);
         _repository.Save();
     }
+    
+    public bool CheckIfDateIsBooked(DateTime schedulerDateOfAppointment, string id)
+    {
+        var dates = _repository.EventRepository.GetAll()
+                                                                  .Where(x => x.DoctorId.Equals(id))
+                                                                  .Select(x => x.DateOfAppointment);
 
+        if (dates.Contains(schedulerDateOfAppointment))
+            return true;
+        return false;
+    }
+
+    public List<ApplicationUser> ReturnUsers(string id)
+    {
+        return CheckIfUserInRole(id, RoleName.Administrator.ToString())
+            ? ReturnAllPatients().ToList()
+            : ReturnAllDoctorsPatients(id).ToList();
+    }
+
+    private IEnumerable<Scheduler> GetEventsByDoctor(string id)
+    {
+        return _repository.EventRepository.GetAll()
+            .Where(x => !x.Deleted && x.DoctorId.Equals(id));
+    }
+    
     private ApplicationUser GetAdmin()
     {
         var admin = _repository.ApplicationUserRepository.GetUserByRole(RoleName.Administrator.ToString());
@@ -301,7 +359,6 @@ public class DoctorService
         var user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(id));
 
         var userInCharge = new ApplicationUser();
-        //userInCharge = CheckIfUserInRole(user.Id, RoleName.Patient.ToString()) ? GetPatientsDoctor(user.Id) : GetAdmin();
 
         if (CheckIfUserInRole(user.Id, RoleName.Patient.ToString()))
             userInCharge = GetPatientsDoctor(user.Id);
@@ -335,14 +392,6 @@ public class DoctorService
     private List<PatientVaccinationDto> ReturnVaccinationDto(IEnumerable<ImmunizationPatient> immunizationPatients)
     {
         var vaccinationDtoList = new List<PatientVaccinationDto>();
-        
-        /* immunizationPatients.ToList().ForEach(x =>
-         {
-             var dto = new PatientVaccinationDto();
-             dto.ImmunizationForPatient = x;
-             if (!x.UserId.Equals(null))
-                 dto.FullNamePatient = GetFullUserName(x);
-         });*/
 
         foreach (var patient in immunizationPatients)
         {
@@ -364,4 +413,5 @@ public class DoctorService
 
         return all;
     }
+
 }
