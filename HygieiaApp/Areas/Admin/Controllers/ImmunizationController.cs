@@ -130,4 +130,14 @@ public class ImmunizationController : Controller
         TempData["success"] = "Medication deleted succesfully.";
         return RedirectToAction("Index");
     }
+
+    #region DATA_API_CALLS
+
+    [HttpGet]
+    public IActionResult GetImmunizations()
+    {
+        var immunizations = _service.ReturnAllVaccinations().ToList();
+        return Json(new { data = immunizations });
+    }
+    #endregion
 }

@@ -242,4 +242,14 @@ public class MedicalConditionController : Controller
         TempData["success"] = "Medical condition deleted succesfully.";
         return RedirectToAction("Index");
     }
+    
+    #region DATA_CALLS
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        IEnumerable<MedicalCondition> medicalConditions = _service.ReturnAllMedicalConditions();
+        return Json(new { data = medicalConditions });
+    }
+    #endregion
 }
