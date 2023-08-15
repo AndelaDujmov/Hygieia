@@ -23,12 +23,12 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
             _logger = logger;
         }
 
-        public async Task<IActionResult> OnPost(string area)
+        public async Task<IActionResult> OnPost()
         {
             await _signInManager.SignOutAsync();
             HttpContext.Session.Clear();
             _logger.LogInformation("User logged out.");
-            return RedirectToAction("index", "home", new { area = area });
+            return RedirectToAction("index", "home", new { area = "Patient" });
         }
     }
 }

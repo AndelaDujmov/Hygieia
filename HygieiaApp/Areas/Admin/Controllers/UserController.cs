@@ -28,7 +28,6 @@ public class UserController : Controller
     [Authorize(Roles = "Administrator")]
     public IActionResult Edit(string id)
     {
-        
         var user = _service.GetUserById(id);
 
         if (user is null)
@@ -36,7 +35,6 @@ public class UserController : Controller
             TempData["error"] = "Unable to update empty data.";
             return NotFound();
         }
-        
         
         return View(user);
     }
@@ -46,7 +44,6 @@ public class UserController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(ApplicationUser user)
     {
-   
         try
         {
             _service.UpdateUser(user);
@@ -58,11 +55,9 @@ public class UserController : Controller
             TempData["error"] = "Unable to edit medical condition due to error.";
             return View(e.Message);
         }
-        
-
         return View(user);
     }
-    /*
+    
     [Authorize]
     public IActionResult Info(Guid? id)
     {
@@ -73,7 +68,7 @@ public class UserController : Controller
         }
 
         var medicalcond = _service.GetConditionById(id);
-
+  
         if (medicalcond is null)
         {
             TempData["error"] = "Unable to update empty data.";
@@ -88,16 +83,6 @@ public class UserController : Controller
         
         return View(conditionDto);
     }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    [Authorize]
-    public IActionResult Info(MedicationConditionDto condition)
-    {
-
-        return View(condition);
-    }
-   */
     
     [Authorize(Roles = "Administrator")]
     public IActionResult Delete(string id)
@@ -122,46 +107,22 @@ public class UserController : Controller
         TempData["success"] = "User successfully readded!";
         return RedirectToAction("SeeDeletedUsers");
     }
+ 
+    #region DATA_CALLS
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        IEnumerable<ApplicationUser> applicationUsers = _service.ReturnAllUsers();
+        return Json(new { data = applicationUsers });
+    }
     
-    [Authorize]
-    public IActionResult ChangePassword(string id)
+    [HttpGet]
+    public IActionResult GetAllDeleted()
     {
-        var passwordChange = new ChangePasswordDto();
-        passwordChange.CurrentPassword = _service.ReturnPasswordForUser(id);
-
-        return View(passwordChange);
+        IEnumerable<ApplicationUser> medications = _service.DeletedUsers();
+        return Json(new { data = medications });
     }
-
-    [Authorize]
-    [HttpPost]
-    public IActionResult ChangePassword(ChangePasswordDto model)
-    {
-        if (ModelState.IsValid)
-        {
-            /*
-                        ApplicationUserManager UserManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                        ApplicationUser user = UserManager.FindById(model.UserId);
-            
-                        if (user != null)
-                        {
-                            IdentityResult result = UserManager.ResetPassword(model.UserId, model.Token, model.NewPassword);
-                            if (result.Succeeded)
-                            {
-                                return RedirectToAction("Index", "Home");
-                            }
-            
-                            foreach (string error in result.Errors)
-                                ModelState.AddModelError("", error);
-            
-                            return View(model);
-                        }
-            
-            
-                        return HttpNotFound();
-                    }
-            */
-        }
-
-        return View(model);
-    }
+    
+    #endregion
 }

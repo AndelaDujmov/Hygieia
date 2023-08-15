@@ -1,6 +1,6 @@
 @model HygieiaApp.Models.DTO.PatientDoctorDTO
 
-<div class="card-body p-3">
+<div class="card-body p-3" xmlns="http://www.w3.org/1999/html">
 
     <form method="post">
         <input asp-for="@Model.Patient.Id" hidden/>
@@ -21,26 +21,24 @@
                 <input type="text" asp-for="@Model.Patient.Email" disabled class="form-control"/><br/>
                 <label class="col-form-label">Doctor</label><br/>
                 <input type="text" asp-for="@(Model.User.Email)" disabled class="form-control"/><br/>
-                <label class="col-form-label">Test Results</label>
-                <table class="table-primary">
-                     <thead class="thead-dark text-secondary" style="background-color: lightblue; text-overline-color: white; color: white">
-                        @foreach (var element in @Model.Tests)
-                        {
-                            <tr>
-                                <td>@element.DateOfTesting</td>
-                                <td>@element.TestName</td>
-                            </tr>
-                        }
-                     </thead>
-                </table>
+                
             </div>
 
+            <div style="border-bottom: solid cadetblue 2px;"></div>
+            <br/>
+            <h4 class="text text-bg-light text-center">Test Results</h4>
+            <a asp-controller="Doctor" asp-action="GetAllPatientsResults" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2">
+                <i class="bi bi-folder"></i> All Results
+            </a> &nbsp;&nbsp;
             <a asp-controller="Doctor" asp-action="UploadResults" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2">
                 <i class="bi bi-plus-square-fill"></i>Upload results
-            </a> &nbsp;<br/>
-            <a asp-controller="Doctor" asp-action="EditResults" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2">
-                <i class="bi bi-plus-square-fill"></i>Edit results
-            </a> &nbsp;<br/>
+            </a> &nbsp;&nbsp;<br/>
+            <br/>
+            <div style="border-bottom: solid cadetblue 2px;"></div>
+            <br/>
+            <h4 class="text text-bg-light text-center">Medical History</h4>
+              <a asp-controller="Doctor" asp-action="DiagnosePatient" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2"><i class="bi bi-journal"></i>
+                            Show History</a> &nbsp;
             <a asp-controller="Doctor" asp-action="DiagnosePatient" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2"><i class="bi bi-heart-pulse-fill"></i> 
                 Diagnose Patient</a><br/>
             <a asp-controller="Doctor" asp-action="Index">Back to listing</a>

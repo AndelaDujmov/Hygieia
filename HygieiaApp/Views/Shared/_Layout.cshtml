@@ -25,20 +25,10 @@
               <span class="navbar-toggler-icon"></span>
           </button>
             
-          <div class="collapse navbar-collapse" id="navbarColor03">
+          <div class="collapse navbar-collapse" id="navbarColor03" style="z-index: 3;">
               
               <ul class="navbar-nav me-auto">
                   @if (User.IsInRole(RoleName.Administrator.ToString()))
-                  {
-                      <li class="nav-item">
-                          <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Active users</a>
-                      </li>
-                      <li class="nav-item">
-                           <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register new user</a>
-                      </li>
-                  }
-                 
-                  @if (User.IsInRole(RoleName.Administrator.ToString()) || User.IsInRole(RoleName.Doctor.ToString()))
                   {
                       <li class="nav-item dropdown">
                           <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -52,6 +42,43 @@
                               <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">Users</a>
                           </div>
                       </li>
+                      <li class="nav-item">
+                          <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Active users</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register new user</a>
+                      </li>
+                      <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                              Doctor Tools
+                          </a>
+                          <div class="dropdown-menu">
+                              <a class="dropdown-item" asp-area="Doctor" asp-controller="Scheduler" asp-action="Index">Scheduler</a>
+                              <a class="dropdown-item" asp-area="Doctor" asp-controller="Doctor" asp-action="Index">Add record</a>
+                              <a class="dropdown-item" href="#"></a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item text-danger" asp-area="Admin" asp-controller="User" asp-action="SeeDeletedUsers">Deleted Users</a>
+                              <a class="dropdown-item text-danger" asp-area="Admin" asp-controller="MedicalCondition" asp-action="GetAllDeletedConditions">Deleted Conditions</a>
+                              <a class="dropdown-item text-danger" asp-area="Admin" asp-controller="Medication" asp-action="GetAllRemoved">Deleted Conditions</a>
+                          </div>
+                      </li>
+                  }
+                 
+                  @if ( User.IsInRole(RoleName.Doctor.ToString()))
+                  {
+                      <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                              About
+                          </a>
+                          <div class="dropdown-menu">
+                              <a class="nav-link" asp-area="Admin" asp-controller="TestResults" asp-action="Index">Test Results</a>
+                              <a class="nav-link" asp-area="Admin" asp-controller="MedicalCondition" asp-action="Index">Medical Info</a>
+                              <a class="nav-link" asp-area="Admin" asp-controller="Immunization" asp-action="Index">Immunizations</a>
+                              <a class="nav-link" asp-area="Admin" asp-controller="Medication" asp-action="Index">Medications</a>
+                              <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">Users</a>
+                          </div>
+                      </li>
+                      
                       <a class="nav-link" asp-area="Doctor" asp-controller="Doctor" asp-action="Index">
                           My Patients
                       </a>
@@ -69,8 +96,6 @@
                               <a class="dropdown-item" asp-area="Doctor" asp-controller="Scheduler" asp-action="Index">Scheduler</a>
                               <a class="dropdown-item" asp-area="Doctor" asp-controller="Doctor" asp-action="Index">Add record</a>
                               <a class="dropdown-item" href="#"></a>
-                              <div class="dropdown-divider"></div>
-                              <a class="dropdown-item text-danger" asp-area="Admin" asp-controller="User" asp-action="SeeDeletedUsers">Deleted Users</a>
                           </div>
                       </li>
                   }

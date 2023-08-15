@@ -113,7 +113,7 @@ public class DoctorController : Controller
         return RedirectToAction("AssignPatientToDoctor");
     }
 
-    [Authorize]
+  
     public IActionResult PatientInfo(string id)
     {
         var patient = _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
@@ -121,7 +121,7 @@ public class DoctorController : Controller
             .FirstOrDefault();
 
         var doctor = _adminService.GetUserById(_service.GetCurrentUser(HttpContext.User));
-        var tests = _service.ReturnAllTestsByUser(patient.Id);
+        var tests   = _service.ReturnAllTestsByUser(patient.Id);
         _service.ReturnTestNames(tests);
 
         var patientDoctor = new PatientDoctorDTO();
@@ -129,8 +129,24 @@ public class DoctorController : Controller
         patientDoctor.Patient = patient;
         patientDoctor.User = doctor;
         patientDoctor.Tests = tests;
-
+  
         return View(patientDoctor);
+    }
+
+    [Authorize]
+    public IActionResult GetAllPatientsResults(string id)
+    {
+        var patientsResults = _service.GetAllTestsByPatient(id);
+
+        return patientsResults == null || !patientsResults.Any() ? RedirectToAction("NotFoundData", "MedicalCondition", new {area = "Admin"}) : View(patientsResults);
+    }
+
+    [Authorize]
+    public IActionResult GetUsersMedicalHistory(string id)
+    {
+        var usersHistory = _service.GetUsersConditions(id);
+
+        return View(usersHistory);
     }
 
     [Authorize]
@@ -336,5 +352,19 @@ public class DoctorController : Controller
         return RedirectToAction("Index");
         
     }
+
+    #region DATATABLE_API_CALLS
+
+    public IActionResult GetMyPatients()
+    {
+
+
+        IEnumerable<ApplicationUser> patients =
+            _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User));
+           
+        return Json(new { data = patients });
+    }
+    
+    #endregion
   
 }  

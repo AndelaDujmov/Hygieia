@@ -152,5 +152,35 @@ public class MedicationController : Controller
         return RedirectToAction("Index");
     }
 
-   
+    [HttpGet]
+    public IActionResult GetAllRemoved()
+    {
+        var medications = _service.ReturnAllDeletedMedications();
+        return medications == null || !medications.Any() ? RedirectToAction("NotFoundData", "MedicalCondition") : View(medications);
     }
+    
+    [Authorize(Roles = "Administrator")]
+    public IActionResult UndoMedication(Guid id)
+    {
+        _service.UndoMedication(id);
+        TempData["success"] = "Medication successfully readded!";
+        return RedirectToAction("GetAll");
+    }
+    
+    #region DATA_CALLS
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        IEnumerable<Medication> medications = _service.ReturnAllMedications();
+        return Json(new { data = medications });
+    }
+    
+    [HttpGet]
+    public IActionResult GetAllDeleted()
+    {
+        IEnumerable<Medication> medications = _service.ReturnAllDeletedMedications();
+        return Json(new { data = medications });
+    }
+    #endregion
+}

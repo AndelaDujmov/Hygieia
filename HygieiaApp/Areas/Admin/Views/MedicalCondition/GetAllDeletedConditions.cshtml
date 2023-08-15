@@ -1,21 +1,17 @@
-@model IEnumerable<HygieiaApp.Models.Models.Medication>
-<partial name="_Notification"/>
+@model System.Collections.Generic.IEnumerable<HygieiaApp.Models.Models.MedicalCondition>
 
 @{
-    ViewData["Title"] = "Medications";
+    ViewBag.Title = "title";
+    Layout = "_Layout";
 }
 
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2 class="text-primary">Medications</h2>
-        </div>
-        <div class="col-6 text-end">
-            <a asp-controller="Medication" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle-dotted"></i> &nbsp; Add new medication
-            </a>
+            <h2 class="text-primary">Conditions</h2>
         </div>
         
+        <br/>
         <br/>
         <br/>
         <br/>
@@ -24,18 +20,14 @@
             <thead class="thead-dark text-secondary" style="background-color: lightblue; text-overline-color: white; color: white">
             <tr class="text-primary">
                 <th>
-                    Classification
+                    Category
                 </th>
-                      
                 <th>
-                    Name
+                    Type
                 </th>
-                     
-                     
                 <th>
-                          
+                    Diagnosis Name
                 </th>
-                     
             </tr>
             </thead>
         </table>
@@ -44,5 +36,5 @@
 
 @section Scripts
 {
-    <script src="~/js/medication.js"></script>
+    <script src="~/js/removed.js"></script>
 }

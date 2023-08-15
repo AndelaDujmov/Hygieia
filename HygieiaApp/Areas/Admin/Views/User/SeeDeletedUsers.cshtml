@@ -10,7 +10,7 @@
         <br/>
         <br/>
         <br/>
-      <table class="table table table-bordered border-1.4 border-blue">
+      <table width="100%" id="myTable" class="table table table-bordered border-1.4 border-blue">
                   <thead class="thead-dark text-secondary" style="background-color: lightblue; text-overline-color: white; color: white">
                   <tr class="text-primary">
                       <th>
@@ -20,9 +20,7 @@
                           Username
                       </th>
                      
-                      <th>
-                          
-                      </th>
+                   
 
                       <th>
                           
@@ -30,24 +28,12 @@
                      
                   </tr>
                   </thead>
-                  <tbody>
-                  @foreach (var mc in Model)
-                  {
-                      <tr>
-                          <td>@mc.Email</td>
-                          <td>@mc.UserName</td>
-                          <td>@mc.Role</td>
-                          <td>
-                              
-                                  <a asp-action="UndoUser" asp-route-id="@mc.Id" class="btn btn-primary mx-2">
-                                     <i class="bi bi-arrow-counterclockwise"></i>
-                                  </a>
-                             
-                          </td>
-                      </tr>
-                  }
-                  </tbody>
+               
               </table>
     </div>
 </div>
 
+@section Scripts
+{
+    <script src="~/js/removedUsers.js"></script>
+}

@@ -1,5 +1,6 @@
 using HygieiaApp.DataAccess.Data;
 using HygieiaApp.Models.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HygieiaApp.DataAccess.Repositories.Impl;
 
@@ -17,7 +18,14 @@ public class MedicalConditionRepository : Repository<MedicalCondition>, IMedical
         _appDb.MedicalConditions.Update(medicalCondition);
         _appDb.SaveChanges();
     }
-    
+
+    public IEnumerable<MedicalCondition> GetMedications(List<Guid> medicalConditionUser)
+    {
+        return _appDb.MedicalConditions.Where(x =>
+                medicalConditionUser.Contains(x.Id))
+            .AsNoTracking();
+    }
+
     public IEnumerable<MedicalCondition> GetANonDeleted()
     {
         return base.GetAll()

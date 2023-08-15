@@ -3,6 +3,7 @@ using HygieiaApp.Models;
 using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Azure.Cosmos.Linq;
@@ -24,9 +25,13 @@ public class AdminService
 
     public IEnumerable<MedicalCondition> ReturnAllMedicalConditions()
     {
-        return _repository.MedicalConditionRepository.GetAll();
+        return _repository.MedicalConditionRepository.GetAll().Where(x => x.Deleted.Equals(false));
     }
 
+    public IEnumerable<MedicalCondition> ReturnAllDeletedConditions()
+    {
+        return _repository.MedicalConditionRepository.GetAll().Where(x => x.Deleted.Equals(true));
+    }
     public IEnumerable<MedicalConditionMedication>? ReturnMedicationsByCondition(Guid id)
     {
         var list =  _repository.MedicineForConditionRepository.GetAll();
@@ -71,9 +76,17 @@ public class AdminService
     public IEnumerable<Medication> ReturnAllMedications()
     {
         return  _repository.MedicationRepository
-                                           .GetAll();
+                                           .GetAll()
+                                           .Where(x => x.Deleted.Equals(false));
     }
 
+    public IEnumerable<Medication> ReturnAllDeletedMedications()
+    {
+        return  _repository.MedicationRepository
+            .GetAll()
+            .Where(x => x.Deleted.Equals(true));
+    }
+    
     public IEnumerable<Immunization> ReturnAllVaccinations()
     {
         return _repository.VaccineRepository.GetAll();
@@ -200,18 +213,27 @@ public class AdminService
     
     public void DeleteCondition(MedicalCondition condition)
     {
-        _repository.MedicalConditionRepository.Delete(condition);
+        condition.Deleted = true;
+        _repository.MedicalConditionRepository.Update(condition);
         _repository.Save();
     }
 
     public void DeleteMedication(Medication medication)
     {
-        _repository.MedicationRepository.Delete(medication);
+        medication.Deleted = true;
+        _repository.MedicationRepository.Update(medication);
         _repository.Save();
     }
     
     public void DeleteVaccination(Immunization immunization)
     {
+        var patientsImmunization = _repository.VaccinePatientRepository.GetAll()
+            .Where(x => x.ImmunizationId.Equals(immunization.Id));
+        
+        patientsImmunization.ToList().ForEach(x =>
+        {
+            _repository.VaccinePatientRepository.Delete(x);
+        });
         _repository.VaccineRepository.Delete(immunization);
         _repository.Save();
     }
@@ -248,13 +270,22 @@ public class AdminService
         user.Deleted = false;
         _repository.Save();
     }
-
-    public string ReturnPasswordForUser(string id)
+    
+    public void UndoMedicalC(Guid id)
     {
-        return _repository.ApplicationUserRepository.GetUsers()
-                                                    .Where(x => x.Id.Equals(id))
-                                                    .Select(x => x.PasswordHash)
-                                                    .First();
+        var condition = _repository.MedicalConditionRepository.Get(x => x.Id.Equals(id));
+
+        condition.Deleted = false;
+        _repository.Save();
+    }
+    
+    [Authorize]
+    public void UndoMedication(Guid id)
+    {
+        var med = _repository.MedicationRepository.Get(x => x.Id.Equals(id));
+
+        med.Deleted = false;
+        _repository.Save();
     }
     
     private string? ReturnNameOfMedication(Guid id) 

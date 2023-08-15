@@ -21,7 +21,7 @@ public class SchedulerController : Controller
         _service = doctorService;
         _adminService = adminService;
     }
-    [Authorize(Roles = "Doctor")]
+    [Authorize]
     public IActionResult Index()
     {
 

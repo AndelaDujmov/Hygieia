@@ -15,6 +15,7 @@ namespace HygieiaApp.Areas.Admin;
 public class MedicalConditionController : Controller
 {
     private readonly AdminService _service;
+    
 
     public MedicalConditionController(AdminService adminServiceImpl)
     {
@@ -215,32 +216,26 @@ public class MedicalConditionController : Controller
         return RedirectToAction("Edit");
     }
 
-    public IActionResult Delete(Guid? id)
+    [HttpGet]
+    public IActionResult NotFoundData()
     {
-        if (id is null)
-            return NotFound();
- 
-        var medicalcond = _service.GetConditionById(id);
-        if (medicalcond is null)
-            return NotFound();
-        
-        return View(medicalcond);
+        return View();
     }
-
-    [HttpPost, ActionName("Delete")]
-    public IActionResult DeletePost(Guid? id)
+    
+    [HttpGet]
+    public IActionResult GetAllDeletedConditions()
     {
-        var category = _service.GetConditionById(id);
+        var deleted = _service.ReturnAllDeletedConditions();
 
-        if (category == null)
-        {
-            TempData["error"] = "Unable to delete medical condition due to error.";
-            return NotFound();
-        }
-
-        _service.DeleteCondition(category);
-        TempData["success"] = "Medical condition deleted succesfully.";
-        return RedirectToAction("Index");
+        return deleted == null || !deleted.Any() ? RedirectToAction("NotFoundData") : View(deleted);
+    }
+    
+    [Authorize(Roles = "Administrator")]
+    public IActionResult UndoCondition(Guid id)
+    {
+        _service.UndoMedicalC(id);
+        TempData["success"] = "Conditiom successfully readded!";
+        return RedirectToAction("GetAllRemoved");
     }
     
     #region DATA_CALLS
@@ -250,6 +245,32 @@ public class MedicalConditionController : Controller
     {
         IEnumerable<MedicalCondition> medicalConditions = _service.ReturnAllMedicalConditions();
         return Json(new { data = medicalConditions });
+    }
+    
+    
+    [HttpGet]
+    public IActionResult GetAllRemoved()
+    {
+        IEnumerable<MedicalCondition> medicalConditions = _service.ReturnAllDeletedConditions();
+        return Json(new { data = medicalConditions });
+    }
+   
+    public IActionResult Delete(Guid? id)
+    {
+        if (id is null)
+            return NotFound();
+        
+        var category = _service.GetConditionById(id);
+
+        if (category == null)
+        {
+            TempData["error"] = "Unable to delete medical condition due to error.";
+            return NotFound();
+        }
+        
+        _service.DeleteCondition(category);
+        TempData["success"] = "Medical condition deleted succesfully.";
+        return RedirectToAction("Index");
     }
     #endregion
 }

@@ -322,6 +322,24 @@ public class DoctorService
             : ReturnAllDoctorsPatients(id).ToList();
     }
 
+    public IEnumerable<TestResultsPatient> GetAllTestsByPatient(string id)
+    {
+        var patientTests = _repository.TestResultPatientRepository.GetAll().Where(x => x.PatientId.Equals(id));
+        
+        if(patientTests != null || patientTests.Any() || patientTests.ToList().Count == 0)
+            patientTests.ToList().ForEach(x => x.TestName = MatchNames(x));
+
+        return patientTests;
+    }
+
+    
+    public List<MedicalConditionMedication> GetUsersConditions(string id)
+    {
+        var medicalC = new List<MedicalConditionMedication>();
+        medicalC.Add();
+        return medicalC;
+    }
+    
     private IEnumerable<Scheduler> GetEventsByDoctor(string id)
     {
         return _repository.EventRepository.GetAll()
@@ -412,6 +430,17 @@ public class DoctorService
         all.ToList().ForEach(x => x.Selected = ReturnTheTypeForVaccination(x));
 
         return all;
+    }
+
+    private MedicalConditionMedication AddMedication()
+    {
+        var medicalCM = new MedicalConditionMedication();
+        medicalCM.MedicationId
+    }
+
+    private MedicalCondition ReturnMedicalCondition(Guid id)
+    {
+        return _repository.MedicalConditionRepository.Get(x => x.Id.Equals(id));
     }
 
 }

@@ -24,7 +24,7 @@ public class ImmunizationController : Controller
         var immunizations = _service.ReturnAllVaccinations();
         return View(immunizations);
     }
-    
+
     [Authorize(Roles = "Administrator")]
     public IActionResult Create()
     {
@@ -53,7 +53,7 @@ public class ImmunizationController : Controller
 
         return View(immunization);
     }
-    
+
     [Authorize(Roles = "Administrator")]
     public IActionResult Edit(Guid? id)
     {
@@ -70,10 +70,9 @@ public class ImmunizationController : Controller
             TempData["error"] = "Unable to update empty data.";
             return NotFound();
         }
-        
+
         return View(medicalcond);
     }
-    
     
     [HttpPost]
     [Authorize(Roles = "Administrator")]
@@ -98,25 +97,17 @@ public class ImmunizationController : Controller
 
         return View(immunization);
     }
-    
-    [Authorize(Roles = "Administrator")]
-    public IActionResult Delete(Guid? id)
+
+    #region DATA_API_CALLS
+
+    [HttpGet]
+    public IActionResult GetImmunizations()
     {
-        if (id is null)
-            return NotFound();
-
-        var immunization = _service.GetVaccineById(id);
-        
-        
-        if (immunization is null)
-            return NotFound();
-
-        return View(immunization);
+        var immunizations = _service.ReturnAllVaccinations().ToList();
+        return Json(new { data = immunizations });
     }
 
-    [HttpPost, ActionName("Delete")]
-    [Authorize(Roles = "Administrator")]
-    public IActionResult DeletePost(Guid? id)
+    public IActionResult Delete(Guid? id)
     {
         var immunization = _service.GetVaccineById(id);
 
@@ -131,13 +122,5 @@ public class ImmunizationController : Controller
         return RedirectToAction("Index");
     }
 
-    #region DATA_API_CALLS
-
-    [HttpGet]
-    public IActionResult GetImmunizations()
-    {
-        var immunizations = _service.ReturnAllVaccinations().ToList();
-        return Json(new { data = immunizations });
-    }
     #endregion
 }

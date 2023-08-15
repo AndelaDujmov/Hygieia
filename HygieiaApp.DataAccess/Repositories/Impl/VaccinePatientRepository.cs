@@ -41,4 +41,10 @@ public class VaccinePatientRepository : Repository<ImmunizationPatient>, IVaccin
         _appDb.Update(element);
         _appDb.SaveChanges();
     }
+    
+    public void Update(ImmunizationPatient result)
+    {
+        _appDb.Update(result);
+        _appDb.SaveChanges();
+    }
 }

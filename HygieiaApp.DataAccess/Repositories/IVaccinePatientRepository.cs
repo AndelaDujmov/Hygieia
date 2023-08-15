@@ -4,5 +4,5 @@ namespace HygieiaApp.DataAccess.Repositories;
 
 public interface IVaccinePatientRepository : IRepository<ImmunizationPatient>, ISoftDeleteRepository<ImmunizationPatient>
 {
-    
+    void Update(ImmunizationPatient immunizationPatient);
 }
