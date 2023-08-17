@@ -1,0 +1,48 @@
+@model IEnumerable<HygieiaApp.Models.Models.Medication>
+<partial name="_Notification"/>
+
+@{
+    ViewData["Title"] = "Medications";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Medications</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Medication" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle-dotted"></i> &nbsp; Add new medication
+            </a>
+        </div>
+        
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <table id="myTable" width="100%" class="table table table-bordered border-1.4 border-blue">
+            <thead class="thead-dark text-secondary" style="background-color: lightblue; text-overline-color: white; color: white">
+            <tr class="text-primary">
+                <th>
+                    Classification
+                </th>
+                      
+                <th>
+                    Name
+                </th>
+                     
+                     
+                <th>
+                          
+                </th>
+                     
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/js/medication.js"></script>
+}

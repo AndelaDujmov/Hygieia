@@ -110,8 +110,8 @@ namespace HygieiaApp.DataAccess.Migrations
                     b.Property<decimal>("Dosage")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateOnly?>("EndDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("Frequency")
                         .HasColumnType("int");
@@ -126,8 +126,8 @@ namespace HygieiaApp.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -227,20 +227,19 @@ namespace HygieiaApp.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateOnly>("DateOfDiagnosis")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DateOfDiagnosis")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<Guid>("MedicalConditionId")
+                    b.Property<Guid?>("MedicalConditionId")
                         .HasColumnType("char(36)");
 
                     b.Property<int>("Stage")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
@@ -636,15 +635,11 @@ namespace HygieiaApp.DataAccess.Migrations
                 {
                     b.HasOne("HygieiaApp.Models.Models.MedicalCondition", "MedicalCondition")
                         .WithMany()
-                        .HasForeignKey("MedicalConditionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MedicalConditionId");
 
                     b.HasOne("HygieiaApp.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("MedicalCondition");
 

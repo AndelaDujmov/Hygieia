@@ -4,6 +4,6 @@ namespace HygieiaApp.Models.DTO;
 
 public class PatientMedicalHistoryDto
 {
-    public ApplicationUser? Patient { get; set; }
-    public List<MedicalCondition>? Conditions { get; set; }
+    public ApplicationUser PatientName { get; set; }
+    public IEnumerable<PatientMedicalCondition> Conditions { get; set; }
 }

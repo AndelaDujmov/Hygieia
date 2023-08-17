@@ -1,0 +1,34 @@
+@model HygieiaApp.Models.DTO.EventUserDto
+
+
+
+<form method="post">
+    <div class="border p-3  mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Add New Event</h2>
+            <hr/>
+        </div>
+        <div class="mb-2">
+            <label class="col-form-label" asp-for="Scheduler.Reminder"></label>
+            <input asp-for="Scheduler.Reminder" class="text text-primary form-control"/><br/><br/>
+            <span asp-validation-for="Scheduler.Reminder" class="text-danger"></span>
+            <label class="col-form-label" asp-for="Scheduler.DateOfAppointment"></label> &nbsp; &nbsp;
+            <input asp-for="Scheduler.DateOfAppointment">
+            <span asp-validation-for="Scheduler.DateOfAppointment" class="text-danger"></span>
+            <label class="col-form-label" asp-for="Scheduler.EndDate"></label> &nbsp; &nbsp;
+            <input asp-for="Scheduler.EndDate">
+            <span asp-validation-for="Scheduler.EndDate" class="text-danger"></span>
+            <div class="form-group">
+                <label>User</label>
+                <label class="col-form-label" asp-for="Scheduler.PatientId">Medications</label>
+                <select class="form-select" asp-for="Scheduler.PatientId" asp-items="@Model.Patents">
+                    <option selected="selected" id="select" value="@Model.Scheduler.PatientId">Please select one of the above</option>
+                </select>
+            </div>
+        
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100px">Add</button>
+ 
+    </div>
+</form>

@@ -1,0 +1,65 @@
+@using HygieiaApp.Models.Enums
+@model ApplicationUser
+
+<div class="card-body p-3">
+    <form method="post" class="row" enctype="multipart/form-data">
+        <input asp-for="Id" hidden/>
+        <div class="row">
+            <div >
+                 <div class="border p-3  mt-4">
+                            <div class="row pb-2">
+                                <h2 class="text-primary">Edit @Model.FirstName @Model.LastName</h2>
+                                <hr/>
+                            </div>
+                    
+                     <div class="mb-3">
+                         <label class="col-form-label" asp-for="Oib"></label><br/>
+                         <input class="form-control border-0 shadow"  asp-for="Oib"/><br/>
+                         <span asp-validation-for="Oib" class="text-danger"></span><br/> 
+                         
+                         <label class="col-form-label" asp-for="Mbo"></label><br/>
+                         <input class="form-control border-0 shadow"  asp-for="Mbo"/><br/>
+                         <span asp-validation-for="Mbo" class="text-danger"></span><br/>
+                         
+                         <label class="col-form-label" asp-for="FirstName"></label><br/>
+                         <input class="form-control border-0 shadow" asp-for="FirstName"/><br/>
+                         <span asp-validation-for="FirstName" class="text-danger"></span><br/>
+
+                         <label class="col-form-label" asp-for="LastName"></label><br/>
+                         <input class="form-control border-0 shadow" asp-for="LastName"/><br/>
+                         <span asp-validation-for="LastName" class="text-danger"></span><br/>   
+                         
+                         <label class="col-form-label" asp-for="Email"></label><br/>
+                         <input class="form-control border-0 shadow" asp-for="Email"/><br/>
+                         <span asp-validation-for="Email" class="text-danger"></span><br/>
+
+                         <label class="col-form-label" asp-for="Gender"></label>
+                         <select class="form-select" asp-for="Gender" asp-items="@Html.GetEnumSelectList<Gender>()">
+                             <option selected="selected" id="select" value="@Model.Gender">Please select one of the above</option>
+                         </select>
+
+                         <input asp-for="PasswordHash" value="@Model.PasswordHash" hidden/>
+                         
+                         <div class="form-floating">
+                             <select asp-for="Role" asp-items="@Html.GetEnumSelectList<RoleName>()" class="form-select">
+                                 <option id="select" selected value="@Model.Role">--Select user function--</option>
+                             </select>
+                         </div>
+                         
+                         <label class="col-form-label" asp-for="DateOfBirth">Date Of Birth</label><br/>
+                         <input class="form-control border-0 shadow" asp-for="DateOfBirth"/><br/>
+                         
+                         <button type="submit" asp-action="" asp-route-id="" class="btn btn-primary">Change password?</button>
+                         
+                     </div>
+                    
+                            <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>
+                            <a asp-action="Index">Back to listing</a>
+                        </div>
+            </div>
+            
+        </div>
+       
+    </form>
+
+</div>

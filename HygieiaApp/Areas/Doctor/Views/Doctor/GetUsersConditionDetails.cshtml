@@ -1,0 +1,35 @@
+@model HygieiaApp.Models.DTO.ConditionMedicationViewDto
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="card-body p-3">
+    <
+    <form method="get" class="row">
+        <h1 class="h1 text-primary"><b>Diagnosis: </b>&nbsp;@Model.PatientMedicalCondition.MedicalCondition.NameOfDiagnosis </h1>
+        <h5 class="h5 text-secondary"><b>Symptoms: </b>&nbsp;@Model.PatientMedicalCondition.MedicalCondition.Symptoms</h5><br/>
+        <h5 class="h5 text-secondary"><b>Symptoms: </b> &nbsp;&nbsp;@Model.PatientMedicalCondition.Stage.ToString()</h5>
+        @if (@Model.ConditionMedicated is not null)
+        {
+            @foreach (var date in @Model.ConditionMedicated)
+            {
+                <div class="card w-100 text-center" style="margin-bottom: 15px; ">
+                    <div class="card-body">
+                        <p class="card-text"><b>Dosage:</b> &nbsp;</p> mg
+                        <p class="card-text"><b>Dosage:</b> &nbsp;@date.Dosage</p> mg
+                        <p class="card-text"><b>Frequency:</b> &nbsp;@date.Frequency</p> x per day
+                        <p class="card-text"><b><b>Reason:</b> &nbsp;:</b> &nbsp;@date.Reason</p>
+
+
+                        <a asp-area="Doctor" asp-action="UpdateTheTimeOfVaccination" asp-route-id="@date.Id" class="btn btn-danger">Show more</a>
+
+                    </div>
+                </div>
+            }
+        }
+
+
+    </form>
+</div>

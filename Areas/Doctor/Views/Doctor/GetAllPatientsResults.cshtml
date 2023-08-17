@@ -1,0 +1,38 @@
+@model System.Collections.Generic.IEnumerable<HygieiaApp.Models.Models.TestResultsPatient>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+<div>
+    <h2>title</h2>
+    <div class="row">
+        @foreach (var element in @Model)
+        {
+
+            <div class="card w-25" style="margin-bottom: 15px">
+                <div class="card-body">
+                    <p class="card-text" id="para">@element.TestName</p>
+                    <p class="card-text">@element.DateOfTesting</p>
+                    <br/>
+                    <a asp-area="Doctor" asp-action="EditResults" asp-route-id="@element.PatientId" class="btn btn-outline-success">Edit</a>
+                </div>
+                 </div>
+        }
+    </div>
+</div>
+
+
+<script>
+function reformatDate(){
+    var oldDate = document.getElementById("para");
+    var date = new Date(oldDate);
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+
+    var formatted =  day + '.' + month + '.' + year + '.';
+    
+    document.getElementById('para').textContent = formatted;
+}
+</script>
