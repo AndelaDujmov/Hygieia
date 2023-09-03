@@ -6,6 +6,8 @@ using HygieiaApp.Models;
 using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,18 +22,30 @@ public class DoctorService
 {
     private readonly IUnitOfWork _repository;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly AdminService _adminService;
     
 
-    public DoctorService(IUnitOfWork repository, UserManager<IdentityUser> userManager)
+    public DoctorService(IUnitOfWork repository, UserManager<IdentityUser> userManager, AdminService adminService)
     {
         _repository = repository;
         _userManager = userManager;
+        _adminService = adminService;
     }
     
 
     public ImmunizationPatient ReturnPatientWithVaccination(Guid id)
     {
         var results =  _repository.VaccinePatientRepository.Get(x => x.Id.Equals(id)) ?? new ImmunizationPatient();
+
+        if (results != null)
+            results.Selected = ReturnTheTypeForVaccination(results);
+
+        return results;
+    }
+
+    public ImmunizationPatient ReturnVaccinationByPatientId(string id)
+    {
+        var results =  _repository.VaccinePatientRepository.Get(x => x.UserId.Equals(id)) ?? new ImmunizationPatient();
 
         if (results != null)
             results.Selected = ReturnTheTypeForVaccination(results);
@@ -85,7 +99,7 @@ public class DoctorService
     public IEnumerable<ApplicationUser> ReturnAllDoctorsPatients(string id)
     {
         var doctors = _repository.PatientDoctorRepository.GetAll()
-            .Where(x => x.DoctorsId.Equals(id) && x.Deleted == false) ?? new List<PatientDoctor>();
+            .Where(x => x.DoctorsId.Equals(id)) ?? new List<PatientDoctor>();
 
         var patientsIds = doctors.Select(x => x.PatientsId).ToList();
 
@@ -93,7 +107,7 @@ public class DoctorService
             return new List<ApplicationUser>();
 
         var patients = ReturnAllPatients()
-            .Where(patient => patientsIds.Contains(patient.Id));
+            .Where(patient => patientsIds.Contains(patient.Id) && !patient.Deleted);
 
         return patients;
     }
@@ -113,7 +127,15 @@ public class DoctorService
 
     public Scheduler GetEventById(Guid id)
     {
-        return GetAllEvents().Where(x => x.Id.Equals(id)).First();
+        var events =  GetAllEvents().Where(x => x.Id.Equals(id)).First();
+
+        if (events is not null)
+        {
+            events.Doctor = _adminService.GetUserById(events.DoctorId);
+            events.Patient = _adminService.GetUserById(events.PatientId);
+        }
+
+        return events;
     }
 
     public  string? GetCurrentUser(ClaimsPrincipal httpContextUser)
@@ -170,6 +192,7 @@ public class DoctorService
                                                       .Where(x => x.PatientId.Equals(id))
                                                       .FirstOrDefault() ?? new TestResultsPatient();
     }
+    
 
     public Scheduler ReturnEventById(Guid id)
     {
@@ -217,16 +240,52 @@ public class DoctorService
 
         return string.Empty;
     }
-
+    
     public IEnumerable<PatientVaccinationDto> ReturnAllVaccinesWithPatients()
     {
-        var vaccines = _repository.VaccinePatientRepository.GetAll();
+        var vaccines = _repository.VaccinePatientRepository.GetAll().Where(x => !x.Deleted);
         
         vaccines.ToList().ForEach(v => v.Selected = ReturnTheTypeForVaccination(v));
 
         return ReturnVaccinationDto(vaccines);
     }
 
+    public IEnumerable<PatientVaccinationDto> ReturnAllVaccinesWithDoctorPatients(string id)
+    {
+        
+        var doctors = _repository.PatientDoctorRepository.GetAll()
+            .Where(x => x.DoctorsId.Equals(id)) ?? new List<PatientDoctor>();
+
+        var patientsIds = doctors.Select(x => x.PatientsId).ToList();
+        
+        var patients = ReturnAllPatients()
+            .Where(patient => patientsIds.Contains(patient.Id) && !patient.Deleted).Select(x => x.Id);
+    
+        var vaccines = _repository.VaccinePatientRepository.GetAll().Where(x => !x.Deleted && patients.Contains(x.UserId) && x.DateOfVaccination >= DateTime.Now);
+        
+        vaccines.ToList().ForEach(v => v.Selected = ReturnTheTypeForVaccination(v));
+
+        return ReturnVaccinationDto(vaccines);
+    }
+    
+    public PatientVaccinationDto GetAllPatientsVaccinations(string id)
+    {
+        var user = _adminService.GetUserById(id);
+        var vaccines = _repository.VaccinePatientRepository.GetAll().Where(x => !x.Deleted);
+
+        if (vaccines.Count() != 0 || !vaccines.Any())
+        {
+            vaccines.ToList().ForEach(v => v.Selected = ReturnTheTypeForVaccination(v));
+
+            var patientVaccDto = new PatientVaccinationDto();
+            patientVaccDto.ImmunizationPatients = vaccines.Where(x => x.UserId!=null && x.UserId.Equals(user.Id));
+            patientVaccDto.FullNamePatient = user.FirstName + " " + user.LastName;
+            return patientVaccDto;
+        }
+
+        return null;
+    }
+    
     public void ChangeTimeOfImmunization(Guid id, DateTime dateTime)
     {
         var immunization = ReturnVaccinationsOnDate(ReturnPatientWithVaccination(id).DateOfVaccination);
@@ -285,12 +344,12 @@ public class DoctorService
         
         return false;
     }
+    
 
     public bool CheckIfUsernameExists(string username)
     {
-        var userName = _repository.ApplicationUserRepository.GetAll().Select(x => x.UserName);
-
-        if (userName.Contains(username))
+        
+        if (Contains(username))
             return true;
 
         return false;
@@ -298,11 +357,18 @@ public class DoctorService
     
     public void DiagnosePatient(PatientMedicalCondition condition)
     {
+        if (condition.Stage.Equals(Stage.Dead))
+        {
+            var user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(condition.UserId));
+            user.Deleted = true;
+            _repository.ApplicationUserRepository.UpdateUser(user);
+            _repository.Save();
+        }
         _repository.PatientConditionRepository.Add(condition);
         _repository.Save();
     }
 
-    public MedicalConditionMedication ReturnMcByConditionAndMedication(Guid medicationId, Guid? conditionId)
+    public MedicalConditionMedication ReturnMcByConditionAndMedication(Guid? medicationId, Guid? conditionId)
     {
         return _repository.MedicineForConditionRepository.Get(x =>
             x.MedicalConditionId.Equals(conditionId) && x.MedicationId.Equals(medicationId));
@@ -363,12 +429,14 @@ public class DoctorService
             .GetAll()
             .Where(x => x.MedicalConditionPatientId.Equals(id));
         
-        allMedications.ToList()
+       allMedications.ToList()
             .ForEach(x =>
             {
                 x.MedicalConditionMedication =
-                    _repository.MedicineForConditionRepository.Get(mc => mc.Id.Equals(x.MedicalConditionMedicationId));
+                    GetMedicationForCondition(x.MedicalConditionMedicationId);
+                x.MedicationName = x.MedicalConditionMedication.Medication.Name;
             });
+        
           
         
         return allMedications;
@@ -387,8 +455,40 @@ public class DoctorService
         }
 
         return false;
+    }
+    
+    public void AddAnotherMedicationToCondition(PatientMedicalCondition patientcPatientMedicalCondition)
+    {
+        _repository.PatientConditionRepository.Add(patientcPatientMedicalCondition);
+        _repository.Save();
+    }
+    
+    public MedicalConditionMedicated ReturnUsersMedicationById(Guid id)
+    {
+        var medicalCMed = _repository.PatientMedicatedRepository.Get(x => x.Id.Equals(id));
 
-        ;
+        medicalCMed.MedicalConditionMedication =
+            _repository.MedicineForConditionRepository.Get(x => x.Id.Equals(medicalCMed.MedicalConditionMedicationId));
+
+        medicalCMed.MedicalConditionPatient =
+            _repository.PatientConditionRepository.Get(x => x.Id.Equals(medicalCMed.MedicalConditionPatientId));
+
+        medicalCMed.MedicationName =
+            _adminService.GetMedicationById(medicalCMed.MedicalConditionMedication.MedicationId).Name;
+        var user = _adminService.GetUserById(medicalCMed.MedicalConditionPatient.UserId);
+        medicalCMed.Doctor = user.FirstName + " " + user.LastName;
+        medicalCMed.MedicalCondition = _adminService.GetConditionById(medicalCMed.MedicalConditionMedication.MedicalConditionId).NameOfDiagnosis;
+
+        return medicalCMed;
+    }
+
+    private MedicalConditionMedication GetMedicationForCondition(Guid? id)
+    {
+        var conditionMedicated =   _repository.MedicineForConditionRepository.Get(mc => mc.Id.Equals(id));
+        
+        conditionMedicated.Medication =
+            _repository.MedicationRepository.Get(x => x.Id.Equals(conditionMedicated.MedicationId));
+        return conditionMedicated;
     }
     private IEnumerable<Scheduler> GetEventsByDoctor(string id)
     {
@@ -402,14 +502,13 @@ public class DoctorService
         return admin;
     }
 
-    private ApplicationUser GetPatientsDoctor(string id)
+
+    public ApplicationUser GetPatientsDoctor(string id)
     {
         var user = new ApplicationUser();
         var docPat = _repository.PatientDoctorRepository.Get(x => x.PatientsId.Equals(id)) ?? null;
         try
         {
-
-
             if (docPat != null)
                 user = _repository.ApplicationUserRepository.Get(x => x.Id.Equals(docPat.DoctorsId));
             else
@@ -473,6 +572,19 @@ public class DoctorService
         return vaccinationDtoList;
     }
     
+    private bool Contains(string username)
+    {
+        var userName = _repository.ApplicationUserRepository.GetAll().Select(x => x.UserName);
+
+        foreach (var user in userName)
+        {
+            if (user.Equals(username))
+                return true;
+        }
+
+        return false;
+    }
+    
     private IEnumerable<ImmunizationPatient> ReturnVaccinationsOnDate(DateTime date)
     {
         var all = _repository.VaccinePatientRepository.GetAll().Where(x => x.DateOfVaccination.Equals(date));
@@ -481,7 +593,4 @@ public class DoctorService
 
         return all;
     }
-
-
- 
 }

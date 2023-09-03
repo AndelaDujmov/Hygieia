@@ -22,5 +22,7 @@ public class ImmunizationPatient
     public ApplicationUser? User { get; set; }
     [NotMapped]
     public string? Selected { get; set; }
+    [NotMapped]
+    public string? MadeByDoctor { get; set; }
     public bool Deleted { get; set; } = false;
 }

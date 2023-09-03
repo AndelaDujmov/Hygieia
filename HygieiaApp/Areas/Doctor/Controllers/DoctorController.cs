@@ -3,11 +3,15 @@ using HygieiaApp.Models;
 using HygieiaApp.Models.DTO;
 using HygieiaApp.Models.Enums;
 using HygieiaApp.Models.Models;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Azure.Cosmos.Linq;
+using MemoryStream = System.IO.MemoryStream;
+
 
 namespace HygieiaApp.Areas.Doctor;
 
@@ -17,6 +21,9 @@ public class DoctorController : Controller
     private readonly DoctorService _service;
     private readonly AdminService _adminService;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    
+    [BindProperty]
+    public ApplicationUser Patient { get; set; }
 
     public DoctorController(DoctorService service, AdminService adminService, IWebHostEnvironment webHostEnvironment)
     {
@@ -82,11 +89,8 @@ public class DoctorController : Controller
             TempData["error"] = "Unable to create medical condition due to error.";
             return View(e.Message);
         }
-
-        TempData["error"] = "Please fill the data again and come back later!.";
-        return View(patientDoctorDto);
     }
-
+    
     public IActionResult Remove(string id)
     {
 
@@ -138,6 +142,8 @@ public class DoctorController : Controller
     {
         var patientsResults = _service.GetAllTestsByPatient(id);
 
+        Patient = _adminService.GetUserById(id);
+
         return patientsResults == null || !patientsResults.Any() ? RedirectToAction("NotFoundData", "MedicalCondition", new {area = "Admin"}) : View(patientsResults);
     }
 
@@ -175,7 +181,7 @@ public class DoctorController : Controller
         testDto.ResultsPatient.PatientId = patient.Id ?? string.Empty;
         return View(testDto);
     }
-
+    
     [HttpPost]
     [Authorize]
     [ValidateAntiForgeryToken]
@@ -272,28 +278,25 @@ public class DoctorController : Controller
 
     [HttpPost]
     [Authorize]
-    public IActionResult CreateVaccinationForPatient(PatientVaccinationDto patientVaccinationDto)
+    public IActionResult CreateVaccinationForPatient(PatientVaccinationDto? patientVaccinationDto)
     {
-        if (ModelState.IsValid)
+  
+        if (patientVaccinationDto.ImmunizationForPatient.DateOfVaccination < DateTime.Now)
         {
-            if (patientVaccinationDto.ImmunizationForPatient.DateOfVaccination < DateTime.Now)
-            {
-                TempData["error"] = "Unable to create vaccination in the past";
-                return View(patientVaccinationDto);
-            }
-
-            _service.Save(patientVaccinationDto.ImmunizationForPatient);
-            TempData["success"] = "Vaccination appointment successfully created!";
-            return RedirectToAction("ReturnAllVaccines");
+            TempData["error"] = "Unable to create vaccination in the past";
+            return View(patientVaccinationDto);
         }
 
-        TempData["error"] = "Unable to add the data due to error";
-        return View(patientVaccinationDto);
+        _service.Save(patientVaccinationDto.ImmunizationForPatient);
+        TempData["success"] = "Vaccination appointment successfully created!";
+        return RedirectToAction("ReturnAllVaccines");
+        
     }
-
     public IActionResult ReturnAllVaccines()
     {
-        var vaccines = _service.ReturnAllVaccinesWithPatients();
+        var vaccines = (HttpContext.User.IsInRole(RoleName.Doctor.ToString())) 
+            ? _service.ReturnAllVaccinesWithDoctorPatients(_service.GetCurrentUser(HttpContext.User)) :
+                _service.ReturnAllVaccinesWithPatients();
 
         if (vaccines.Equals(null))
             RedirectToAction("NoRecords");
@@ -342,19 +345,20 @@ public class DoctorController : Controller
     [HttpPost]
     public IActionResult DiagnosePatient(PatientConditionsDto patientc, DateTime? start, string? reason, decimal? maxdose, int? frequency)
     {
+           
+        if (_service.CheckIfPatientDiagnosed(patientc.PatientMedicalCondition))
+        {
+            TempData["error"] = "Patient already diagnosed.";
+            return RedirectToAction("DiagnosePatient");
+        }
+        
         if (patientc.SelectedMedication != Guid.Empty)
         {
-            var medication = _adminService.GetMedicationById(patientc.SelectedMedication);
+            var medication =  _adminService.GetMedicationById(patientc.SelectedMedication);
 
             if (medication is null)
             {
                 TempData["error"] = "There is no record known for that condition. Please contact administrator.";
-                return RedirectToAction("DiagnosePatient");
-            }
-
-            if (_service.CheckIfPatientDiagnosed(patientc.PatientMedicalCondition))
-            {
-                TempData["error"] = "Patient already diagnosed.";
                 return RedirectToAction("DiagnosePatient");
             }
             
@@ -367,18 +371,179 @@ public class DoctorController : Controller
             conditionMedicated.MedicalConditionMedicationId = conditionMedication.Id;
             conditionMedicated.StartDate = ((DateTime)start);
             conditionMedicated.Frequency = (int)frequency;
+         
             conditionMedicated.Reason = reason;
             conditionMedicated.Dosage = (decimal)maxdose;
-
-         
+            
             _service.MedicatePatient(conditionMedicated);
         }
-        
+        else
+        {
+            _service.DiagnosePatient(patientc.PatientMedicalCondition);
+        }
+     
         TempData["success"] = "Added successfully.";
         return RedirectToAction("Index");
         
     }
 
+    public IActionResult AddAnotherMedicationToCondition(Guid id)
+    {
+        var patientMedicalC = new PatientConditionsDto();
+        patientMedicalC.PatientMedicalCondition =  _service.ReturnPatientsConditionById(id);
+        patientMedicalC.MedicalCondition =
+            _adminService.GetConditionById(patientMedicalC.PatientMedicalCondition.MedicalConditionId);
+        patientMedicalC.MedicationSelectList = _adminService.MedicationNameSelectList();
+        patientMedicalC.SelectedMedication = Guid.Empty;
+        
+        return View(patientMedicalC);
+    }
+
+    [HttpPost]
+    public IActionResult AddAnotherMedicationToCondition(PatientConditionsDto patientc, DateTime start, string reason,
+        decimal maxdose, int frequency)
+    {
+        var medication =  _adminService.GetMedicationById(patientc.SelectedMedication);
+
+        if (medication is null)
+        {
+            TempData["error"] = "There is no record known for that condition. Please contact administrator.";
+            return RedirectToAction("DiagnosePatient");
+        }
+
+        patientc.PatientMedicalCondition = _service.ReturnPatientsConditionById(patientc.PatientMedicalCondition.Id);
+        var conditionMedication = _service.ReturnMcByConditionAndMedication(medicationId: medication.Id,
+            conditionId: patientc.PatientMedicalCondition.MedicalConditionId);
+        var conditionMedicated = new MedicalConditionMedicated();
+        conditionMedicated.MedicalConditionPatientId = patientc.PatientMedicalCondition.Id;
+        conditionMedicated.MedicalConditionMedicationId = conditionMedication.Id;
+        conditionMedicated.StartDate = ((DateTime)start);
+        conditionMedicated.Frequency = (int)frequency;
+        conditionMedicated.Reason = reason;
+        conditionMedicated.Dosage = (decimal)maxdose;
+            
+        _service.MedicatePatient(conditionMedicated);
+        
+        return RedirectToAction("GetUsersConditionDetails", new {id = patientc.PatientMedicalCondition.Id});
+    }
+
+    public IActionResult GetAllPastVaccinations(string? id)
+    {
+        var vaccinations = _service.GetAllPatientsVaccinations(id);
+        
+        if(!vaccinations.ImmunizationPatients.Any() || vaccinations.ImmunizationPatients is not null)
+            vaccinations.ImmunizationPatients = vaccinations.ImmunizationPatients.Where(x => x.DateOfVaccination < DateTime.Now);
+        
+        return View(vaccinations);
+    }
+
+    public IActionResult GetAllOnGoingVaccinations(string? id)
+    {
+        var vaccinations = _service.GetAllPatientsVaccinations(id);
+        
+        if(!vaccinations.ImmunizationPatients.Any() || vaccinations.ImmunizationPatients is not null)
+            vaccinations.ImmunizationPatients = vaccinations.ImmunizationPatients.Where(x => x.DateOfVaccination > DateTime.Now);
+        
+        return View(vaccinations);
+    }
+
+    public IActionResult ERefferalImmunization(string? id2, Guid id)
+    {
+        var patient =
+            _adminService.GetUserById(id2 ?? _service.GetCurrentUser(HttpContext.User));
+
+        ApplicationUser? drName = HttpContext.User.IsInRole(RoleName.Doctor.ToString()) ?
+                        _adminService.GetUserById(_service.GetCurrentUser(HttpContext.User)) :
+                        _service.GetPatientsDoctor(id2);
+        
+        var immunizationPerPatient = _service.ReturnPatientWithVaccination(id);
+        immunizationPerPatient.User = patient;
+
+        using (MemoryStream ms = new MemoryStream())
+        {
+            var document = new Document(PageSize.A4, 25, 25, 30, 30);
+            var writer = PdfWriter.GetInstance(document, ms);
+            document.Open();
+
+            var image = Image.GetInstance("/home/andela/RiderProjects/HygieiaApp/HygieiaApp/wwwroot/HygieiaLogo/logoForErefferal.png");
+            image.Alignment = Element.ALIGN_CENTER;
+            
+            document.Add(image);
+            
+            var paragraph = new Paragraph($"\n\n{immunizationPerPatient.User.LastName}, {immunizationPerPatient.User.FirstName}", new Font(Font.FontFamily.HELVETICA, 20));
+        
+            paragraph.Alignment = Element.ALIGN_LEFT;
+            document.Add(paragraph);
+            var paragraph2 = new Paragraph($"{immunizationPerPatient.User.DateOfBirth.ToString("D")}, {immunizationPerPatient.User.Gender.ToString()}", new Font(Font.FontFamily.HELVETICA, 15));
+        
+            paragraph2.Alignment = Element.ALIGN_LEFT;
+            document.Add(paragraph2);
+            var paragraph3 = new Paragraph($"\n\nAssigned to: {immunizationPerPatient.Selected}\nDate And Time: {immunizationPerPatient.DateOfVaccination.ToString("R")}.");
+            paragraph3.Alignment = Element.ALIGN_CENTER;
+            document.Add(paragraph3);
+            var paragraph4 = new Paragraph($"\n\nMade by: {drName.FirstName} {drName.LastName}\nDate And Time: {DateTime.Now.ToString("D")} ________________________________________");
+            paragraph4.Alignment = Element.ALIGN_LEFT;
+            document.Add(paragraph4);
+            
+            document.Close();
+            writer.Close();
+            var constant = ms.ToArray();
+            return File(constant, "application/vnd", "ERefferal.pdf");
+        }
+    }
+
+    public IActionResult EPrescription(string? idp, Guid id)
+    {
+        var patient =
+            _adminService.GetUserById(idp ?? _service.GetCurrentUser(HttpContext.User));
+
+        ApplicationUser? drName = HttpContext.User.IsInRole(RoleName.Doctor.ToString()) ?
+            _adminService.GetUserById(_service.GetCurrentUser(HttpContext.User)) :
+            _service.GetPatientsDoctor(idp);
+
+        var medicationForCondition = _service.ReturnUsersMedicationById(id);
+        
+        using (MemoryStream ms = new MemoryStream())
+        {
+            var document = new Document(PageSize.A4, 25, 25, 30, 30);
+            var writer = PdfWriter.GetInstance(document, ms);
+            document.Open();
+
+            var image = Image.GetInstance("/home/andela/RiderProjects/HygieiaApp/HygieiaApp/wwwroot/HygieiaLogo/logoForErefferal.png");
+            image.Alignment = Element.ALIGN_CENTER;
+            
+            document.Add(image);
+            
+            var paragraph = new Paragraph($"\n\n{patient.LastName}, {patient.FirstName}", new Font(Font.FontFamily.HELVETICA, 20));
+        
+            paragraph.Alignment = Element.ALIGN_LEFT;
+            document.Add(paragraph);
+            var paragraph2 = new Paragraph($"{patient.DateOfBirth.ToString("D")}, {patient.Gender.ToString()}", new Font(Font.FontFamily.HELVETICA, 15));
+        
+            paragraph2.Alignment = Element.ALIGN_LEFT;
+            document.Add(paragraph2);
+        
+            var paragraph4 = new Paragraph($"\n\nMedication name: {medicationForCondition.MedicationName} on date {medicationForCondition.StartDate.ToString("yyyy MMMM dd")}");
+            paragraph4.Alignment = Element.ALIGN_CENTER;
+            document.Add(paragraph4);
+            var paragraph5 = new Paragraph($"\n\nPrescribed for: {medicationForCondition.MedicalCondition} by reason {medicationForCondition.Reason}");
+            paragraph5.Alignment = Element.ALIGN_CENTER;
+            document.Add(paragraph5);
+            var paragraph6 = new Paragraph($"\n\nDosage: {medicationForCondition.Dosage} mg\nFrequency: {medicationForCondition.Frequency} times per day");
+            paragraph6.Alignment = Element.ALIGN_CENTER;
+            document.Add(paragraph6);
+            
+            var paragraph3 = new Paragraph($"\n\nPrescriper: dr. {drName.FirstName} {drName.LastName} ____________________________________");
+            paragraph3.Alignment = Element.ALIGN_LEFT;
+            document.Add(paragraph3);
+            
+            document.Close();
+            writer.Close();
+            var constant = ms.ToArray();
+            return File(constant, "application/vnd", "EPrescription.pdf");
+        }
+    }
+    
     #region DATATABLE_API_CALLS
 
     public IActionResult GetMyPatients()

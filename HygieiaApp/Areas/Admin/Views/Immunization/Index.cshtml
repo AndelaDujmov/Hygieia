@@ -1,3 +1,4 @@
+@using HygieiaApp.Models.Enums
 @model System.Collections.Generic.IEnumerable<HygieiaApp.Models.Models.Immunization>
 
 <div class="container p-3">
@@ -24,7 +25,11 @@
                 <th>
                     Used For
                 </th>
-                <th></th>
+                
+                @if (User.IsInRole(RoleName.Administrator.ToString()))
+                {
+                    <th></th>
+                }
                 
                      
             </tr>
@@ -34,7 +39,17 @@
     </div>
 </div>
 
-@section Scripts
+@if (User.IsInRole(RoleName.Doctor.ToString()))
 {
-    <script src="~/js/immunizations.js"></script>
+    @section Scripts
+    {
+        <script src="~/js/immunizationsDoctor.js"></script>
+    }
+}
+else
+{
+    @section Scripts
+    {
+        <script src="~/js/immunizations.js"></script>
+    }
 }

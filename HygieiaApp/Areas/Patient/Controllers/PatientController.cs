@@ -1,4 +1,5 @@
 using HygieiaApp.Models.DTO;
+using HygieiaApp.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,8 +26,7 @@ public class PatientController : Controller
     public IActionResult CheckDateForVaccination()
     {
         var vaccine = new PatientVaccinationDto();
-      
-
+        
         return View(vaccine);
     }
 
@@ -68,7 +68,10 @@ public class PatientController : Controller
         _service.SignUpPatientForVaccination(id, user);
         
         TempData["success"] = "You succesfully signed up for vaccination!";
-        return RedirectToAction("ReturnMyTests");
+        
+        if(User.IsInRole(RoleName.Patient.ToString()))
+            return RedirectToAction("ReturnMyTests");
+        return RedirectToAction("ShowUpcommingVaccinations");
     }
     
     [Authorize]

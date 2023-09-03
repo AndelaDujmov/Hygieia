@@ -1,0 +1,67 @@
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@model HygieiaApp.Models.DTO.PatientVaccinationDto
+
+<style>
+   body {
+       font-family: Arial, sans-serif;
+       
+       margin: 0;
+       padding: 0;
+
+   }
+   
+   h1 {
+       margin-top: 20px;
+   }
+   
+   .vaccination-list {
+       display: flex;
+       justify-content: center;
+       align-items: flex-start;
+       gap: 20px;
+       padding: 20px;
+   }
+   
+   .user {
+       background-color: #fff;
+       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+       padding: 20px;
+       border-radius: 5px;
+       text-align: left;
+       max-width: 300px;
+   }
+   
+   .user h2 {
+       margin: 0;
+   }
+   
+   ul {
+       list-style-type: none;
+       padding: 0;
+       margin-top: 10px;
+   }
+   
+   li {
+       margin-bottom: 5px;
+   }
+
+</style>
+
+<h1 class="text-primary">@Model.FullNamePatient's Past Vaccinations</h1>
+
+@if (!Model.ImmunizationPatients.Any() || Model != null)
+{
+   <div class="vaccination-list">
+      <div class="user">
+     
+         <ul>
+             @foreach (var element in Model.ImmunizationPatients)
+             {
+                <li>@element.Selected - @element.DateOfVaccination.ToString("f")</li>
+             }
+         </ul>
+      
+      </div>
+
+   </div>
+}

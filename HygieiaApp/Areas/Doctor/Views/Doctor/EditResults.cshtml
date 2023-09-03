@@ -22,7 +22,7 @@
                                 <span asp-validation-for="ResultsPatient.DateOfTesting" class="text-danger"></span><br/>
                                 
                                 <label class="col-form-label" asp-for="ResultsPatient.Results">Test Result</label><br/>
-                                <input class="form-control border-0 shadow" name="file" type="file" value="@Model.ResultsPatient.Results" asp-for="ResultsPatient.Results"/><br/>
+                                <input class="form-control border-0 shadow" name="file" placeholder="@Model.ResultsPatient.Results" type="file" value="@Model.ResultsPatient.Results" asp-for="ResultsPatient.Results"/><br/>
                             </div>
                     
                             <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>
@@ -30,7 +30,7 @@
                         </div>
             </div>
             <div class="col-4">
-                <img src="@Model.ResultsPatient.Results" width="100%" style="border-radius:6px; border: 1px white; image-rendering:pixelated;"/>
+                <p class="text text-primary">@Model.ResultsPatient.Results</p>
             </div>
         </div>
        

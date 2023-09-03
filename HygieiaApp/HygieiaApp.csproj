@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <PackageReference Include="EntityFramework" Version="6.4.4" />
+      <PackageReference Include="iTextSharp" Version="5.5.13.3" />
       <PackageReference Include="MailKit" Version="4.1.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.4">
@@ -119,6 +120,7 @@
       <Reference Include="Microsoft.AspNetCore.Identity.UI">
         <HintPath>..\..\..\.nuget\packages\microsoft.aspnetcore.identity.ui\6.0.19\lib\net6.0\Microsoft.AspNetCore.Identity.UI.dll</HintPath>
       </Reference>
+    
     </ItemGroup>
 
 

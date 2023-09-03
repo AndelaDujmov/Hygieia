@@ -22,4 +22,10 @@ public class MedicalConditionMedicated
     public string Reason { get; set; }
     public int Frequency { get; set; }
     public bool Deleted { get; set; } = false;
+    [NotMapped]
+    public string MedicationName { get; set; }
+    [NotMapped]
+    public string MedicalCondition { get; set; }
+    [NotMapped]
+    public string Doctor { get; set; }
 }

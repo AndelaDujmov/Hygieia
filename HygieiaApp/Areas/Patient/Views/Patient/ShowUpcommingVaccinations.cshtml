@@ -1,20 +1,21 @@
 @model System.Collections.Generic.IEnumerable<HygieiaApp.Models.Models.ImmunizationPatient>
 
 <div>
-    <div class="col-6">
-        <h2 class="text-primary">Patients</h2>
+    <div class="col-12" style="padding-top: 22px;">
+        <h2 class="text-primary">Ongoing Vaccinations</h2>
     </div>
-    <div class="col-6 text-end">
+    <div class="col-12 text-end">
         <a asp-controller="Patient" asp-action="CheckDateForVaccination" class="btn btn-primary">
             <i class="bi bi-plus-circle-dotted"></i> &nbsp; Check date for vaccination
         </a>
     </div>
-    <div class="card-body p-3">
+    <div class="card-body p-3 col-md-4 mb-3-4" style="border-radius: 8px; padding: 16px; width: calc(50.33% - 30px)">
         <form method="post" class="row">
             @if (@Model is not null)
             {
                 @foreach (var date in @Model)
                 {
+                    <div class="mb-2">
                     <div class="card w-50" style="margin-bottom: 15px">
                         <div class="card-body">
                             <p class="card-text">@date.DateOfVaccination</p>
@@ -23,6 +24,7 @@
                             <a class="btn btn-danger" asp-action="CancelVaccination" asp-route-id="@date.Id">Cancel</a>
 
                         </div>
+                    </div>
                     </div>
                 }
             }
@@ -35,8 +37,7 @@
                 <button type="submit" class="btn btn-primary" style="width: 100px"> Submit</button>
                 <a asp-area="Doctor" asp-controller="Doctor" asp-action="Index">Back to listing</a>
             }
-
-
+            
         </form>
     </div>
 </div>

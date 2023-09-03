@@ -40,4 +40,5 @@ public class PatientConditionRepository : Repository<PatientMedicalCondition>, I
         _appDb.Update(element);
         _appDb.SaveChanges();
     }
+    
 }

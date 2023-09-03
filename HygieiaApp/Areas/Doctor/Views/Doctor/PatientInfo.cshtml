@@ -1,47 +1,95 @@
 @model HygieiaApp.Models.DTO.PatientDoctorDTO
 
-<div class="card-body p-3" xmlns="http://www.w3.org/1999/html">
+<style>
+       
+        .icon {
+            padding: 10px;
+            min-width: 40px;
+        }
+         
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
 
-    <form method="post">
-        <input asp-for="@Model.Patient.Id" hidden/>
-        <div class="border p-3  mt-4">
-            <div class="row pb-2">
-                <h2 class="text-primary">Patient Details</h2>
-                <hr/>
-            </div>
-    
-            <div class="mb-3">
-                <label class="col-form-label" asp-for="@Model.Patient.FirstName"></label><br/>
-                <input type="text" asp-for="@Model.Patient.FirstName" disabled class="form-control"/><br/>
-                <label class="col-form-label" asp-for="@Model.Patient.LastName"></label><br/>
-                <input type="text" asp-for="@Model.Patient.LastName" disabled class="form-control"/><br/>
-                <label class="col-form-label" asp-for="@Model.Patient"></label><br/>
-                <input type="text" asp-for="@Model.Patient" disabled class="form-control"/><br/>
-                <label class="col-form-label" asp-for="@Model.Patient.Email"></label><br/>
-                <input type="text" asp-for="@Model.Patient.Email" disabled class="form-control"/><br/>
-                <label class="col-form-label">Doctor</label><br/>
-                <input type="text" asp-for="@(Model.User.Email)" disabled class="form-control"/><br/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="container-fluid" >
+        <div class="row">
+            <!-- Vertical Navbar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar" style="margin-left: -190px; margin-top: 40px;">
+                <div class="position-sticky" style="width: 329px;">
+                    <ul class="nav flex-column" style="width: 329px;">
+                        <li class="nav-item">
+                            <h4 class="text text-bg-light text-center">Medical History</h4>
+                            <a class="nav-link active" asp-controller="Doctor" asp-action="GetUsersMedicalHistory" asp-route-id="@Model.Patient.Id">
+                            <i class="bi bi-heart-pulse-fill"></i> &nbsp; Show Medical History</a>
+                            <a class="nav-link active" asp-controller="Doctor" asp-action="DiagnosePatient" asp-route-id="@Model.Patient.Id"><i class="bi bi-person-badge-fill"></i>&nbsp;
+                            Diagnose Patient</a>
+                        </li>
+                        <li class="nav-item">
+                            <h4 class="text text-bg-light text-center">Test Results</h4>
+                            <a class="nav-link" asp-controller="Doctor" asp-action="GetAllPatientsResults" asp-route-id="@Model.Patient.Id">
+                                <i class="bi bi-folder"></i> &nbsp; All Results
+                            </a>
+                            <a class="nav-link" asp-controller="Doctor" asp-action="UploadResults" asp-route-id="@Model.Patient.Id">
+                                <i class="bi bi-plus-square-fill"></i> &nbsp;Upload results
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                             <h4 class="text text-bg-light text-center">Vaccinations</h4>
+                            <a class="nav-link" asp-controller="Doctor" asp-action="GetAllPastVaccinations" asp-route-id="@Model.Patient.Id" ><i class="bi bi-journal"></i>&nbsp;
+                                Past Vaccinations
+                            </a>
+                            <a class="nav-link" asp-controller="Doctor" asp-action="GetAllOnGoingVaccinations" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2"><i class="bi bi-journal"></i>&nbsp;
+                                Ongoing Vaccinations
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </nav>
+            
+     
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="card-body p-3" xmlns="http://www.w3.org/1999/html">
                 
-            </div>
+                    <form method="post">
+                        <input asp-for="@Model.Patient.Id" hidden/>
+                        <div class="border p-3  mt-4">
+                            <div class="row pb-2">
+                                <h2 class="text-primary">Patient Details</h2>
+                                <hr/>
+                            </div>
+                    
+                            <div class="mb-3">
+                                <label class="col-form-label" asp-for="@Model.Patient.FirstName"></label><br/>
+                                <input type="text" asp-for="@Model.Patient.FirstName" disabled class="form-control"/><br/>
+                                <label class="col-form-label" asp-for="@Model.Patient.LastName"></label><br/>
+                                <input type="text" asp-for="@Model.Patient.LastName" disabled class="form-control"/><br/>
+                                <label class="col-form-label" asp-for="@Model.Patient"></label><br/>
+                                <input type="text" asp-for="@Model.Patient" disabled class="form-control"/><br/>
+                                <label class="col-form-label" asp-for="@Model.Patient.Email"></label><br/>
+                                <input type="text" asp-for="@Model.Patient.Email" disabled class="form-control"/><br/>
+                                <label class="col-form-label">Doctor Details</label><br/>
+                                <p style="border: 1px solid lightgray; border-radius: 1px;" >
+                                    <a><b>Name: </b> dr. @($"{Model.User.FirstName} {Model.User.LastName}")</a><br/>
+                                    <a><b>Email: </b> @Model.User.Email</a>
+                                </p><br/>
+                                
+                            </div>
+                            
+                            <a asp-controller="Doctor" asp-action="Index">Back to listing</a>
+                        </div>
+                    </form>
+                </div>
 
-            <div style="border-bottom: solid cadetblue 2px;"></div>
-            <br/>
-            <h4 class="text text-bg-light text-center">Test Results</h4>
-            <a asp-controller="Doctor" asp-action="GetAllPatientsResults" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2">
-                <i class="bi bi-folder"></i> All Results
-            </a> &nbsp;&nbsp;
-            <a asp-controller="Doctor" asp-action="UploadResults" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2">
-                <i class="bi bi-plus-square-fill"></i>Upload results
-            </a> &nbsp;&nbsp;<br/>
-            <br/>
-            <div style="border-bottom: solid cadetblue 2px;"></div>
-            <br/>
-            <h4 class="text text-bg-light text-center">Medical History</h4>
-              <a asp-controller="Doctor" asp-action="GetUsersMedicalHistory" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2"><i class="bi bi-journal"></i>
-                            Show History</a> &nbsp;
-            <a asp-controller="Doctor" asp-action="DiagnosePatient" asp-route-id="@Model.Patient.Id" class="btn btn-primary mx-2"><i class="bi bi-heart-pulse-fill"></i> 
-                Diagnose Patient</a><br/>
-            <a asp-controller="Doctor" asp-action="Index">Back to listing</a>
+            </main>
         </div>
-    </form>
-</div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+

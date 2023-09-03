@@ -39,7 +39,9 @@
         <br/>
         <br/>
         <br/>
-       
+        <div id="eventDetails" style="display: none;">
+            <!-- Display event details here -->
+          </div>
         <div id="calendar"></div>
      
         <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.css"></script>
@@ -50,6 +52,7 @@
         
               document.addEventListener('DOMContentLoaded', function() {
                 var calendarEl = document.getElementById('calendar');
+                var eventDetailsEl = document.getElementById('eventDetails');
                 var calendar = new FullCalendar.Calendar(calendarEl, {
                   initialView: 'dayGridMonth',
                   events: @Html.Raw(ViewData["Events"]),
@@ -59,18 +62,19 @@
                       center: 'title',
                       right: 'resourceTimelineDay,timeGridWeek,dayGridMonth,listMonth'
                   },
-                  eventDidMount: function (info) {
-                     var tooltip = new Tooltip(info.el, {
-                         title: info.event.extendedProps.description,
-                         placement: 'top',
-                         trigger: 'hover',
-                         container: 'body'
-                     });
-                  }
+                  eventClick: function(event) {
+                           for (var i=0;i<this.events.length;i++){
+                           openEventDetails(event);
+                         }}
                 });
                 calendar.render();
               });
-        
+       
+               function openEventDetails(event) {
+                    // Display event details in the #eventDetails element
+                    $('#eventDetails').html(`<h2>${event.title}</h2><p>${event.start} - ${event.end}</p> `);
+                    $('#eventDetails').show();
+                  }
             </script>
             
         

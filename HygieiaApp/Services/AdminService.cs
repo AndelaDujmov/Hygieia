@@ -50,6 +50,10 @@ public class AdminService
         return _repository.ApplicationUserRepository.GetUsers().Where(x => !x.Deleted);
     }
 
+    public string GetRolenameByUser(string id)
+    {
+        return _repository.ApplicationUserRepository.GetRoleByUser(id);
+    }
 
     public IEnumerable<SelectListItem> MedicationNameSelectList()
     {

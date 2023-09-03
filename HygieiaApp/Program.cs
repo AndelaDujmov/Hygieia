@@ -1,9 +1,11 @@
 using HygieiaApp;
 using HygieiaApp.DataAccess.Data;
+using HygieiaApp.DataAccess.DbInitializer;
 using HygieiaApp.DataAccess.Repositories;
 using HygieiaApp.DataAccess.Repositories.Impl;
 using HygieiaApp.Models;
 using HygieiaApp.Models.Models;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -27,7 +29,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(100);
+    options.IdleTimeout = TimeSpan.FromMinutes(200);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -41,6 +43,15 @@ builder.Services.AddScoped<IMedicineForConditionRepository, MedicineForCondition
 builder.Services.AddTransient<AdminService>();
 builder.Services.AddTransient<PatientService>();
 builder.Services.AddTransient<DoctorService>();
+builder.Services.AddScoped<IDbInitalizer, DbInitializer>();
+
+builder.Services.AddDataProtection()
+    .SetApplicationName("HygieiaApp")
+    .AddKeyManagementOptions(options =>
+    {
+        options.NewKeyLifetime = new TimeSpan(180, 0, 0, 0);
+        options.AutoGenerateKeys = true;
+    });
 
 var app = builder.Build();
 
@@ -54,7 +65,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+SeedDb();
 app.UseRouting();
 app.UseAuthentication();;
 
@@ -67,3 +78,12 @@ app.MapControllerRoute(
     pattern: "{area=Patient}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+void SeedDb()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInit = scope.ServiceProvider.GetRequiredService<IDbInitalizer>();
+        dbInit.Initialize();
+    }
+}

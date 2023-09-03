@@ -73,7 +73,7 @@ public class PatientService
     {
         var immunization = _repository.VaccinePatientRepository.Get(x => x.Id.Equals(id));
 
-        if (immunization.UserId == null)
+        if (immunization.UserId != null)
         {
             var immunizationNew = new ImmunizationPatient();
             immunizationNew.ImmunizationId = immunization.ImmunizationId;
@@ -83,6 +83,7 @@ public class PatientService
         }
 
         immunization.UserId = applicationUser.Id;
+        _repository.VaccinePatientRepository.Update(immunization);
         _repository.Save();
     }
 

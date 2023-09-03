@@ -20,7 +20,8 @@
                                 <p class="card-text">@date.FullNamePatient</p><br/>
                             }
                             <a asp-area="Doctor" asp-action="UpdateTheTimeOfVaccination" asp-route-id="@date.ImmunizationForPatient.Id" class="btn btn-danger">Change</a>
-
+                            <a asp-action="ERefferalImmunization" asp-route-id="@date.ImmunizationForPatient.Id" asp-route-id2="@date.ImmunizationForPatient.UserId" class="btn btn-outline-primary">Generate E-Refferal</a>
+                                           
                         </div>
                     </div>
                 }

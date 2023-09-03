@@ -26,7 +26,7 @@ public class Repository<T> : IRepository<T> where T : class
         IQueryable<T> query = dbSet;
         query = query.Where(filter);
 
-        return query.FirstOrDefault();
+          return query.FirstOrDefault();
     }
 
     public void Add(T entity)

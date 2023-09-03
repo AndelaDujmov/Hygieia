@@ -59,7 +59,7 @@ public class UserController : Controller
     }
     
     [Authorize]
-    public IActionResult Info(Guid? id)
+    public IActionResult Info(string? id)
     {
         if (id is null)
         {
@@ -67,21 +67,17 @@ public class UserController : Controller
             return NotFound();
         }
 
-        var medicalcond = _service.GetConditionById(id);
+        var user = _service.GetUserById(id);
   
-        if (medicalcond is null)
+        if (user is null)
         {
             TempData["error"] = "Unable to update empty data.";
             return NotFound();
         }
 
-        var medicineForCondition = _service.GetLinkByIdConditionId(medicalcond.Id); 
-        var conditionDto = new MedicationConditionDto();
-        conditionDto.MedicalCondition = medicalcond;
-        conditionDto.MedicalConditionMedication = medicineForCondition;
-        conditionDto.SelectListItems = _service.MedicationNameSelectList();
+        user.Role = _service.GetRolenameByUser(id);
         
-        return View(conditionDto);
+        return View(user);
     }
     
     [Authorize(Roles = "Administrator")]

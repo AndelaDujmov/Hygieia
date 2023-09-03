@@ -1,3 +1,4 @@
+@using HygieiaApp.Models.Enums
 @model IEnumerable<HygieiaApp.Models.Models.Medication>
 <partial name="_Notification"/>
 
@@ -31,10 +32,12 @@
                     Name
                 </th>
                      
-                     
-                <th>
-                          
-                </th>
+                 @if (User.IsInRole(RoleName.Administrator.ToString()))
+                 {
+                     <th>
+
+                     </th>
+                 }
                      
             </tr>
             </thead>
@@ -42,7 +45,17 @@
     </div>
 </div>
 
+@if (User.IsInRole(RoleName.Doctor.ToString()))
+{
+    @section Scripts
+    {
+        <script src="~/js/medicationDoctor.js"></script>
+    }
+}
+else
+{
 @section Scripts
 {
     <script src="~/js/medication.js"></script>
+}
 }

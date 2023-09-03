@@ -1,0 +1,19 @@
+@model HygieiaApp.Models.DTO.PatientVaccinationDto
+
+<div>
+    <h2 class="text-primary">@Model.FullNamePatient's Ongoing Vaccinations</h2>
+    <div class="row">
+        @foreach (var element in @Model.ImmunizationPatients)
+        {
+
+            <div class="card w-25" style="margin-bottom: 15px">
+                <div class="card-body">
+                    <p class="card-text" id="para">@element.Immunization.Type</p>
+                    <p class="card-text">@element.DateOfVaccination.ToString("f")</p>
+                    <br/>
+                    <a asp-action="ERefferalImmunization" asp-route-id2="@element.UserId" asp-route-id="@element.Id" class="btn btn-outline-primary">Generate E-Refferal</a>
+                </div>
+                 </div>
+        }
+    </div>
+</div>

@@ -39,13 +39,15 @@ public class SchedulerController : Controller
         return View(scheduler);
     }
 
+    [HttpGet]
     public IActionResult Details(Guid id)
     {
         var scheduledEvent = _service.GetEventById(id);
 
-        return View(scheduledEvent);
+        return Json(scheduledEvent);
     }
-
+    
+    
     [Authorize(Roles = "Doctor")]
     public IActionResult Create()
     {

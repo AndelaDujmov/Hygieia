@@ -1,4 +1,5 @@
 @using HygieiaApp
+@using HygieiaApp.Models.Enums
 @model IEnumerable<HygieiaApp.Models.Models.MedicalCondition>
 <partial name="_Notification"/>
 
@@ -26,22 +27,33 @@
         <table id="myTable" width="100%" class="table table table-bordered border-1.4 border-blue">
             <thead class="thead-dark text-secondary" style="background-color: lightblue; text-overline-color: white; color: white">
             <tr class="text-primary">
-                <th>
-                    Category
-                </th>
+             
                 <th>
                     Type
                 </th>
                 <th>
                     Diagnosis Name
                 </th>
+                <th></th>
             </tr>
             </thead>
         </table>
     </div>
 </div>
 
+@if (User.IsInRole(RoleName.Doctor.ToString()))
+{
+
+
+@section Scripts
+{
+    <script src="~/js/medicalCDoctor.js"></script>
+}
+}
+else
+{
 @section Scripts
 {
     <script src="~/js/medicalC.js"></script>
+}
 }

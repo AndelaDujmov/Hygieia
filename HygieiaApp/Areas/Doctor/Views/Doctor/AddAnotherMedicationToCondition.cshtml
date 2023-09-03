@@ -1,0 +1,40 @@
+@model HygieiaApp.Models.DTO.PatientConditionsDto
+
+
+<h2 class="h2 text-primary">Add medication for @Model.MedicalCondition.NameOfDiagnosis </h2>
+
+<form method="post">
+   <input asp-for="PatientMedicalCondition.Id" hidden/>  
+    <div id="text">
+        <div class="form-floating py-4">
+            <label class="col-form-label" asp-for="SelectedMedication"></label>
+            <select class="form-select" asp-items="@Model.MedicationSelectList" asp-for="SelectedMedication">
+                <option id="select" disabled selected value="">Select medical condition</option>
+            </select>
+        </div>
+
+        <div class="form-floating py-2">
+            <label class="col-form-label">Start Date</label>
+            <input class="form-control" type="datetime-local" name="start"/>
+        </div>
+
+
+        <div class="form-floating py-2">
+            <label class="col-form-label">Reason</label>
+            <input class="form-control" type="text" name="reason"/>
+        </div>
+
+        <div class="form-floating py-2">
+            <label class="col-form-label">Maximum Dosage</label><br/>
+            <input type="number" placeholder="0.00" name="maxdose" style="width: 150px; height: 45px;"> &nbsp;mg/d</input>
+        </div>
+
+        <div class="form-floating py-2">
+            <label class="col-form-label">Frequency</label><br/>
+            <input type="number" name="frequency"/>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="width: 100px">Submit</button>
+
+</form>

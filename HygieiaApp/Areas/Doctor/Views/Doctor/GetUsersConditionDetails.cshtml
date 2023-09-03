@@ -5,31 +5,47 @@
     Layout = "_Layout";
 }
 
-<div class="card-body p-3">
-    <
+<div>
+    
     <form method="get" class="row">
-        <h1 class="h1 text-primary"><b>Diagnosis: </b>&nbsp;@Model.PatientMedicalCondition.MedicalCondition.NameOfDiagnosis </h1>
+         
+                     
+        <div class="col-12" style="padding-top: 22px;">
+            <h1 class="h1 text-primary"><b>Diagnosis: </b>&nbsp;@Model.PatientMedicalCondition.MedicalCondition.NameOfDiagnosis </h1>
+        </div>
+        <div class="card-body p-3 col-md-4 mb-3-4" style="border-radius: 8px; padding: 16px; width: calc(50.33% - 30px)">
+            <a asp-area="Doctor" asp-action="AddAnotherMedicationToCondition" asp-route-id="@Model.PatientMedicalCondition.Id" class="btn btn-danger">Add another medication</a>
+        </div>
         <h5 class="h5 text-secondary"><b>Symptoms: </b>&nbsp;@Model.PatientMedicalCondition.MedicalCondition.Symptoms</h5><br/>
         <h5 class="h5 text-secondary"><b>Symptoms: </b> &nbsp;&nbsp;@Model.PatientMedicalCondition.Stage.ToString()</h5>
-        @if (@Model.ConditionMedicated is not null)
+        @if (Model.ConditionMedicated.Any() || Model.ConditionMedicated != null || Model.ConditionMedicated.Count() == 0)
         {
             @foreach (var date in @Model.ConditionMedicated)
             {
                 <div class="card w-100 text-center" style="margin-bottom: 15px; ">
                     <div class="card-body">
-                        <p class="card-text"><b>Dosage:</b> &nbsp;</p> mg
-                        <p class="card-text"><b>Dosage:</b> &nbsp;@date.Dosage</p> mg
-                        <p class="card-text"><b>Frequency:</b> &nbsp;@date.Frequency</p> x per day
+                        <p class="card-text"><b>Name:</b> &nbsp; @date.MedicationName</p>
+                        <p class="card-text"><b>Dosage:</b> &nbsp;@date.Dosage &nbsp;mg</p>
+                        <p class="card-text"><b>Frequency:</b> &nbsp;@date.Frequency &nbsp;x per day</p>
                         <p class="card-text"><b><b>Reason:</b> &nbsp;:</b> &nbsp;@date.Reason</p>
 
-
-                        <a asp-area="Doctor" asp-action="UpdateTheTimeOfVaccination" asp-route-id="@date.Id" class="btn btn-danger">Show more</a>
+                        <details>
+                            <summary>Medication Side Effects</summary>
+                            <p class="card-text"> &nbsp; @date.MedicalConditionMedication.Medication.SideEffects</p>
+                        </details>
+                        <br/>
+                        <br/>
+                        <a asp-area="Doctor" asp-action="EPrescription" asp-route-idp="@Model.PatientMedicalCondition.UserId" asp-route-id="@date.Id" class="btn btn-danger">E-Prescription</a>
 
                     </div>
+
                 </div>
             }
         }
+        else
+        {
+            <h5 class="h5 text-secondary"><b>Medicated: </b> &nbsp;&nbsp;No</h5>
 
-
+        }
     </form>
 </div>

@@ -5,17 +5,19 @@
     Layout = "_Layout";
 }
 <div>
-    <h2>title</h2>
-    <div class="row">
+    <h2>Test Results</h2>
+    <div class="row border-1">
         @foreach (var element in @Model)
         {
 
-            <div class="card w-25" style="margin-bottom: 15px">
+            <div class="card w-25 border-1 bg-light" style="margin-bottom: 15px">
                 <div class="card-body">
-                    <p class="card-text" id="para">@element.TestName</p>
-                    <p class="card-text">@element.DateOfTesting</p>
+                    <p class="card-text" id="para"><b>@element.TestName</b></p>
+                    <p class="card-text">@(element.DateOfTesting.ToString("MMMM dd, yyyy") + ".")</p>
                     <br/>
-                    <a asp-area="Doctor" asp-action="EditResults" asp-route-id="@element.PatientId" class="btn btn-outline-success">Edit</a>
+                <a asp-area="Doctor" asp-action="EditResults" asp-route-id="@element.PatientId" class="btn btn-outline-success">Edit</a>&nbsp;&nbsp;
+                <a href="@element.Results" class="btn btn-outline-primary">See Results</a>
+
                 </div>
                  </div>
         }

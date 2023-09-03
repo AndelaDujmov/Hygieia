@@ -128,13 +128,6 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
         
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!_roleManager.RoleExistsAsync(RoleName.Administrator.ToString()).GetAwaiter().GetResult()) 
-                _roleManager.CreateAsync(new IdentityRole(RoleName.Administrator.ToString())).GetAwaiter().GetResult();
-            if (!_roleManager.RoleExistsAsync(RoleName.Doctor.ToString()).GetAwaiter().GetResult()) 
-                _roleManager.CreateAsync(new IdentityRole(RoleName.Doctor.ToString())).GetAwaiter().GetResult();
-            if (!_roleManager.RoleExistsAsync(RoleName.Patient.ToString()).GetAwaiter().GetResult()) 
-                _roleManager.CreateAsync(new IdentityRole(RoleName.Patient.ToString())).GetAwaiter().GetResult();
-
             Input = new()
             {
                 RoleList = _roleManager.Roles.Where(role => !role.Name.Equals(RoleName.Administrator.ToString())).Select(role => role.Name).Select(item => new SelectListItem
@@ -149,7 +142,7 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
         }
 
         
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(DateTime date, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -170,13 +163,18 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
                 user.Mbo = Input.Mbo;
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
-                user.DateOfBirth = Input.DateOfBirth;
+                user.DateOfBirth = date.Date;
                 user.Gender = Input.Gender;
                 user.Deleted = false;
                 
                 if (_doctorService.CheckIfEmailExists(Input.Email))
                 {
                     TempData["error"] = "Email already exists!";
+                    return RedirectToPage("Register");
+                }
+                if (_doctorService.CheckIfUsernameExists(Input.Username))
+                {
+                    TempData["error"] = "Username already exists!";
                     return RedirectToPage("Register");
                 }
                 
@@ -193,13 +191,7 @@ namespace HygieiaApp.Areas.Identity.Pages.Account
 
                     var userId = await _userManager.GetUserIdAsync(user);
 
-                  
-
-                    if (_doctorService.CheckIfUsernameExists(Input.Username))
-                    {
-                        TempData["error"] = "Username already exists!";
-                        return RedirectToPage("Register");
-                    }
+                    
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

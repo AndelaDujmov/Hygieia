@@ -19,5 +19,7 @@ public class TestResultsPatient
     public TestResult? TestResult { get; set; }
     [NotMapped]
     public string? TestName { get; set; }
+    [NotMapped]
+    public string? MadeByDoctor { get; set; }
     public bool Deleted { get; set; } = false;
 }
