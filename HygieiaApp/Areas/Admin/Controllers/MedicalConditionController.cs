@@ -254,7 +254,7 @@ public class MedicalConditionController : Controller
         IEnumerable<MedicalCondition> medicalConditions = _service.ReturnAllDeletedConditions();
         return Json(new { data = medicalConditions });
     }
-   
+    
     public IActionResult Delete(Guid? id)
     {
         if (id is null)

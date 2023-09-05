@@ -15,7 +15,7 @@ public class JsonHelper
         {
             var eventModel = new Event()
             {
-                id = id,
+                id = e.Id.ToString(),
                 start = e.DateOfAppointment,
                 end = e.EndDate,
                 description = e.Reminder,
@@ -48,7 +48,7 @@ public class JsonHelper
 
 public class Event
 {
-    public int id { get; set; }
+    public string id { get; set; }
     public DateTime start { get; set; }
     public DateTime end { get; set; }
     public string resourceId { get; set; }

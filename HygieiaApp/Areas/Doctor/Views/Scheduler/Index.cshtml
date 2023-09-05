@@ -39,10 +39,13 @@
         <br/>
         <br/>
         <br/>
-        <div id="eventDetails" style="display: none;">
-            <!-- Display event details here -->
-          </div>
-        <div id="calendar"></div>
+       
+        <div id="eventDetails">
+            
+        </div>
+        <div id="calendar">
+             
+        </div>
      
         <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.css"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -62,19 +65,31 @@
                       center: 'title',
                       right: 'resourceTimelineDay,timeGridWeek,dayGridMonth,listMonth'
                   },
-                  eventClick: function(event) {
-                           for (var i=0;i<this.events.length;i++){
-                           openEventDetails(event);
-                         }}
+                  eventClick: function(info) {
+                      fetch('/Doctor/Scheduler/Details?id=' + info.event.id)
+                        .then(function (response){
+                            return response.json();
+                        })
+                        .then(function(eventData) {
+                            eventDetailsEl.style.backgroundColor = 'lightblue';
+                            eventDetailsEl.style.color = 'darkblue';
+                            eventDetailsEl.style.fontSize = '18px';
+                            eventDetailsEl.style.border = '2px solid blue';
+                            eventDetailsEl.innerHTML += '<h5 class="card-title">Event Name</h5>';
+                            eventDetailsEl.innerHTML += '<p class="card-text"><strong>Event Name:</strong> ' + eventData.title + '<p>' +
+                                                        '<p class="card-text"><strong>Start:</strong> ' + eventData.start.toString("d") + '<p>' +
+                                                        '<p class="card-text"><strong>End:</strong>: ' + eventData.end.toString("d") + '<p>' +
+                                                        '<p class="card-text"><strong>Patient:</strong> ' + eventData.patient + '<p>';
+                        })
+                        .catch(function(error) {
+                            console.error('Error fetching event details:', error);
+                        });
+                  }
                 });
                 calendar.render();
               });
        
-               function openEventDetails(event) {
-                    // Display event details in the #eventDetails element
-                    $('#eventDetails').html(`<h2>${event.title}</h2><p>${event.start} - ${event.end}</p> `);
-                    $('#eventDetails').show();
-                  }
+    
             </script>
             
         

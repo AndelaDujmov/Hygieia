@@ -1,0 +1,75 @@
+@model System.Collections.Generic.IEnumerable<HygieiaApp.Models.Models.Scheduler>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<style>
+    header {
+        background-color: #007BFF;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    h1 {
+        margin: 0;
+    }
+    
+    .main {
+        padding: 20px;
+    }
+    
+    .appointment-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+    
+    .appointment {
+        background-color: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 5px;
+        max-width: 300px;
+        text-align: left;
+    }
+    
+    h2 {
+        margin-top: 0;
+        font-size: 18px;
+    }
+    
+    p {
+        margin: 5px 0;
+    }
+</style>
+
+<br/>
+<br/>
+
+<header style="margin-top: 34px;">
+    <h1>Doctor Appointments</h1>
+</header>
+<main>
+    <br/>
+
+    <div class="appointment-list">
+        @foreach (var element in @Model)
+        {
+            <div class="appointment">
+                <p>Date: @element.DateOfAppointment.ToString("D")</p>
+                <p>Time: @element.DateOfAppointment.ToString("t")</p>
+                <p>Reason: @element.Reminder</p>
+                <a class="btn btn-danger" asp-action="CancelAppointment" asp-route-id="@element.Id">Cancel</a>
+            </div>
+            
+            
+        }
+    </div>
+
+</main>
+
+

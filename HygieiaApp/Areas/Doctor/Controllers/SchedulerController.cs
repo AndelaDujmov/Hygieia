@@ -7,6 +7,7 @@ using HygieiaApp.Utility.Utils.CalendarHelper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace HygieiaApp.Areas.Doctor;
 
@@ -20,7 +21,7 @@ public class SchedulerController : Controller
     {
         _service = doctorService;
         _adminService = adminService;
-    }
+     }
     [Authorize]
     public IActionResult Index()
     {
@@ -40,9 +41,23 @@ public class SchedulerController : Controller
     }
 
     [HttpGet]
-    public IActionResult Details(Guid id)
+    public IActionResult Details(string id)
     {
-        var scheduledEvent = _service.GetEventById(id);
+        
+        var scheduledEvent = _service.GetEventById(Guid.Parse((ReadOnlySpan<char>)id));
+
+        var patientData = _adminService.GetUserById(scheduledEvent.PatientId);
+         
+        var eventData = new
+        {
+            id = scheduledEvent.Id,
+            title = scheduledEvent.Reminder,
+            start = scheduledEvent.DateOfAppointment.ToString("f"),
+            end = scheduledEvent.EndDate.ToString("f"),
+            patient = patientData.FirstName + " " + patientData.LastName
+        };
+        
+        return Content(JsonConvert.SerializeObject(eventData), "application/json");
 
         return Json(scheduledEvent);
     }
@@ -52,7 +67,7 @@ public class SchedulerController : Controller
     public IActionResult Create()
     {
         var model = new EventUserDto(_service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
-            .ToList());
+            .ToList()); 
         model.Scheduler = new Scheduler();
         return View(model);
     }

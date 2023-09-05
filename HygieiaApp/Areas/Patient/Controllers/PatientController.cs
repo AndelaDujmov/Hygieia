@@ -9,10 +9,12 @@ namespace HygieiaApp.Areas.Patient;
 public class PatientController : Controller
 {
     private readonly PatientService _service;
+    private readonly DoctorService _doctorService;
 
-    public PatientController(PatientService patientService)
+    public PatientController(PatientService patientService, DoctorService doctorService)
     {
         _service = patientService;
+        _doctorService = doctorService;
     }
 
     [Authorize]
@@ -73,12 +75,12 @@ public class PatientController : Controller
             return RedirectToAction("ReturnMyTests");
         return RedirectToAction("ShowUpcommingVaccinations");
     }
-    
+
     [Authorize]
     public IActionResult ShowUpcommingVaccinations()
     {
         var all = _service.GetAllVaccinationsByUser(HttpContext.User);
-        
+
         return View(all);
     }
 
@@ -88,6 +90,22 @@ public class PatientController : Controller
         _service.CancelVaccination(id);
         TempData["success"] = "You succesfully cancelled vaccination!";
         return RedirectToAction("ShowUpcommingVaccinations");
+    }
+
+    [Authorize]
+    public IActionResult ShowAllPatientsAppointments()
+    {
+        var patientsAppointments = _service.ReturnPatientsEvents(_doctorService.GetCurrentUser(HttpContext.User));
+
+        return View(patientsAppointments);
+    }
+
+    [Authorize]
+    public IActionResult CancelAppointment(Guid id)
+    {
+        _service.CancelAppointment(id);
+        TempData["success"] = "You succesfully cancelled the appointment!";
+        return RedirectToAction("ShowAllPatientsAppointments");
     }
 }
 

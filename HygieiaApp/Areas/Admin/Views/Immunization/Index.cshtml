@@ -7,9 +7,12 @@
             <h2 class="text-primary">Vaccines</h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="Immunization" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle-dotted"></i> &nbsp; Add new immunization
-            </a>
+            @if (User.IsInRole(RoleName.Administrator.ToString()))
+            {
+                <a asp-controller="Immunization" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle-dotted"></i> &nbsp; Add new immunization
+                </a>
+            } 
         </div>
         
         <br/>

@@ -1,0 +1,36 @@
+@using HygieiaApp.Models.Enums
+@model System.Collections.Generic.IEnumerable<HygieiaApp.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2 class="text-primary">Deceased Patients</h2>
+
+ <br/>
+        <br/>
+        <br/>
+        <br/>
+        <table id="myTable" width="100%" class="table table table-bordered border-1.4 border-blue">
+            <thead class="thead-dark text-secondary" style="background-color: lightblue; text-overline-color: white; color: white">
+            <tr class="text-primary">
+                <th>
+                    First Name
+                </th>
+                      
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    Date Of Birth
+                </th>
+                     
+            </tr>
+            </thead>
+        </table>
+
+@section Scripts
+{
+    <script src="~/js/deceased.js"></script>
+}

@@ -49,6 +49,7 @@ public class AdminService
     {
         return _repository.ApplicationUserRepository.GetUsers().Where(x => !x.Deleted);
     }
+    
 
     public string GetRolenameByUser(string id)
     {

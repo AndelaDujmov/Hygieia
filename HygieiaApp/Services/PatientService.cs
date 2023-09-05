@@ -122,4 +122,18 @@ public class PatientService
         
         _repository.Save();
     }
+    
+    public void CancelAppointment(Guid id)
+    {
+        var eventUser = _repository.EventRepository.Get(x => x.Id.Equals(id));
+
+        eventUser.Deleted = true;
+        
+        _repository.Save();
+    }
+
+    public IEnumerable<Scheduler> ReturnPatientsEvents(string id)
+    {
+        return _repository.EventRepository.GetAll().Where(x => x.PatientId.Equals(id) && x.Deleted.Equals(false));
+    }
 }

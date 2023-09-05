@@ -118,13 +118,16 @@ public class DoctorController : Controller
     }
 
   
-    public IActionResult PatientInfo(string id)
+    public IActionResult PatientInfo(string? id)
     {
-        var patient = _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
+        
+        var patient = (User.IsInRole(RoleName.Doctor.ToString())) ? _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User))
             .Where(user => user.Id.Equals(id))
-            .FirstOrDefault();
+            .FirstOrDefault()
+            : _adminService.GetUserById(_service.GetCurrentUser(HttpContext.User));
 
-        var doctor = _adminService.GetUserById(_service.GetCurrentUser(HttpContext.User));
+        var doctor = (User.IsInRole(RoleName.Doctor.ToString())) ? _adminService.GetUserById(_service.GetCurrentUser(HttpContext.User))
+                : _service.GetDoctorByPatient(patient.Id);
         var tests   = _service.ReturnAllTestsByUser(patient.Id);
         _service.ReturnTestNames(tests);
 
@@ -543,17 +546,38 @@ public class DoctorController : Controller
             return File(constant, "application/vnd", "EPrescription.pdf");
         }
     }
+
+    [Authorize]
+    public IActionResult GetDeceasedPatients()
+    {
+        var deceased = _service.GetAllConditions()
+            .Where(x => x.Stage.Equals(Stage.Dead))
+            .Select(x => x.UserId)
+            .ToList();
+        var allDeceased = _adminService.DeletedUsers().ToList().Where(x => deceased.Contains(x.Id));
+        
+        return View(allDeceased);
+    }
     
     #region DATATABLE_API_CALLS
 
     public IActionResult GetMyPatients()
     {
-
-
         IEnumerable<ApplicationUser> patients =
             _service.ReturnAllDoctorsPatients(_service.GetCurrentUser(HttpContext.User));
            
         return Json(new { data = patients });
+    }
+    
+    public IActionResult Deceased()
+    {
+        var deceased = _service.GetAllConditions()
+            .Where(x => x.Stage.Equals(Stage.Dead))
+            .Select(x => x.UserId)
+            .ToList();
+        var allDeceased = _adminService.DeletedUsers().ToList().Where(x => deceased.Contains(x.Id));
+
+        return Json(new {data = allDeceased});
     }
     
     #endregion

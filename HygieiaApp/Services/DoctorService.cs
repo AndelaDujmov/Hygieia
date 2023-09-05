@@ -501,8 +501,15 @@ public class DoctorService
         var admin = _repository.ApplicationUserRepository.GetUserByRole(RoleName.Administrator.ToString());
         return admin;
     }
+    
+    public ApplicationUser GetDoctorByPatient(string patientId)
+    {
+        var patientsDoc = _repository.PatientDoctorRepository.Get(x => x.PatientsId.Equals(patientId)).DoctorsId;
 
+        return _repository.ApplicationUserRepository.Get(x => x.Id.Equals(patientsDoc));
 
+    }
+    
     public ApplicationUser GetPatientsDoctor(string id)
     {
         var user = new ApplicationUser();
@@ -592,5 +599,10 @@ public class DoctorService
         all.ToList().ForEach(x => x.Selected = ReturnTheTypeForVaccination(x));
 
         return all;
+    }
+
+    public IEnumerable<PatientMedicalCondition> GetAllConditions()
+    {
+        return _repository.PatientConditionRepository.GetAll();
     }
 }

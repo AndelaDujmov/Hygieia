@@ -1,3 +1,4 @@
+@using HygieiaApp.Models.Enums
 @model HygieiaApp.Models.DTO.PatientDoctorDTO
 
 <style>
@@ -34,9 +35,12 @@
                             <a class="nav-link" asp-controller="Doctor" asp-action="GetAllPatientsResults" asp-route-id="@Model.Patient.Id">
                                 <i class="bi bi-folder"></i> &nbsp; All Results
                             </a>
-                            <a class="nav-link" asp-controller="Doctor" asp-action="UploadResults" asp-route-id="@Model.Patient.Id">
-                                <i class="bi bi-plus-square-fill"></i> &nbsp;Upload results
-                            </a>
+                            @if (!User.IsInRole(RoleName.Patient.ToString()))
+                            {
+                                <a class="nav-link" asp-controller="Doctor" asp-action="UploadResults" asp-route-id="@Model.Patient.Id">
+                                    <i class="bi bi-plus-square-fill"></i> &nbsp;Upload results
+                                </a>
+                            }
                         </li>
                         <li class="nav-item">
                              <h4 class="text text-bg-light text-center">Vaccinations</h4>
